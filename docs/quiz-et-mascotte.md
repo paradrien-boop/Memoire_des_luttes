@@ -1,6 +1,6 @@
 # Quiz du jour et mascotte (conception)
 
-> Statut : idée en conception, pas encore développée.
+> Statut : **première version en place** (onglet Quartier). Les dessins sont une première version, à reprendre par un·e illustrateur·rice. Le nom du chat est choisi par chaque personne.
 
 ## En une phrase
 
@@ -57,7 +57,7 @@ Une question fabriquée n'est utilisée que si elle est **sans ambiguïté** : l
 
 Le **chat noir hérissé** est un vieux symbole du mouvement ouvrier : celui de la grève sauvage et du sabotage. Notre chat sera **dessiné spécialement pour l'app**, dans le style des cartes (affiche risographe, rouge et noir).
 
-Son nom reste à choisir : par exemple **Sabot**, **Grève** ou **Pavé**.
+**Chaque personne donne son propre nom à son chat**, au premier passage dans l'onglet Quartier. On peut le renommer ensuite.
 
 ### Ses stades
 
@@ -118,9 +118,17 @@ Le quiz rapporte donc au maximum un booster par semaine environ. **La rue reste 
 3. Mascotte et quartier avec des formes simples, puis les vraies illustrations.
 4. Fragments de booster et bonus des jours de manif.
 
+## Où en est-on
+
+| Étape | État |
+|---|---|
+| 1. Quiz, questions fabriquées, mémoire par carte | ✅ `paquets/noyau/src/quiz.ts`, testé |
+| 2. Questions écrites dans les cartes | ✅ lues par l'app et vérifiées par `npm run valider` ; reste à en écrire |
+| 3. Mascotte et quartier | ✅ première version des dessins (`app/src/dessins/`) |
+| 4. Fragments de booster et bonus des jours de manif | ✅ |
+
+**Pour les dessins** : en développement, l'adresse `#dessins` affiche une planche avec tous les stades du chat et tous les niveaux du quartier. C'est la page à montrer à un·e illustrateur·rice. Les dessins sont en SVG : chaque élément du quartier est un bloc séparé dans `Scene.svelte`, et le chat est dans `Chat.svelte`.
+
 ## Questions ouvertes
 
-- Le **nom** du chat.
-- Le chat noir convient-il, ou préfères-tu une autre mascotte ?
-- **Quand** faire ce chantier : avant ou après les signatures (étape 3) ?
-- Qui pourrait **dessiner** le chat et le quartier ?
+- Qui pourrait **reprendre les dessins** dans un style définitif ?

@@ -3,3 +3,5 @@ export * from "./catalogue";
 export * from "./regles";
 export * from "./chrono";
 export * from "./packs";
+export * from "./quiz";
+export * from "./mascotte";

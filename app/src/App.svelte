@@ -11,6 +11,9 @@
   import Album from './ecrans/Album.svelte'
   import Editeur from './ecrans/Editeur.svelte'
   import Plus from './ecrans/Plus.svelte'
+  import Quartier from './ecrans/Quartier.svelte'
+  import Dessins from './ecrans/Dessins.svelte'
+  import { quartier } from './etat/quartier.svelte'
   import { untrack } from 'svelte'
   import { ecranDepuisAdresse } from './navigation'
   import { jeu } from './etat/jeu.svelte'
@@ -20,7 +23,7 @@
   let erreur = $state('')
   let cleEditeur = $state(0) // change pour recharger l'éditeur avec une autre carte
 
-  jeu.charger().catch((e) => (erreur = String(e?.message ?? e)))
+  Promise.all([jeu.charger(), quartier.charger()]).catch((e) => (erreur = String(e?.message ?? e)))
   miseAJour.demarrer()
 
   $effect(() => {
@@ -59,9 +62,11 @@
 <main>
   {#if erreur}
     <div class="encart"><h2>L'app n'a pas pu démarrer</h2><p>La base de données du téléphone n'est pas accessible ({erreur}). Une navigation privée peut la bloquer.</p></div>
-  {:else if jeu.pret}
+  {:else if jeu.pret && quartier.pret}
     {#if ecran === 'manif'}<Manif />
     {:else if ecran === 'album'}<Album />
+    {:else if ecran === 'quartier'}<Quartier />
+    {:else if ecran === 'dessins'}<Dessins />
     {:else if ecran === 'editeur'}{#key cleEditeur}<Editeur />{/key}
     {:else}<Plus />{/if}
   {/if}

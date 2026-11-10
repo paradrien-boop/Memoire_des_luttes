@@ -37,6 +37,17 @@ for (const type of ["officiel", "local"]) {
       }
       for (const l of c.links || []) if (!cartes[l]) err(nom, `lien vers une carte inconnue : ${l}`);
       if (!c.src) err(nom, "aucune source");
+      // Questions écrites pour le quiz du jour (facultatives)
+      if (c.questions !== undefined) {
+        if (!Array.isArray(c.questions)) err(nom, "« questions » doit être une liste");
+        else c.questions.forEach((q, i) => {
+          const ici = `${nom} question ${i + 1}`;
+          if (!q || typeof q.q !== "string" || !q.q.trim()) err(ici, "énoncé « q » manquant");
+          if (typeof q?.bonne !== "string" || !q.bonne.trim()) err(ici, "bonne réponse « bonne » manquante");
+          if (!Array.isArray(q?.fausses) || q.fausses.filter(f => typeof f === "string" && f.trim()).length < 3) err(ici, "il faut au moins 3 mauvaises réponses dans « fausses »");
+          else if (new Set([q.bonne, ...q.fausses].map(x => String(x).toLowerCase())).size !== q.fausses.length + 1) err(ici, "des réponses sont en double");
+        });
+      }
     }
     for (const s of meta.series || []) for (const id of s.cartes) if (!cartes[id]) err(pack, `la série "${s.id}" cite une carte inconnue : ${id}`);
     console.log(`Pack ${pack} : ${Object.keys(cartes).length} cartes vérifiées.`);

@@ -80,6 +80,18 @@ class Jeu {
     return base.reglages.bulkPut(Object.entries(valeurs).map(([cle, valeur]) => ({ cle, valeur: $state.snapshot(valeur) })))
   }
 
+  /** Boosters gagnés autrement qu'au compteur (fragments du quiz). */
+  async ajouterBoosters(n: number) {
+    if (n <= 0) return
+    this.boosters += n
+    await this.regler({ boosters: this.boosters })
+  }
+
+  /** Les séries de l'album complétées (pour les accessoires du chat). */
+  get seriesCompletes(): string[] {
+    return catalogue.series.filter((s) => s.cartes.every((id) => (this.possessions[id] ?? 0) > 0)).map((s) => s.id)
+  }
+
   async fermerAccueil() {
     this.accueilVu = true
     await this.regler({ accueilVu: true })

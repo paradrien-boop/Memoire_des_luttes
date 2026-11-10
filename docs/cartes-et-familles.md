@@ -40,6 +40,23 @@ Une carte est un fichier JSON dans le dossier `cartes/` de son pack. Exemple sim
 }
 ```
 
+## Questions pour le quiz du jour (facultatif)
+
+Une carte peut contenir ses propres questions. Elles passent avant les questions fabriquées automatiquement :
+
+```json
+"questions": [
+  {
+    "q": "Pourquoi les soldats refusent-ils de tirer le 18 mars 1871 ?",
+    "bonne": "Ils fraternisent avec la foule qui entoure les canons",
+    "fausses": ["Ils n'ont plus de munitions", "Thiers leur en donne l'ordre", "Il pleut trop"],
+    "explication": "Les femmes de Montmartre donnent l'alerte, la foule entoure la troupe, qui met la crosse en l'air."
+  }
+]
+```
+
+Il faut une bonne réponse, au moins trois mauvaises, toutes différentes. L'explication est montrée après la réponse. `npm run valider` vérifie tout ça.
+
 ## Statuts d'une carte
 
 | Statut | Signification |

@@ -33,6 +33,13 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 - [ ] Scan des QR par l'appareil photo
 - [ ] Échange de cartes entre deux téléphones par QR
 
+## En parallèle : quiz du jour et mascotte
+
+- [x] Quiz du jour, chat qui grandit, quartier qui se construit (voir [quiz-et-mascotte.md](quiz-et-mascotte.md))
+- [x] Vérifier les questions écrites dans `scripts/valider.mjs`
+- [ ] Écrire des questions dans les cartes
+- [ ] Dessins définitifs
+
 ## Étape 4 : le site
 
 - [ ] Page d'installation
