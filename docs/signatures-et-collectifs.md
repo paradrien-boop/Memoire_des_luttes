@@ -19,8 +19,8 @@ Il n'y a aucun serveur de confiance. Tout repose sur des **clés de signature** 
 
 ## Les clés des collectifs locaux
 
-1. Le collectif crée sa clé **sur son propre ordinateur**. La partie secrète ne quitte jamais cet ordinateur.
-2. Il envoie la partie publique, avec une présentation.
+1. Le collectif crée sa clé **sur son propre ordinateur**, avec la page **Clés** du site (rien n'est envoyé) ou avec l'atelier. La partie secrète ne quitte jamais cet ordinateur.
+2. Il envoie la **demande de reconnaissance** générée par le site : elle ne contient que la clé publique et une présentation. L'empreinte de la clé se confirme de vive voix.
 3. Il est parrainé (règle proposée : deux collectifs déjà reconnus).
 4. Le collectif racine signe une **délégation** hors ligne. Elle précise :
    - le nom affiché ;
@@ -76,6 +76,8 @@ npm run atelier -- qr-evenement --cle /cle-usb/racine.cle-secrete.json --eveneme
 | `cles` | Crée une paire de clés. Refuse d'écrire une clé secrète dans le dépôt. |
 | `empreinte` | Affiche l'empreinte d'une clé, à comparer à l'œil. |
 | `deleguer` | Délivre une délégation à un collectif local (droits, date d'expiration). |
+| `reconnaitre` | Reconnaît un collectif à partir de la demande générée par le site (page Clés) : écrit `data/collectifs/<id>.json` avec sa délégation signée. Le collectif utilise ce fichier pour signer (`--delegation`). |
+| `revoquer` | Révoque une clé : elle est ajoutée à `data/cles/racine.json`, et refusée par l'atelier, la validation, le site et les nouvelles versions de l'app. Pour les apps déjà installées, l'ajouter aussi aux `revocations` d'un pack officiel, re-signé et publié. |
 | `signer-pack` | Signe un pack. `--ecrire` met la signature dans `pack.json`, `--sortie` écrit le pack prêt à diffuser. |
 | `verifier` | Vérifie la signature d'un pack. |
 | `qr-stand` | Planche de QR de stand à imprimer (booster spécial, une fois par téléphone). |

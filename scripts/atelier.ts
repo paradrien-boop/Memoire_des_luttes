@@ -24,6 +24,10 @@ L'atelier du collectif Mémoire des luttes. À utiliser sur un ordinateur jamais
   signer-pack   --pack DOSSIER --cle F [--delegation F] [--sortie F] [--ecrire]
                                                 Signe un pack de data/packs. --ecrire met la signature dans son pack.json,
                                                 --sortie écrit le pack complet, prêt à diffuser.
+  reconnaitre   --demande F --cle F --droits base,rare --expire AAAA-MM-JJ [--parrains a,b]
+                                                Reconnaît un collectif à partir de la demande générée par le site (page Clés) :
+                                                écrit data/collectifs/<id>.json avec sa délégation signée.
+  revoquer      --publique HEX                  Révoque une clé : l'ajoute à data/cles/racine.json (puis à un pack officiel).
   verifier      --pack DOSSIER | --fichier F    Vérifie la signature d'un pack.
   qr-stand      --cle F [--delegation F] --nom NOM --minimum base|rare|legendaire --du J --au J [--nombre N] --sortie F.html
                                                 Planche de QR de stand à imprimer (un booster spécial, une fois par téléphone).
@@ -39,6 +43,16 @@ function lireCle(f: string): { secrete: string; publique: string } {
 
 function racines(): string[] {
   return JSON.parse(readFileSync(join(racine, "data/cles/racine.json"), "utf8")).racines;
+}
+
+function revocations(): string[] {
+  return JSON.parse(readFileSync(join(racine, "data/cles/racine.json"), "utf8")).revocations ?? [];
+}
+
+/** Une délégation, lue dans un fichier de délégation ou dans une fiche de data/collectifs. */
+function lireDelegation(f: string): DelegationSignee {
+  const d = JSON.parse(readFileSync(f, "utf8"));
+  return (d.delegation ?? d) as DelegationSignee;
 }
 
 /** Le pack tel qu'il est signé et diffusé : pack.json + ses cartes, sans « type » ni signature. */
@@ -79,6 +93,7 @@ async function principal() {
       pack: { type: "string" }, fichier: { type: "string" }, ecrire: { type: "boolean" },
       minimum: { type: "string" }, du: { type: "string" }, au: { type: "string" }, nombre: { type: "string" },
       evenement: { type: "string" }, de: { type: "string" }, a: { type: "string" },
+      demande: { type: "string" }, parrains: { type: "string" },
     },
   });
   const exiger = (...noms: (keyof typeof o)[]) => { for (const n of noms) if (!o[n]) throw new Error(`Il manque --${n}.`); };
@@ -111,7 +126,7 @@ async function principal() {
     case "signer-pack": {
       exiger("pack", "cle");
       const { pack, fichierMeta } = lirePack(o.pack!);
-      const delegation = o.delegation ? (JSON.parse(readFileSync(o.delegation, "utf8")) as DelegationSignee) : undefined;
+      const delegation = o.delegation ? lireDelegation(o.delegation) : undefined;
       const signe = signerPack(pack, lireCle(o.cle!).secrete, delegation);
       if (o.ecrire) {
         const meta = JSON.parse(readFileSync(fichierMeta, "utf8"));
@@ -122,13 +137,42 @@ async function principal() {
       if (!o.ecrire && !o.sortie) throw new Error("Donne --ecrire et/ou --sortie.");
       break;
     }
+    case "reconnaitre": {
+      exiger("demande", "cle", "droits", "expire");
+      const dm = JSON.parse(readFileSync(o.demande!, "utf8"));
+      if (dm.type !== "demande-de-reconnaissance") throw new Error("Ce fichier n'est pas une demande de reconnaissance (page Clés du site).");
+      if (!/^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/.test(dm.id ?? "")) throw new Error("Identifiant de collectif invalide.");
+      if (!/^[0-9a-f]{64}$/.test(dm.clePublique ?? "")) throw new Error("Clé publique invalide.");
+      if (dm.empreinte && dm.empreinte !== empreinte(dm.clePublique)) throw new Error("L'empreinte de la demande ne correspond pas à sa clé publique.");
+      const droits = o.droits!.split(",").map((x) => x.trim()) as Rarete[];
+      if (droits.some((d) => !["base", "rare", "legendaire"].includes(d))) throw new Error("Droits possibles : base, rare, legendaire.");
+      const cible = join(racine, "data/collectifs", `${dm.id}.json`);
+      const delegation = deleguer({ type: "delegation", collectif: dm.id, nom: dm.nom, clePublique: dm.clePublique, droits, emise: aujourdhui, expire: o.expire! }, lireCle(o.cle!).secrete);
+      const fiche = {
+        id: dm.id, nom: dm.nom, presentation: dm.presentation ?? "", themes: dm.themes ?? [], annuaire: dm.annuaire !== false,
+        clePublique: dm.clePublique, parrains: o.parrains ? o.parrains.split(",").map((x) => x.trim()) : [], delegation,
+      };
+      writeFileSync(cible, JSON.stringify(fiche, null, 2) + "\n");
+      console.log(`Collectif « ${dm.nom} » reconnu : ${cible}\nEmpreinte de sa clé : ${empreinte(dm.clePublique)} (à confirmer de vive voix avec le collectif).\nEnvoie-lui ce fichier : il en a besoin pour signer (--delegation).`);
+      break;
+    }
+    case "revoquer": {
+      exiger("publique");
+      if (!/^[0-9a-f]{64}$/.test(o.publique!)) throw new Error("Clé publique invalide.");
+      const f = join(racine, "data/cles/racine.json");
+      const c = JSON.parse(readFileSync(f, "utf8"));
+      c.revocations = [...new Set([...(c.revocations ?? []), o.publique])];
+      writeFileSync(f, JSON.stringify(c, null, 2) + "\n");
+      console.log(`Clé ${empreinte(o.publique!)} révoquée dans data/cles/racine.json : les nouvelles versions de l'app et le site la refusent.\nPour les apps déjà installées : ajoute-la aussi à « revocations » dans le pack.json d'un pack officiel, puis re-signe ce pack et publie-le.`);
+      break;
+    }
     case "verifier": {
       const pack = o.fichier ? (JSON.parse(readFileSync(o.fichier, "utf8")) as PackSignable) : (() => {
         exiger("pack");
         const { pack, fichierMeta } = lirePack(o.pack!);
         return { ...pack, signature: JSON.parse(readFileSync(fichierMeta, "utf8")).signature ?? null };
       })();
-      const r = verifierPack(pack, { racines: racines(), revoquees: [], date: aujourdhui });
+      const r = verifierPack(pack, { racines: racines(), revoquees: revocations(), date: aujourdhui });
       console.log(r.confiance === "invalide" ? `✗ Invalide : ${r.raison}` : r.confiance === "local" ? `✓ Pack local signé par « ${r.collectif.nom} »` : r.confiance === "officiel" ? "✓ Pack officiel, signature valide" : "Pack non signé");
       if (r.confiance === "invalide") process.exitCode = 1;
       break;
@@ -136,7 +180,7 @@ async function principal() {
     case "qr-stand": {
       exiger("cle", "nom", "minimum", "du", "au", "sortie");
       const k = lireCle(o.cle!);
-      const delegation = o.delegation ? (JSON.parse(readFileSync(o.delegation, "utf8")) as DelegationSignee) : undefined;
+      const delegation = o.delegation ? lireDelegation(o.delegation) : undefined;
       const nombre = Number(o.nombre ?? 20);
       const base = o.nom!.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 24);
       const qrs = Array.from({ length: nombre }, (_, i) => {

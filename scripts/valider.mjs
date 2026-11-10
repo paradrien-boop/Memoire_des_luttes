@@ -3,7 +3,7 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { verifierPack } from "../paquets/noyau/src/index.ts";
+import { verifierDelegation, verifierPack } from "../paquets/noyau/src/index.ts";
 
 const racine = join(dirname(fileURLToPath(import.meta.url)), "..");
 const familles = JSON.parse(readFileSync(join(racine, "data/familles/familles.json"), "utf8"));
@@ -16,6 +16,7 @@ const vus = {}; // identifiant de carte -> pack, pour repérer les doublons entr
 // Clés du collectif : seulement des clés publiques (64 caractères hexadécimaux), jamais de clé secrète.
 const cles = JSON.parse(readFileSync(join(racine, "data/cles/racine.json"), "utf8"));
 if (!Array.isArray(cles.racines) || cles.racines.some((k) => !/^[0-9a-f]{64}$/.test(k))) err("data/cles/racine.json", "« racines » doit être une liste de clés publiques (64 caractères hexadécimaux)");
+if (cles.revocations !== undefined && (!Array.isArray(cles.revocations) || cles.revocations.some((k) => !/^[0-9a-f]{64}$/.test(k)))) err("data/cles/racine.json", "« revocations » doit être une liste de clés publiques");
 if (JSON.stringify(cles).includes("secrete")) err("data/cles/racine.json", "ce fichier ne doit contenir aucune clé secrète");
 
 for (const type of ["officiel", "local"]) {
@@ -59,12 +60,24 @@ for (const type of ["officiel", "local"]) {
     // Pack signé : la signature doit correspondre au contenu actuel (sinon il faut re-signer avec l'atelier).
     if (meta.signature) {
       const ordre = Object.keys(cartes).sort();
-      const r = verifierPack({ ...meta, cartes: ordre.map((id) => cartes[id]) }, { racines: cles.racines, revoquees: [], date: new Date().toISOString().slice(0, 10) });
+      const r = verifierPack({ ...meta, cartes: ordre.map((id) => cartes[id]) }, { racines: cles.racines, revoquees: cles.revocations ?? [], date: new Date().toISOString().slice(0, 10) });
       if (r.confiance === "invalide") err(pack, `signature invalide : ${r.raison} Re-signe le pack avec « npm run atelier -- signer-pack ».`);
       else console.log(`Pack ${pack} : signature ${r.confiance === "officiel" ? "officielle" : "locale"} valide.`);
     }
     console.log(`Pack ${pack} : ${Object.keys(cartes).length} cartes vérifiées.`);
   }
 }
+// Fiches des collectifs : la délégation doit être signée par le collectif racine et correspondre à la fiche.
+const dossierCollectifs = join(racine, "data/collectifs");
+if (existsSync(dossierCollectifs)) for (const f of readdirSync(dossierCollectifs).filter((x) => x.endsWith(".json"))) {
+  const c = JSON.parse(readFileSync(join(dossierCollectifs, f), "utf8"));
+  const nom = `collectif ${f}`;
+  if (`${c.id}.json` !== f) err(nom, `l'id "${c.id}" ne correspond pas au nom du fichier`);
+  if (!c.delegation) { err(nom, "pas de délégation"); continue; }
+  if (c.delegation.clePublique !== c.clePublique || c.delegation.collectif !== c.id) err(nom, "la délégation ne correspond pas à la fiche");
+  const v = verifierDelegation(c.delegation, { racines: cles.racines, revoquees: cles.revocations ?? [], date: new Date().toISOString().slice(0, 10) });
+  if (!v.ok) console.log(`⚠ ${nom} : ${v.raison}`);
+}
+
 console.log(erreurs ? `\n${erreurs} erreur(s).` : "\nAucune erreur.");
 process.exit(erreurs ? 1 : 0);

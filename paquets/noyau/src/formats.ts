@@ -71,5 +71,5 @@ export interface Donnees {
   packs: Pack[];
   evenements: CarteEvenement[];
   /** Clés publiques du collectif racine, intégrées à l'app (data/cles/racine.json). */
-  cles?: { nom: string; racines: string[] };
+  cles?: { nom: string; racines: string[]; revocations?: string[] };
 }

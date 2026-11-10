@@ -21,6 +21,6 @@ export const NOM_COLLECTIF = brut.cles?.nom ?? 'Mémoire des luttes'
 export const RACINES: string[] = [...(brut.cles?.racines ?? []), ...(demo ? [demo.publique] : [])]
 
 /** Les révocations publiées dans les packs officiels intégrés à l'app. */
-export const REVOCATIONS_INTEGREES: string[] = brut.packs.flatMap((p) => p.revocations ?? [])
+export const REVOCATIONS_INTEGREES: string[] = [...(brut.cles?.revocations ?? []), ...brut.packs.flatMap((p) => p.revocations ?? [])]
 
 export { demo as CLE_DEMO }
