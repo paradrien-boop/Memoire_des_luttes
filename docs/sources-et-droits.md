@@ -13,6 +13,17 @@
 
 Comme une partie des textes vient de Wikipédia, **tout le contenu des cartes est publié en CC BY-SA 4.0**.
 
-## Fabrication du contenu (à faire)
+## Brouillons depuis Wikipédia et Wikidata
 
-Un script récupère les données de Wikidata et Wikipédia et produit des **brouillons** de cartes. Une relecture humaine reste indispensable avant toute signature.
+Sur un ordinateur connecté :
+
+```bash
+npm run brouillon -- --titre "Rosa Luxemburg" --famille personnalite --pack commune-1871 --serie comm
+```
+
+Le script lit le résumé de l'article Wikipédia (en français) et les données Wikidata (dates, métiers, auteurs, lieux), puis écrit la carte dans le pack et l'ajoute à la série. Il n'écrase jamais une carte existante.
+
+La carte créée est un **brouillon** au statut `proposee` :
+- le texte de Wikipédia est à **réécrire** (on ne le reprend pas tel quel, et la source reste citée) ;
+- la rubrique « Pourquoi ça compte encore » est **vide** : le regard militant s'écrit à la main ;
+- chaque fait et chaque source sont à vérifier avant validation et signature.

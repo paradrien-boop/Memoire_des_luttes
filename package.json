@@ -18,7 +18,8 @@
     "test:e2e": "npm run test:e2e -w app",
     "build:site": "npm run build -w site",
     "dev:site": "npm run dev -w site",
-    "publier": "npm run build && npm run build:site && tsx scripts/publier.ts"
+    "publier": "npm run build && npm run build:site && tsx scripts/publier.ts",
+    "brouillon": "tsx scripts/brouillon.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

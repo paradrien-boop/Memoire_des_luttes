@@ -21,4 +21,4 @@ Ce fichier garde tout ce qui n'est pas encore décidé. Quand une question est t
 - ~~Carte des idées : un graphe des cartes et de leurs liens, qui se dévoile au fil de la collection.~~ Fait (Album).
 - Packs suivants : 1er mai, Front populaire, Mai 68, luttes féministes, luttes anticoloniales, grèves de 1995.
 - Partenariats : éditeur d'un dictionnaire critique, Le Maitron.
-- Script de génération de brouillons depuis Wikidata.
+- ~~Script de génération de brouillons depuis Wikidata.~~ Fait : `npm run brouillon` (voir [sources-et-droits.md](sources-et-droits.md)).
