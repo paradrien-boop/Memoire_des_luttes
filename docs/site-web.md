@@ -1,4 +1,6 @@
-# Le site web (à construire)
+# Le site web
+
+> **Statut : en place** (dossier [`site/`](../site/)), publié avec l'app sur Codeberg Pages. L'espace de débat reste à choisir (Decidim, Discourse…) : son adresse se met dans `data/site.json`, et le site y renvoie.
 
 L'application reste sans compte et hors ligne. Le site sert à celles et ceux qui **fabriquent** le contenu. Il lit ses données dans ce dépôt.
 
@@ -39,4 +41,11 @@ Le site et l'application liront les données publiées depuis ce dépôt :
 - `data/collectifs/` pour les clés et l'annuaire ;
 - `data/evenements/` pour les cartes d'événement.
 
-⚠️ **Le dépôt est privé.** L'application et le site ne pourront pas lire un dépôt privé sans clé d'accès, et une clé d'accès ne doit jamais être mise dans l'application. Il faudra donc **publier** les données : un dépôt public miroir, des *releases* publiques ou un hébergement de fichiers statiques. Voir [les idées en attente](idees.md).
+Le dépôt reste privé : seule la publication (site, app, packs) est envoyée sur Codeberg Pages, par `npm run publier` et l'action GitHub « Publier ».
+
+| Adresse | Contenu |
+|---|---|
+| `/` | Le site |
+| `/app/` | L'app (c'est l'adresse à mettre dans les QR des tracts) |
+| `/packs/index.json` | L'index des packs, lu par « Chercher de nouveaux packs » dans l'app |
+| `/packs/<id>.json` | Chaque pack, sous la forme exacte qui est signée |

@@ -9,6 +9,12 @@
   const installes = $derived(new Set(jeu.packs.map((p) => p.id)))
   const integres = $derived(catalogue.packs.filter((p) => !installes.has(p.id)))
   const racinesReelles = RACINES.filter((k) => k !== CLE_DEMO?.publique)
+  let recherche = $state(false)
+  async function chercher() {
+    recherche = true
+    try { ui.annoncer(await jeu.chercherPacks()) } catch (e) { ui.annoncer((e as Error).message) }
+    recherche = false
+  }
 </script>
 
 <div class="pile">
@@ -51,6 +57,10 @@
       </li>
     {/each}
   </ul>
+
+  <h3>Chercher de nouveaux packs</h3>
+  <p class="petit">Avec du réseau (à la maison, de préférence), l'app regarde sur le site du collectif s'il y a de nouveaux packs signés, et les installe après vérification. C'est le seul moment où elle se connecte.</p>
+  <div><button class="encre" disabled={recherche} onclick={chercher}>{recherche ? 'Recherche…' : 'Chercher de nouveaux packs'}</button></div>
 
   <h3>Installer un pack</h3>
   <p class="petit">Un pack reçu en fichier ou en texte. S'il est signé, l'app vérifie la signature toute seule, sans réseau.</p>

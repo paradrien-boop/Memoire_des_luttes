@@ -8,3 +8,4 @@ dist-artefact/
 dist-test/
 test-results/
 playwright-report/
+publication/

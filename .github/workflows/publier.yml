@@ -1,4 +1,4 @@
-# Publie l'app construite sur Codeberg Pages, à chaque envoi sur main.
+# Publie le site, l'app (sous /app/) et les packs (sous /packs/) sur Codeberg Pages, à chaque envoi sur main.
 # Ne fait rien tant que la variable CODEBERG_DEPOT n'est pas définie (voir docs/publication.md).
 name: Publier sur Codeberg Pages
 
@@ -22,18 +22,15 @@ jobs:
       - run: npm ci
       - run: npm run valider
       - run: npm test
-      - run: npm run build
-      - name: Vérifier que la clé de démonstration n'est pas dans l'app publiée
-        run: |
-          if grep -rq "$(node -p "require('./data/cles/demo.json').publique")" app/dist; then echo "La clé de démonstration se trouve dans l'app publiée !"; exit 1; fi
-      - name: Envoyer l'app vers la branche « pages » de Codeberg
+      - name: Construire le site, l'app et les packs (vérifie aussi l'absence de la clé de démonstration)
+        run: npm run publier
+      - name: Envoyer la publication vers la branche « pages » de Codeberg
         env:
           JETON: ${{ secrets.CODEBERG_JETON }}
           UTILISATEUR: ${{ vars.CODEBERG_UTILISATEUR }}
           DEPOT: ${{ vars.CODEBERG_DEPOT }}
         run: |
-          cp LICENSE LICENCES.md app/dist/
-          cd app/dist
+          cd publication
           git init -q -b pages
           git add -A
           git -c user.name="Mémoire des luttes" -c user.email="publication@invalid" commit -q -m "Publication de l'app"

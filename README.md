@@ -15,7 +15,7 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 | [`paquets/noyau/`](paquets/noyau/) | La logique partagée : formats, règles du jeu, plus tard signatures |
 | [`app/`](app/) | L'application (Vite, Svelte, TypeScript) |
 | [`prototype/`](prototype/) | Le premier prototype, gardé comme référence |
-| [`site/`](site/) | Le futur site web (installation, débat, collectifs) |
+| [`site/`](site/) | Le site web : installation, cartes, packs, collectifs, clés, participation |
 | [`scripts/`](scripts/) | Outils : vérification des cartes, plus tard signature des packs |
 
 ## Par où commencer

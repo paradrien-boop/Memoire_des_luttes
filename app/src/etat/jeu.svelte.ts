@@ -319,6 +319,40 @@ class Jeu {
       : `Pack du collectif « ${v.collectif.nom} » reçu. Va dans Plus, rubrique Packs, pour décider si tu lui fais confiance.`
   }
 
+  /**
+   * Cherche de nouveaux packs signés sur le site (le seul accès au réseau de l'app, et seulement sur demande).
+   * L'index est publié à côté de l'app : ../packs/index.json. Chaque pack est vérifié avant installation.
+   * @returns un résumé à montrer. @throws Error si le site est injoignable
+   */
+  async chercherPacks(): Promise<string> {
+    type Entree = { id: string; nom: string; fichier: string; confiance: string; signature: string | null }
+    let index: { packs: Entree[] }
+    try {
+      const r = await fetch(new URL('../packs/index.json', location.href), { cache: 'no-store' })
+      if (!r.ok) throw new Error()
+      index = await r.json()
+    } catch {
+      throw new Error("Impossible de joindre le site. Il faut du réseau pour chercher de nouveaux packs : réessaie à la maison.")
+    }
+    const signatureDe = (p: { signature?: unknown } | undefined) => (p?.signature as { valeur?: string } | undefined)?.valeur
+    const aJour = (e: Entree) =>
+      this.packs.some((p) => p.id === e.id && signatureDe(p.pack) === e.signature) ||
+      catalogue.packs.some((p) => p.id === e.id && signatureDe(p) === e.signature)
+    const nouveaux = (index.packs ?? []).filter((e) => e.signature && (e.confiance === 'officiel' || e.confiance === 'local') && !aJour(e))
+    if (!nouveaux.length) return 'Tu as déjà tous les packs signés du site.'
+    const messages: string[] = []
+    for (const e of nouveaux) {
+      try {
+        const r = await fetch(new URL('../' + e.fichier, location.href), { cache: 'no-store' })
+        if (!r.ok) throw new Error(`Le pack « ${e.nom} » est introuvable sur le site.`)
+        messages.push(await this.importer(await r.text()))
+      } catch (err) {
+        messages.push(`« ${e.nom} » refusé : ${(err as Error).message}`)
+      }
+    }
+    return messages.join(' ')
+  }
+
   async accepterPack(id: string, accepte: boolean) {
     const p = this.packs.find((x) => x.id === id)
     if (!p) return

@@ -71,3 +71,29 @@ test('pack local : en attente, puis accepté ; ses QR de stand ; ses droits ; la
   await expect(page.getByRole('heading', { name: 'Série Douarnenez' })).toHaveCount(0)
   await app.verifierPropre()
 })
+
+test('chercher de nouveaux packs sur le site', async ({ page }) => {
+  const app = await commencer(page)
+  const signe = signerPack(pack('site', 'Mai 68'), DEMO.secrete)
+  // Le site simulé publie un index avec un pack signé, un brouillon non signé, et un pack introuvable.
+  await page.route('**/packs/index.json', (r) => r.fulfill({ json: { format: 'memoire-des-luttes/index', version: 1, packs: [
+    { id: 'site', nom: 'Mai 68', fichier: 'packs/site.json', confiance: 'officiel', signature: signe.signature!.valeur },
+    { id: 'brouillon', nom: 'Brouillon', fichier: 'packs/brouillon.json', confiance: 'non-signe', signature: null },
+  ] } }))
+  await page.route('**/packs/site.json', (r) => r.fulfill({ body: JSON.stringify(signe), contentType: 'application/json' }))
+  await page.goto('/#plus')
+  await page.getByRole('button', { name: 'Chercher de nouveaux packs' }).click()
+  await expect(page.getByText('Pack officiel « Mai 68 » installé')).toBeVisible()
+  await page.getByRole('button', { name: 'Chercher de nouveaux packs' }).click()
+  await expect(page.getByText('Tu as déjà tous les packs signés du site.')).toBeVisible()
+  await page.goto('/#album')
+  await expect(page.getByRole('heading', { name: 'Série Mai 68' })).toBeVisible()
+  await app.verifierPropre()
+
+  // Sans réseau (le navigateur signale alors une erreur de chargement, c'est normal).
+  await page.unrouteAll()
+  await page.route('**/packs/index.json', (r) => r.abort())
+  await page.goto('/#plus')
+  await page.getByRole('button', { name: 'Chercher de nouveaux packs' }).click()
+  await expect(page.getByText('Impossible de joindre le site')).toBeVisible()
+})

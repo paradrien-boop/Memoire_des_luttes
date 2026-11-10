@@ -4,7 +4,8 @@
   "type": "module",
   "workspaces": [
     "paquets/*",
-    "app"
+    "app",
+    "site"
   ],
   "scripts": {
     "valider": "tsx scripts/valider.mjs",
@@ -12,9 +13,12 @@
     "test": "vitest run",
     "dev": "npm run dev -w app",
     "build": "npm run build -w app",
-    "check": "npm run check -w app",
+    "check": "npm run check -w app && npm run check -w site",
     "atelier": "tsx scripts/atelier.ts",
-    "test:e2e": "npm run test:e2e -w app"
+    "test:e2e": "npm run test:e2e -w app",
+    "build:site": "npm run build -w site",
+    "dev:site": "npm run dev -w site",
+    "publier": "npm run build && npm run build:site && tsx scripts/publier.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

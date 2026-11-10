@@ -54,9 +54,11 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 
 ## Étape 4 : le site
 
-- [ ] Page d'installation
-- [ ] Espace de débat sur les cartes
-- [ ] Annuaire et gestion des clés des collectifs
+- [x] Page d'installation (bouton et QR vers l'app, guide Android et iPhone, empreinte de la clé)
+- [x] Les cartes et leur état de relecture, les packs à télécharger
+- [x] Annuaire des collectifs, création de la clé d'un collectif dans le navigateur
+- [x] « Chercher de nouveaux packs » dans l'app, depuis le site
+- [ ] Choisir l'espace de débat (Decidim, Discourse…) et mettre son adresse dans `data/site.json`
 
 ## Plus tard
 

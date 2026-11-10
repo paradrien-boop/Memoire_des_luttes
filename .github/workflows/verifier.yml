@@ -22,8 +22,8 @@ jobs:
         run: npm test
       - name: Vérifier les types de l'app
         run: npm run check
-      - name: Construire l'app
-        run: npm run build
+      - name: Construire l'app, le site et la publication
+        run: npm run publier
       - name: Vérifier que la clé de démonstration n'est pas dans l'app publiée
         run: |
           if grep -rq "$(node -p "require('./data/cles/demo.json').publique")" app/dist; then echo "La clé de démonstration se trouve dans l'app publiée !"; exit 1; fi

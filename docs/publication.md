@@ -2,9 +2,13 @@
 
 **Décision :** l'app est publiée sur **Codeberg Pages**, sous le nom **Mémoire des luttes**.
 
-Ce dépôt GitHub reste privé. À chaque envoi sur `main`, une action GitHub construit l'app et envoie **uniquement l'app construite** (le dossier `app/dist`) vers un dépôt public sur Codeberg. Codeberg Pages la sert ensuite comme un site.
+Ce dépôt GitHub reste privé. À chaque envoi sur `main`, une action GitHub lance `npm run publier`, qui construit **le site, l'app et les packs** dans `publication/`, puis envoie ce dossier vers un dépôt public sur Codeberg. Codeberg Pages le sert ensuite :
 
-Ce qui devient public : l'app et les cartes qu'elle contient. Rien d'autre : ni la documentation, ni les discussions, ni l'historique de ce dépôt.
+- le site à la racine : `https://<compte>.codeberg.page/<depot>/` ;
+- l'app sous `/app/` : `https://<compte>.codeberg.page/<depot>/app/` (c'est l'adresse à mettre dans les QR des tracts) ;
+- les packs sous `/packs/`.
+
+Ce qui devient public : le site, l'app, les cartes et les packs. Rien d'autre : ni la documentation, ni les discussions, ni l'historique de ce dépôt. La publication est annulée si la clé de démonstration s'y trouve, ou si un pack a une signature invalide.
 
 ## À faire une seule fois
 
@@ -30,7 +34,7 @@ Le jeton ne doit **jamais** être écrit dans un fichier du dépôt : seulement 
 
 Onglet *Actions* → *Publier sur Codeberg Pages* → *Run workflow*. Ensuite, chaque envoi sur `main` republie l'app.
 
-L'app sera à l'adresse : `https://<compte>.codeberg.page/<depot>/`
+Le site sera à l'adresse `https://<compte>.codeberg.page/<depot>/`, et l'app à `https://<compte>.codeberg.page/<depot>/app/`.
 
 ## Points d'attention
 
