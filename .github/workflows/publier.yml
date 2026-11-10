@@ -1,0 +1,36 @@
+# Publie l'app construite sur Codeberg Pages, à chaque envoi sur main.
+# Ne fait rien tant que la variable CODEBERG_DEPOT n'est pas définie (voir docs/publication.md).
+name: Publier sur Codeberg Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency: publication
+
+jobs:
+  publier:
+    if: ${{ vars.CODEBERG_DEPOT != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run valider
+      - run: npm test
+      - run: npm run build
+      - name: Envoyer l'app vers la branche « pages » de Codeberg
+        env:
+          JETON: ${{ secrets.CODEBERG_JETON }}
+          UTILISATEUR: ${{ vars.CODEBERG_UTILISATEUR }}
+          DEPOT: ${{ vars.CODEBERG_DEPOT }}
+        run: |
+          cd app/dist
+          git init -q -b pages
+          git add -A
+          git -c user.name="Mémoire des luttes" -c user.email="publication@invalid" commit -q -m "Publication de l'app"
+          git push --force -q "https://${UTILISATEUR}:${JETON}@codeberg.org/${DEPOT}.git" pages

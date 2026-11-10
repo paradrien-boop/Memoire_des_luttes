@@ -1,0 +1,21 @@
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--f-interface);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+h1, h2, h3 { font-family: var(--f-affiche); text-transform: uppercase; line-height: .95; margin: 0; text-wrap: balance; }
+h1 { font-size: 44px; font-weight: 900; }
+h2 { font-size: 28px; font-weight: 900; }
+p { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--rouge); outline-offset: 2px; }
+.surtitre { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--discret); font-weight: 700; }
+.discret { color: var(--discret); }
+.pile { display: flex; flex-direction: column; gap: 14px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

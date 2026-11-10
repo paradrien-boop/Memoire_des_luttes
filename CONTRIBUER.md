@@ -12,7 +12,7 @@ Tu peux aussi faire la carte dans l'éditeur du prototype, exporter le pack et c
 
 ## Modifier directement les fichiers
 
-Si tu as accès au dépôt, modifie les fichiers dans `data/`, puis lance `node scripts/valider.mjs` et `node scripts/construire.mjs` avant d'envoyer.
+Si tu as accès au dépôt, modifie les fichiers dans `data/`, puis lance `npm run valider` et `npm run construire` avant d'envoyer.
 
 ## Corriger une carte existante
 

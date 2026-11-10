@@ -1,4 +1,4 @@
-name: Vérifier les cartes
+name: Vérifier
 
 on:
   push:
@@ -11,8 +11,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - name: Vérifier le contenu des cartes
-        run: node scripts/valider.mjs
-      - name: Vérifier que app/donnees.js est à jour
+        run: npm run valider
+      - name: Vérifier que prototype/donnees.js est à jour
         run: node scripts/construire.mjs --verifier
+      - name: Tests du noyau
+        run: npm test
+      - name: Vérifier les types de l'app
+        run: npm run check
+      - name: Construire l'app
+        run: npm run build

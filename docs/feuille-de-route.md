@@ -3,14 +3,14 @@
 ## Fait
 
 - [x] Concept, principes et ton
-- [x] Prototype web ([`app/index.html`](../app/index.html)) : compteur de manif, boosters, codes de stand, album par séries, éditeur avec rubriques par famille, cartes d'événement, export et import de packs
+- [x] Prototype web ([`prototype/index.html`](../prototype/index.html)) : compteur de manif, boosters, codes de stand, album par séries, éditeur avec rubriques par famille, cartes d'événement, export et import de packs
 - [x] Pack de départ « La Commune de Paris, 1871 » : 16 cartes, à relire
 - [x] Ce dépôt
 
 ## Étape 1 : un contenu solide
 
 - [ ] Relire les 16 cartes du pack de départ (faits, sources, dates)
-- [x] L'application lit ses cartes depuis `data/` (via `app/donnees.js`, généré par `scripts/construire.mjs`)
+- [x] L'application lit ses cartes depuis `data/` (le prototype via `prototype/donnees.js`, l'app au moment du build)
 - [ ] Écrire un deuxième pack
 
 ## Étape 2 : les signatures
@@ -23,6 +23,10 @@
 ## Étape 3 : une vraie application hors ligne
 
 Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
+
+- [x] Étape 0 : socle (workspaces, noyau avec règles du jeu et tests, app Vite + Svelte + TypeScript, vérifications automatiques, publication vers Codeberg Pages)
+- [ ] Étape 1 : parité avec le prototype
+- [ ] Étape 2 : hors ligne et installation
 
 
 - [ ] Application installable sur l'écran d'accueil, qui fonctionne sans réseau

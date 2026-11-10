@@ -1,22 +1,24 @@
-# Application
+# Application Mémoire des luttes
 
-Le prototype tient en deux fichiers :
+Construite avec Vite, Svelte 5 et TypeScript. L'architecture est décrite dans [docs/architecture-app.md](../docs/architecture-app.md).
 
-| Fichier | Rôle |
-|---|---|
-| `index.html` | L'application : écrans, règles du jeu, éditeur |
-| `donnees.js` | Les cartes, **généré automatiquement** à partir de `data/`. Ne pas le modifier à la main. |
-
-Pour l'essayer, ouvre `index.html` dans un navigateur. Aucun serveur n'est nécessaire.
-
-Après une modification dans `data/`, régénère les données :
+Depuis la racine du dépôt :
 
 ```bash
-node scripts/construire.mjs
+npm run dev
 ```
 
-## Ce que fait le prototype
+## Organisation
 
-Compteur de manif, boosters avec garantie de rareté, codes de stand (`COMMUNE-71`, `MUR-28-MAI`, `18-MARS-2027`), album par séries, éditeur avec rubriques par famille, cartes d'événement scellées, export et import de packs, bouton « Tout effacer ».
+| Dossier | Contenu |
+|---|---|
+| `src/ecrans/` | Un fichier par écran |
+| `src/composants/` | Éléments réutilisés |
+| `src/styles/` | Couleurs, polices et styles de base |
+| `src/donnees.ts` | Le catalogue des cartes |
+| `vite.config.ts` | Configuration, dont le module `virtual:mdl-donnees` qui inclut `data/` dans l'app |
 
-Les codes de stand sont encore écrits dans `index.html` : ce sont des codes de démonstration. Dans la vraie version, ce seront des QR signés.
+## Règles
+
+- **Aucune ressource extérieure.** Polices, images et bibliothèques sont incluses dans l'app. La politique de sécurité dans `index.html` bloque tout le reste.
+- **Les règles du jeu sont dans le noyau** (`paquets/noyau/`), pas dans les écrans, pour être testées et partagées.

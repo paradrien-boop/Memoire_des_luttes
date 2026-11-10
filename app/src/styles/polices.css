@@ -1,0 +1,7 @@
+/* Polices incluses dans l'app (alphabet latin seulement) : aucun chargement depuis Internet. */
+@import '@fontsource/big-shoulders-display/latin-700';
+@import '@fontsource/big-shoulders-display/latin-900';
+@import '@fontsource/ibm-plex-sans-condensed/latin-400';
+@import '@fontsource/ibm-plex-sans-condensed/latin-700';
+@import '@fontsource/source-serif-4/latin-400';
+@import '@fontsource/source-serif-4/latin-400-italic';

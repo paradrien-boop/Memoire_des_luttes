@@ -4,10 +4,11 @@ Ce fichier garde tout ce qui n'est pas encore décidé. Quand une question est t
 
 ## Questions à trancher
 
-- [ ] **Publication des données.** Le dépôt est privé, mais l'application et le site doivent pouvoir lire les packs sans clé d'accès. Options : un dépôt public miroir qui ne contient que `data/` publié, des *releases* publiques, ou un hébergement statique (Codeberg Pages par exemple).
+- [x] **Publication.** Décidé : Codeberg Pages. Seule l'app construite y est envoyée, le dépôt reste privé. Voir [publication.md](publication.md).
+- [x] **Nom** : Mémoire des luttes.
 - [ ] **Anonymat du dépôt.** Un dépôt sur un compte GitHub personnel est lié à une identité. Faut-il un compte ou une organisation dédiés au collectif, ou migrer vers Codeberg ?
-- [ ] **Licence du code** : AGPL-3.0 (oblige à partager les versions modifiées, y compris sur un serveur), GPL-3.0 ou MIT.
-- [ ] **Nom définitif** de l'application et du collectif.
+- [ ] **Licence du code** : AGPL-3.0 (oblige à partager les versions modifiées, y compris sur un serveur), GPL-3.0 ou MIT. **Nécessaire avant la première publication sur Codeberg.**
+- [ ] **Nom du collectif.**
 - [ ] **Règle de parrainage** des collectifs : deux parrains ? un vote ?
 - [ ] **Outil de débat** : Decidim, Discourse, ou les *issues* du dépôt.
 - [ ] **Qui porte légalement le projet** si on publie une application installable (association ?).

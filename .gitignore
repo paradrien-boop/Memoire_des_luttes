@@ -3,3 +3,4 @@ node_modules/
 *.cle-secrete
 *.secret
 cles-secretes/
+dist/

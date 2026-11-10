@@ -149,7 +149,7 @@ Chaque étape donne une app qui fonctionne et qu'on peut tester.
 
 | Étape | Objectif | Terminée quand… |
 |---|---|---|
-| **0. Socle** | Workspaces, template Vite + Svelte + TypeScript, noyau vide, tests, vérification automatique sur GitHub | L'app vide se lance et les tests passent |
+| **0. Socle** ✅ | Workspaces, template Vite + Svelte + TypeScript, noyau vide, tests, vérification automatique sur GitHub | L'app vide se lance et les tests passent |
 | **1. Parité avec le prototype** | Tous les écrans du prototype, avec la base locale et les données de `data/` | On peut faire tout ce que permet le prototype |
 | **2. Hors ligne et installation** | Manifeste, *service worker*, écran d'accueil | L'app s'installe et marche en mode avion, sur Android et iPhone |
 | **3. Signatures** | Signature et vérification dans le noyau, script `signer.mjs`, écran Packs | Un pack modifié d'une seule lettre est refusé |
@@ -160,6 +160,7 @@ Chaque étape donne une app qui fonctionne et qu'on peut tester.
 
 ## 9. Questions encore ouvertes pour l'app
 
-- **Où publier l'app et les packs ?** C'est nécessaire dès l'étape 2. Pistes : Codeberg Pages, un dépôt public qui ne contient que l'app construite, ou un petit hébergeur.
-- **Le nom définitif** : il apparaîtra sur l'écran d'accueil du téléphone.
+- ~~Où publier ?~~ Décidé : Codeberg Pages ([publication.md](publication.md)).
+- ~~Le nom ?~~ Décidé : Mémoire des luttes.
+- **La licence du code**, obligatoire pour publier sur Codeberg.
 - **Le mode discret** : est-il prioritaire ?

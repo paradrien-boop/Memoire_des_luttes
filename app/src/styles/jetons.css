@@ -1,0 +1,30 @@
+/* Identité visuelle : affiche risographe, encre rouge et noire sur papier.
+   Reprise du prototype. Le thème suit le téléphone, ou le réglage data-theme. */
+:root {
+  --papier: #E9E6E1;
+  --encre: #1C1816;
+  --rouge: #CF2318;
+  --sur-rouge: #FFF8F2;
+  --discret: #6B625C;
+  --trait: #CBC4BB;
+  --carte: #F6F4F0;
+  --or: #A87A10;
+  --trame: rgba(207, 35, 24, .55);
+
+  --f-affiche: "Big Shoulders Display", Impact, "Arial Narrow", sans-serif;
+  --f-interface: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-texte: "Source Serif 4", Georgia, serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #151210; --encre: #EEE7DE; --rouge: #EE4236; --sur-rouge: #1A0705; --discret: #A3988E;
+    --trait: #3A322C; --carte: #211C19; --or: #E2B54E; --trame: rgba(238, 66, 54, .5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #151210; --encre: #EEE7DE; --rouge: #EE4236; --sur-rouge: #1A0705; --discret: #A3988E;
+  --trait: #3A322C; --carte: #211C19; --or: #E2B54E; --trame: rgba(238, 66, 54, .5);
+  color-scheme: dark;
+}

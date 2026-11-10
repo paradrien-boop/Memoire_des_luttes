@@ -1,0 +1,20 @@
+{
+  "name": "memoire-des-luttes",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "paquets/*",
+    "app"
+  ],
+  "scripts": {
+    "valider": "node scripts/valider.mjs",
+    "construire": "node scripts/construire.mjs",
+    "test": "vitest run",
+    "dev": "npm run dev -w app",
+    "build": "npm run build -w app",
+    "check": "npm run check -w app"
+  },
+  "devDependencies": {
+    "vitest": "^5.1.0"
+  }
+}
