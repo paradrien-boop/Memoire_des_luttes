@@ -139,6 +139,7 @@ export function verifierPack(pack: PackSignable, c: Confiance): ResultatPack {
   if (s.delegation.clePublique !== s.cle) return { confiance: "invalide", raison: "La délégation ne correspond pas à la clé qui a signé." };
   const d = verifierDelegation(s.delegation, c);
   if (!d.ok) return { confiance: "invalide", raison: d.raison };
+  if (Array.isArray(pack.evenements) && pack.evenements.length) return { confiance: "invalide", raison: "Seul le collectif peut créer des cartes d'événement." };
   const interdite = pack.cartes.find((x) => !s.delegation!.droits.includes(x.rar as Rarete));
   if (interdite) return { confiance: "invalide", raison: `Le collectif « ${s.delegation.nom} » n'a pas le droit de créer des cartes « ${interdite.rar} ».` };
   return { confiance: "local", collectif: { id: s.delegation.collectif, nom: s.delegation.nom }, delegation: s.delegation };

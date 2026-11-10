@@ -2,6 +2,7 @@
   import Entete from '../composants/Entete.svelte'
   import BoutonConfirme from '../composants/BoutonConfirme.svelte'
   import GuideInstallation from '../composants/GuideInstallation.svelte'
+  import Packs from '../composants/Packs.svelte'
   import { jeu } from '../etat/jeu.svelte'
 </script>
 
@@ -26,7 +27,11 @@
       <b class="discret">Perso</b><span>Fait par n'importe qui, sans signature. Visible dans l'album, jamais dans les boosters.</span>
       <b class="rouge-texte">🔒 Événement</b><span>Créée par le collectif pour une seule journée. Numérotée, tirage limité, scellée.</span>
     </div>
-    <p class="note">Les signatures arrivent à l'étape 3. Pour l'instant, l'app fait confiance au pack de départ.</p>
+  </section>
+
+  <section class="encart" id="packs">
+    <h2>Packs</h2>
+    <Packs />
   </section>
 
   <section class="encart">

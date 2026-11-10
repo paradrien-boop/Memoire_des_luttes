@@ -7,6 +7,10 @@ class Interface {
   annonce = $state<{ texte: string; n: number } | null>(null)
   /** Carte perso à charger dans l'éditeur. */
   aModifier = $state<string | null>(null)
+  /** Le scanner de QR est ouvert. */
+  scanner = $state(false)
+  /** Un QR à montrer : don d'une carte en double (avec son identifiant), ou partage d'une carte perso. */
+  qr = $state<{ titre: string; texte: string; don?: string } | null>(null)
 
   annoncer(texte: string) {
     const n = (this.annonce?.n ?? 0) + 1
@@ -16,12 +20,16 @@ class Interface {
 
   ouvrirCarte(id: string) {
     this.booster = null
+    this.scanner = false
+    this.qr = null
     this.carteOuverte = id
   }
 
   fermer() {
     this.carteOuverte = null
     this.booster = null
+    this.scanner = false
+    this.qr = null
   }
 }
 

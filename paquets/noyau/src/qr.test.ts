@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleUnique, encoderQr, lireQr, verifierQr, type QrStand, type QrEvenement } from "./qr";
+import { cleUnique, encoderQr, lireQr, TAILLE_MAX_QR, verifierQr, type QrStand, type QrEvenement } from "./qr";
 import { deleguer, genererCles, type Confiance } from "./signature";
 
 const racine = genererCles();
@@ -25,6 +25,8 @@ describe("lire et écrire un QR", () => {
   });
   it("reste assez court pour un QR facile à scanner", () => {
     expect(encoderQr(ev, racine.secrete).length).toBeLessThan(250);
+    const avecCarte: QrEvenement = { ...ev, k: { title: "Vive la Commune !", dates: "18 mars 2027", orgas: "Collectif Mémoire des luttes", fait: "Rassemblement pour l'anniversaire de la Commune. Pour la défense des services publics, contre la réforme des retraites.", phrase: "La Commune n'est pas morte !", tirage: 500 } };
+    expect(encoderQr(avecCarte, racine.secrete).length).toBeLessThan(TAILLE_MAX_QR);
   });
 });
 

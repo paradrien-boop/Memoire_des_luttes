@@ -72,6 +72,18 @@ class Quartier {
     if (questions.length) await base.quiz.put($state.snapshot(this.jour) as QuizDuJour)
   }
 
+  /** Donner une carte rapporte un fragment de booster, une fois par jour au plus. */
+  async bonusDon(): Promise<{ fragment: boolean; booster: boolean }> {
+    const date = dateDuJour()
+    const dernier = (await base.reglages.get('dernierDon'))?.valeur
+    if (dernier === date) return { fragment: false, booster: false }
+    const f = ajouterFragment(this.fragments)
+    this.fragments = f.fragments
+    await jeu.ajouterBoosters(f.boosters)
+    await this.regler({ fragments: this.fragments, dernierDon: date })
+    return { fragment: true, booster: f.boosters > 0 }
+  }
+
   async nommer(nom: string) {
     this.nomChat = nom.trim().slice(0, 30)
     await this.regler({ nomChat: this.nomChat })

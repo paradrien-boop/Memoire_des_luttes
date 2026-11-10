@@ -50,6 +50,7 @@
     {/if}
     <footer>
       {#if carte.origine === 'officiel'}<span class="sceau">✊ Pack officiel</span>
+      {:else if carte.origine === 'local'}<span class="sceau local">✊ Pack local : {carte.collectif}</span>
       {:else if carte.origine === 'evenement'}<span class="sceau">🔒 Scellée par le collectif · non modifiable</span>
       {:else if carte.origine === 'importe'}<span>Pack importé, non signé : {carte.nomPack}</span>
       {:else}<span>Carte perso</span>{/if}
@@ -84,4 +85,5 @@
   .a-trouver { border-style: dashed; color: var(--discret); border-color: var(--trait); cursor: default; }
   footer { font-size: 11px; color: var(--discret); border-top: 1.5px solid var(--trait); padding-top: 8px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
   .sceau { font-weight: 700; color: var(--or); }
+  .sceau.local { color: var(--discret); }
 </style>

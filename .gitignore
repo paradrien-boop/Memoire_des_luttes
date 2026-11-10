@@ -5,3 +5,6 @@ node_modules/
 cles-secretes/
 dist/
 dist-artefact/
+dist-test/
+test-results/
+playwright-report/

@@ -4,6 +4,7 @@ import { viteSingleFile } from 'vite-plugin-singlefile'
 import { defineConfig, type Plugin } from 'vite'
 import { fileURLToPath } from 'node:url'
 import { join } from 'node:path'
+import { readFileSync } from 'node:fs'
 import { assembler } from '../scripts/assembler.mjs'
 
 const racine = fileURLToPath(new URL('..', import.meta.url))
@@ -14,6 +15,26 @@ const racine = fileURLToPath(new URL('..', import.meta.url))
  * La vraie publication reste la version normale, sur Codeberg Pages.
  */
 const artefact = process.env.MDL_ARTEFACT === '1'
+
+/**
+ * Clé de démonstration (data/cles/demo.json) : sa partie secrète est publique.
+ * Elle n'est acceptée qu'en développement, dans la page de démo et dans les tests (MDL_DEMO=1),
+ * JAMAIS dans l'app publiée.
+ */
+function demo(actif: boolean): Plugin {
+  const id = 'virtual:mdl-demo'
+  const resolu = '\0' + id
+  return {
+    name: 'mdl-demo',
+    resolveId: (source) => (source === id ? resolu : undefined),
+    load(module) {
+      if (module !== resolu) return
+      if (!actif) return 'export default null'
+      const cle = JSON.parse(readFileSync(join(racine, 'data/cles/demo.json'), 'utf8'))
+      return 'export default ' + JSON.stringify({ publique: cle.publique, secrete: cle.secrete })
+    },
+  }
+}
 
 /** Retire de la page ce qui ne sert qu'à la version installable. */
 function pageDeDemo(): Plugin {
@@ -51,14 +72,17 @@ function donnees(): Plugin {
   }
 }
 
-export default defineConfig({
+export default defineConfig(({ command }) => {
+  const modeDemo = command === 'serve' || artefact || process.env.MDL_DEMO === '1'
+  return {
   // Chemins relatifs : l'app fonctionne quel que soit le dossier où Codeberg Pages la sert.
   base: './',
-  define: { 'import.meta.env.VITE_ARTEFACT': JSON.stringify(artefact) },
+  define: { 'import.meta.env.VITE_ARTEFACT': JSON.stringify(artefact), 'import.meta.env.VITE_DEMO': JSON.stringify(modeDemo) },
   build: artefact ? { outDir: 'dist-artefact' } : {},
   plugins: [
     svelte(),
     donnees(),
+    demo(modeDemo),
     ...(artefact ? [viteSingleFile(), pageDeDemo()] : []),
     // Rend l'app installable et utilisable sans réseau : tout est gardé sur le téléphone.
     VitePWA({
@@ -92,4 +116,5 @@ export default defineConfig({
     }),
   ],
   server: { fs: { allow: ['..'] } },
+}
 })

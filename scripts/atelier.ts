@@ -157,7 +157,9 @@ async function principal() {
       if (a > ev.tirage) throw new Error(`Le tirage de cette carte est de ${ev.tirage}.`);
       const qrs = Array.from({ length: a - de + 1 }, (_, i) => {
         const n = de + i;
-        return { texte: encoderQr({ t: "E", e: ev.id, n, du: o.du!, au: o.au! }, k.secrete), legende: `${ev.title} · N° ${String(n).padStart(4, "0")} / ${ev.tirage}` };
+        // La carte voyage dans le QR : on l'obtient même sans avoir mis ses packs à jour.
+        const carte = { title: ev.title, dates: ev.dates as string, orgas: ev.orgas as string, fait: ev.fait as string, phrase: ev.phrase as string, pourquoi: ev.pourquoi as string, tirage: ev.tirage };
+        return { texte: encoderQr({ t: "E", e: ev.id, n, du: o.du!, au: o.au!, k: carte }, k.secrete), legende: `${ev.title} · N° ${String(n).padStart(4, "0")} / ${ev.tirage}` };
       });
       writeFileSync(o.sortie!, await planche(`Carte d'événement : ${ev.title}`, `Valable du ${o.du} au ${o.au}. Une carte par personne : chaque téléphone n'en garde qu'une.`, qrs));
       console.log(`${qrs.length} QR numérotés (${de} à ${a}) dans ${o.sortie}`);

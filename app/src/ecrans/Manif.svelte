@@ -5,8 +5,8 @@
   import { ui } from '../etat/interface.svelte'
   import { catalogue } from '../donnees'
   import { dateDuJour, duree } from '../outils'
+  import { utiliserQr } from '../etat/scan'
 
-  let code = $state('')
   const session = $derived(jeu.chrono.session)
   const plafond = $derived(jeu.chrono.journee.date === dateDuJour() && jeu.chrono.journee.gagnes >= REGLES.boostersMaxParJour)
   const gagnesAujourdhui = $derived(jeu.chrono.journee.date === dateDuJour() ? jeu.chrono.journee.gagnes : 0)
@@ -21,16 +21,10 @@
     if (r) ui.booster = r
   }
 
+  let code = $state('')
   async function valider(e: SubmitEvent) {
     e.preventDefault()
-    const r = await jeu.utiliserCode(code)
-    if (r.type === 'inconnu') ui.annoncer("Code inconnu. Vérifie l'orthographe.")
-    else if (r.type === 'deja') ui.annoncer('Ce code a déjà été utilisé sur ce téléphone.')
-    else {
-      code = ''
-      if (r.type === 'evenement') { ui.annoncer("Carte d'événement ajoutée à ton album !"); ui.ouvrirCarte(r.id) }
-      else ui.booster = r.resultat
-    }
+    if (await utiliserQr(code)) code = ''
   }
 </script>
 
@@ -76,12 +70,14 @@
   </div>
 
   <section class="encart">
-    <div><div class="surtitre">Stand, tract, banderole</div><h2>Code de stand</h2></div>
-    <p class="petit">À l'étape 4, on scannera le QR collé sur un stand ou un tract. En attendant, tape le code imprimé dessous. À essayer : <b>COMMUNE-71</b>, <b>MUR-28-MAI</b>, ou <b>18-MARS-2027</b> pour une carte d'événement scellée.</p>
+    <div><div class="surtitre">Stand, tract, camarade</div><h2>Scanner un QR</h2></div>
+    <p class="petit">Le QR d'un stand donne un booster spécial, celui d'une carte d'événement te la donne, et un·e camarade peut te donner une carte en double. Chaque QR ne sert qu'une fois par téléphone.</p>
+    <button class="rouge geant-moyen" onclick={() => (ui.scanner = true)}>Scanner un QR</button>
     <form class="ligne" onsubmit={valider}>
-      <input id="code-stand" bind:value={code} placeholder="Code du stand" autocomplete="off" aria-label="Code du stand" />
+      <input id="code-stand" bind:value={code} placeholder="ou tape le code écrit sous le QR" autocomplete="off" aria-label="Code du QR" />
       <button class="encre">Valider</button>
     </form>
+    {#if import.meta.env.VITE_DEMO}<p class="note">Démo : codes <b>COMMUNE-71</b>, <b>MUR-28-MAI</b> ou <b>18-MARS-2027</b>.</p>{/if}
   </section>
 </div>
 
@@ -106,4 +102,5 @@
   .stats b { display: block; font-family: var(--f-affiche); font-size: 34px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
   .stats span { font-size: 12px; color: var(--discret); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
   form input { flex: 1; min-width: 0; }
+  .geant-moyen { font-family: var(--f-affiche); font-size: 22px; font-weight: 900; padding: 12px 16px; }
 </style>

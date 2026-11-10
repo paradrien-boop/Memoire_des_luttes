@@ -14,6 +14,8 @@
   import Quartier from './ecrans/Quartier.svelte'
   import Dessins from './ecrans/Dessins.svelte'
   import { quartier } from './etat/quartier.svelte'
+  import Scanner from './composants/Scanner.svelte'
+  import QrAffiche from './composants/QrAffiche.svelte'
   import { untrack } from 'svelte'
   import { ecranDepuisAdresse } from './navigation'
   import { jeu } from './etat/jeu.svelte'
@@ -51,6 +53,23 @@
 
   const carteOuverte = $derived(ui.carteOuverte ? jeu.carte(ui.carteOuverte) : null)
 
+  function donner(id: string) {
+    try { ui.qr = { titre: jeu.carte(id)!.title, texte: jeu.qrDon(id), don: id } } catch (e) { ui.annoncer((e as Error).message) }
+  }
+
+  function partager(id: string) {
+    const c = jeu.carte(id)
+    if (!c) return
+    try { ui.qr = { titre: c.title, texte: jeu.qrPerso(c) } } catch (e) { ui.annoncer((e as Error).message) }
+  }
+
+  async function confirmerDon(id: string) {
+    await jeu.confirmerDon(id)
+    const b = await quartier.bonusDon()
+    ui.fermer()
+    ui.annoncer(b.booster ? 'Carte donnée. 5 fragments réunis : un booster de plus !' : b.fragment ? 'Carte donnée. Merci ! Un fragment de booster pour toi.' : 'Carte donnée. Merci !')
+  }
+
   function modifier(id: string) {
     ui.aModifier = id
     ui.fermer()
@@ -81,12 +100,34 @@
 
 {#if ui.booster}
   <Fenetre titre="Ouverture du booster" fermer={() => ui.fermer()}><RevelationBooster resultat={ui.booster} /></Fenetre>
+{:else if ui.scanner}
+  <Fenetre titre="Scanner un QR" fermer={() => ui.fermer()}><Scanner /></Fenetre>
+{:else if ui.qr}
+  <Fenetre titre={ui.qr.don ? 'Donner une carte' : 'Partager une carte'} fermer={() => ui.fermer()}>
+    <div class="surtitre">{ui.qr.don ? 'Donner un exemplaire' : 'Partager ta carte'}</div>
+    <h2 class="centre">{ui.qr.titre}</h2>
+    <QrAffiche texte={ui.qr.texte} legende={ui.qr.don ? 'QR pour donner cette carte' : 'QR de ta carte perso'} />
+    {#if ui.qr.don}
+      {@const id = ui.qr.don}
+      <p class="centre">Ton ou ta camarade ouvre « Scanner un QR » et vise cet écran. Ensuite, confirme : l'exemplaire quittera ton album.</p>
+      <button class="rouge" onclick={() => confirmerDon(id)}>C'est fait, je l'ai donnée</button>
+    {:else}
+      <p class="centre">Ton ou ta camarade ouvre « Scanner un QR » et vise cet écran. Tu gardes ta carte.</p>
+    {/if}
+    <button class="encre" onclick={() => ui.fermer()}>{ui.qr.don ? 'Annuler' : 'Fermer'}</button>
+  </Fenetre>
 {:else if carteOuverte}
   <Fenetre titre={carteOuverte.title} fermer={() => ui.fermer()}>
     <CarteGrande carte={carteOuverte} />
     {#if carteOuverte.origine === 'perso'}
-      <button class="rouge" onclick={() => modifier(carteOuverte.id)}>Modifier</button>
-    {:else if carteOuverte.origine === 'officiel' || carteOuverte.origine === 'evenement'}
+      <div class="ligne">
+        <button class="rouge" onclick={() => modifier(carteOuverte.id)}>Modifier</button>
+        {#if !carteOuverte.img}<button onclick={() => partager(carteOuverte.id)}>Partager par QR</button>{/if}
+      </div>
+    {:else if carteOuverte.origine === 'officiel' || carteOuverte.origine === 'local' || carteOuverte.origine === 'evenement'}
+      {#if carteOuverte.origine !== 'evenement' && (jeu.possessions[carteOuverte.id] ?? 0) > 1}
+        <button class="rouge" onclick={() => donner(carteOuverte.id)}>Donner un exemplaire ({jeu.possessions[carteOuverte.id]} en ta possession)</button>
+      {/if}
       <p class="discret petit">Carte signée : personne ne peut la modifier, pas même toi.</p>
     {/if}
     <button class="encre" onclick={() => ui.fermer()}>Fermer</button>
@@ -102,4 +143,5 @@
     padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
   .petit { font-size: 13px; text-align: center; }
+  .centre { text-align: center; }
 </style>

@@ -28,6 +28,14 @@ npm run dev
 - Au premier lancement, l'écran d'accueil explique l'app, guide l'installation selon le téléphone, et demande au navigateur de ne jamais effacer les données de l'app (`src/etat/installation.svelte.ts`).
 - Icônes : `public/icones/`.
 
+## Tests de bout en bout
+
+```bash
+npm run test:e2e
+```
+
+Les tests (`app/tests/`) tournent sur une version de l'app construite avec la clé de démonstration (`npm run build:test`). Ils couvrent le parcours, le compteur, l'éditeur, le quiz, les QR signés ou falsifiés, le scan d'une photo de QR, les dons, les packs officiels et locaux, la révocation et le mode avion.
+
 ## Page de démonstration
 
 `npm run build:artefact -w app` construit une variante de l'app en **un seul fichier HTML** (`app/dist-artefact/index.html`), sans mode hors ligne ni installation. Elle sert à montrer l'app comme page de démo en ligne. La vraie publication reste la version normale, sur Codeberg Pages.

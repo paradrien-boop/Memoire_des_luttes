@@ -15,10 +15,11 @@
 
 ## Étape 2 : les signatures
 
-- [ ] Clé racine et format de signature des packs
-- [ ] Vérification des signatures dans l'application
-- [ ] Délégations pour les collectifs locaux, liste de révocation
-- [ ] L'atelier du collectif (signature hors ligne, planches de QR)
+- [x] Format de signature des packs (Ed25519 sur JSON canonique)
+- [x] Vérification des signatures dans l'application (Plus › Packs)
+- [x] Délégations pour les collectifs locaux, liste de révocation
+- [x] L'atelier du collectif (`npm run atelier` : clés, signature, délégations, planches de QR)
+- [ ] **Créer la vraie clé racine** du collectif, sur un ordinateur hors ligne, et la mettre dans `data/cles/racine.json`
 
 ## Étape 3 : une vraie application hors ligne
 
@@ -30,8 +31,14 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 
 
 - [ ] Application installable sur l'écran d'accueil, qui fonctionne sans réseau
-- [ ] Scan des QR par l'appareil photo
-- [ ] Échange de cartes entre deux téléphones par QR
+- [x] Scan des QR par l'appareil photo (ou d'une photo de QR, ou du code tapé)
+- [x] Codes de stand et cartes d'événement signés, avec dates de validité
+- [x] Échange de cartes entre deux téléphones par QR (doubles et cartes perso)
+
+## Tests
+
+- [x] Tests de bout en bout dans le dépôt (`npm run test:e2e`) : parcours, compteur, éditeur, quiz, QR signés et falsifiés, scan d'une photo, dons, packs officiels et locaux, révocation, mode avion. Lancés à chaque envoi sur GitHub.
+- [ ] Tester sur de vrais téléphones Android et iPhone (après publication sur Codeberg)
 
 ## En parallèle : quiz du jour et mascotte
 

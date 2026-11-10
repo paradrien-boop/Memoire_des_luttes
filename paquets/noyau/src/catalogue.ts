@@ -33,6 +33,6 @@ export function preparerCatalogue(d: Donnees, installes: Pack[] = []): Catalogue
   }
   const series = packs.flatMap((p) => p.series);
   const officielles = series.flatMap((s) => s.cartes.filter((id) => parId[id]).map((id) => ({ ...parId[id], serie: s.id })));
-  const evenements = Object.fromEntries(d.evenements.map((e) => [e.id, e]));
+  const evenements = Object.fromEntries([...d.evenements, ...packs.filter((p) => p.type === "officiel").flatMap((p) => p.evenements ?? [])].map((e) => [e.id, e]));
   return { familles: d.familles, series, officielles, parId, origine, evenements, packs };
 }

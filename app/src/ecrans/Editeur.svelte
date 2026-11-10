@@ -3,6 +3,7 @@
   import Entete from '../composants/Entete.svelte'
   import CarteGrande from '../composants/Carte.svelte'
   import BoutonConfirme from '../composants/BoutonConfirme.svelte'
+  import ImportPack from '../composants/ImportPack.svelte'
   import { jeu } from '../etat/jeu.svelte'
   import { ui } from '../etat/interface.svelte'
   import { catalogue } from '../donnees'
@@ -24,7 +25,6 @@
   let carte = $state<Carte>(depart())
   let nomPack = $state('')
   let packTexte = $state('')
-  let importTexte = $state('')
   const champs = $derived(catalogue.familles[carte.fam].champs)
   const champTitre = $derived(champs.find((c) => c.role === 'title')!)
   const autres = $derived(champs.filter((c) => c.role !== 'title'))
@@ -62,10 +62,6 @@
     catch { (document.getElementById('pack-texte') as HTMLTextAreaElement)?.select(); ui.annoncer('Texte sélectionné : copie-le à la main.') }
   }
 
-  async function importer(texte: string) {
-    try { const n = await jeu.importer(texte); importTexte = ''; ui.annoncer(`${n} carte(s) importée(s). Elles sont dans l'album.`) }
-    catch (err) { ui.annoncer((err as Error).message) }
-  }
 </script>
 
 <Entete surtitre="Fais tes propres cartes" titre="Éditeur" marque={'Hors ligne\net anonyme'} />
@@ -155,14 +151,8 @@
 
   <section class="encart">
     <div><div class="surtitre">Recevoir</div><h2>Importer un pack</h2></div>
-    <p class="petit">Colle le texte d'un pack ou choisis son fichier. Un pack non signé reste dans ton album mais ne tombe jamais dans les boosters.</p>
-    <textarea id="import-texte" class="code" bind:value={importTexte} placeholder={'{"format":"memoire-des-luttes/pack", …}'}></textarea>
-    <div class="ligne">
-      <button class="encre" disabled={!importTexte.trim()} onclick={() => importer(importTexte)}>Importer le texte</button>
-      <label class="bouton fichier">Choisir un fichier
-        <input id="import-fichier" type="file" accept=".json,application/json,text/plain" hidden onchange={async (e) => { const f = e.currentTarget.files?.[0]; if (f) importer(await f.text()) }} />
-      </label>
-    </div>
+    <p class="petit">Colle le texte d'un pack ou choisis son fichier. Un pack signé par le collectif est vérifié puis ajouté aux boosters ; un pack non signé reste dans ton album seulement.</p>
+    <ImportPack />
   </section>
 </div>
 
@@ -181,5 +171,4 @@
   .actions :global(button) { padding: 5px 9px; font-size: 11px; }
   .petit { font-size: 14px; }
   .code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; min-height: 120px; }
-  .fichier { flex-direction: row; font-size: 13px; }
 </style>

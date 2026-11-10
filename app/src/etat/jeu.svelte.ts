@@ -1,30 +1,36 @@
 // L'état du jeu : chargé depuis la base du téléphone au démarrage, enregistré à chaque action.
 // Les règles elles-mêmes sont dans le noyau ; ici on ne fait que les appliquer et les enregistrer.
 import {
-  demarrer, exporterPack, lirePack, tic, tirerBooster,
-  type Carte, type CarteEvenement, type EtatChrono, type Rarete,
+  cleUnique, demarrer, encoderQr, exporterPack, lirePack, lireQr, tic, tirerBooster, TAILLE_MAX_QR, verifierPack, verifierQr,
+  type Carte, type Confiance, type DelegationSignee, type EtatChrono, type Pack, type PackSignable, type Rarete,
 } from '@mdl/noyau'
-import { base, type EvenementObtenu, type PackImporte } from '../stockage/base'
-import { catalogue } from '../donnees'
+import { base, type EvenementObtenu, type PackImporte, type PackInstalle } from '../stockage/base'
+import { catalogue, installerDansCatalogue, NOM_COLLECTIF, RACINES, REVOCATIONS_INTEGREES } from '../donnees'
 import { CODES_DEMO } from '../codes-demo'
 import { dateDuJour } from '../outils'
 
-export type Origine = 'officiel' | 'evenement' | 'perso' | 'importe'
+export type Origine = 'officiel' | 'local' | 'evenement' | 'perso' | 'importe'
 
 /** Une carte telle qu'on l'affiche : avec son origine et, pour un événement, son numéro. */
-export type CarteAffichee = Carte & { origine: Origine; numero?: number; tirage?: number; nomPack?: string }
+export type CarteAffichee = Carte & { origine: Origine; numero?: number; tirage?: number; nomPack?: string; collectif?: string }
+
+/** Ce que donne un QR scanné (ou un code tapé). */
+export type ResultatQr =
+  | { type: 'refuse'; raison: string }
+  | { type: 'deja' }
+  | { type: 'booster'; resultat: ResultatBooster }
+  | { type: 'evenement'; id: string }
+  | { type: 'carte'; id: string; titre: string }
+  | { type: 'perso'; id: string; titre: string }
+
+const NOM_RECUES = 'Cartes reçues'
+const aleatoire = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => b.toString(16).padStart(2, '0')).join('')
 
 export interface ResultatBooster {
   libelle: string
   cartes: Carte[]
   nouvelles: boolean[]
 }
-
-export type ResultatCode =
-  | { type: 'inconnu' }
-  | { type: 'deja' }
-  | { type: 'booster'; resultat: ResultatBooster }
-  | { type: 'evenement'; id: string }
 
 const CHRONO_VIDE: EtatChrono = { session: null, journee: { date: '', gagnes: 0 }, jours: [] }
 
@@ -41,6 +47,10 @@ class Jeu {
   importes = $state<PackImporte[]>([])
   evenements = $state<EvenementObtenu[]>([])
   brouillon = $state<Carte | null>(null)
+  /** Packs signés installés après coup. */
+  packs = $state<PackInstalle[]>([])
+  /** Packs installés devenus invalides (clé révoquée, délégation expirée) : identifiant → raison. */
+  packsInvalides = $state<Record<string, string>>({})
   /** L'écran d'accueil du premier lancement a été lu. */
   accueilVu = $state(true)
 
@@ -48,10 +58,12 @@ class Jeu {
   nombreOfficielles = $derived(catalogue.officielles.filter((c) => (this.possessions[c.id] ?? 0) > 0).length)
 
   async charger() {
-    const [possessions, reglages, jours, codes, perso, importes, evenements] = await Promise.all([
+    const [possessions, reglages, jours, codes, perso, importes, evenements, packs] = await Promise.all([
       base.possessions.toArray(), base.reglages.toArray(), base.jours.toArray(), base.codesUtilises.toArray(),
-      base.cartesPerso.toArray(), base.packsImportes.toArray(), base.evenements.toArray(),
+      base.cartesPerso.toArray(), base.packsImportes.toArray(), base.evenements.toArray(), base.packs.toArray(),
     ])
+    this.packs = packs
+    this.majCatalogue()
     const r = Object.fromEntries(reglages.map((x) => [x.cle, x.valeur]))
     this.possessions = Object.fromEntries(possessions.map((p) => [p.id, p.n]))
     this.sansRare = (r.sansRare as number) ?? 0
@@ -154,23 +166,172 @@ class Jeu {
     return { libelle, cartes, nouvelles }
   }
 
-  /** Utilise un code de stand. En démo il est tapé ; à l'étape 4, il viendra d'un QR signé. */
-  async utiliserCode(saisie: string): Promise<ResultatCode> {
-    const code = saisie.trim().toUpperCase()
-    const def = CODES_DEMO[code]
-    if (!def) return { type: 'inconnu' }
-    if (this.codes.includes(code)) return { type: 'deja' }
-    this.codes = [...this.codes, code]
-    await base.codesUtilises.put({ code, date: Date.now() })
-    if ('evenement' in def) {
-      const ev = catalogue.evenements[def.evenement]
-      const obtenu: EvenementObtenu = { id: ev.id, numero: 1 + Math.floor(Math.random() * ev.tirage), date: dateDuJour() }
-      this.evenements = [...this.evenements.filter((e) => e.id !== ev.id), obtenu]
-      await base.evenements.put(obtenu)
-      return { type: 'evenement', id: ev.id }
+  private async marquerUtilise(cle: string) {
+    this.codes = [...this.codes, cle]
+    await base.codesUtilises.put({ code: cle, date: Date.now() })
+  }
+
+  /**
+   * Traite le texte d'un QR scanné ou d'un code tapé. Les QR de stand et d'événement sont vérifiés
+   * (signature, émetteur, dates) ; chaque QR ne sert qu'une fois sur ce téléphone.
+   */
+  async traiterQr(texte: string): Promise<ResultatQr> {
+    const lu = lireQr(texte)
+    if (!lu) {
+      // Codes tapés de démonstration : seulement en développement, page de démo et tests.
+      const code = texte.trim().toUpperCase()
+      const def = import.meta.env.VITE_DEMO ? CODES_DEMO[code] : undefined
+      if (!def) return { type: 'refuse', raison: "Ce code ne vient pas de Mémoire des luttes. Vérifie l'orthographe ou scanne le QR." }
+      if (this.codes.includes(code)) return { type: 'deja' }
+      await this.marquerUtilise(code)
+      if ('evenement' in def) return this.ajouterEvenement(def.evenement, 1 + Math.floor(Math.random() * catalogue.evenements[def.evenement].tirage))
+      return { type: 'booster', resultat: (await this.ouvrirBooster(def.libelle, def.minimum))! }
     }
-    const resultat = await this.ouvrirBooster(def.libelle, def.minimum)
-    return { type: 'booster', resultat: resultat! }
+
+    const q = lu.contenu
+    let emetteur = ''
+    if (q.t === 'S' || q.t === 'E') {
+      const v = verifierQr(lu, this.confiance(), this.delegationsDeConfiance(), NOM_COLLECTIF)
+      if (!v.ok) return { type: 'refuse', raison: v.raison }
+      emetteur = v.emetteur
+    }
+    const cle = cleUnique(q)
+    if (this.codes.includes(cle)) return { type: 'deja' }
+
+    switch (q.t) {
+      case 'S': {
+        await this.marquerUtilise(cle)
+        return { type: 'booster', resultat: (await this.ouvrirBooster(`Stand · ${emetteur}`, q.m))! }
+      }
+      case 'E': {
+        if (!catalogue.evenements[q.e] && !q.k) return { type: 'refuse', raison: "Ton app ne connaît pas encore cette carte d'événement. Mets à jour tes packs, puis rescanne." }
+        await this.marquerUtilise(cle)
+        return this.ajouterEvenement(q.e, q.n, catalogue.evenements[q.e] ? undefined : q.k)
+      }
+      case 'C': {
+        const c = catalogue.parId[q.i]
+        if (!c) return { type: 'refuse', raison: "Ton app ne connaît pas encore cette carte. Installe le pack qui la contient, puis rescanne." }
+        await this.marquerUtilise(cle)
+        this.possessions = { ...this.possessions, [c.id]: (this.possessions[c.id] ?? 0) + 1 }
+        await base.possessions.put({ id: c.id, n: this.possessions[c.id], premiere: Date.now() })
+        return { type: 'carte', id: c.id, titre: c.title }
+      }
+      case 'P': {
+        // Une carte perso reçue est nettoyée comme un pack importé.
+        let carte: Carte
+        try { carte = lirePack(JSON.stringify({ cartes: [q.carte] }), catalogue.familles, 'recue-' + q.x).cartes[0] }
+        catch { return { type: 'refuse', raison: "Cette carte est illisible." } }
+        await this.marquerUtilise(cle)
+        let pack = this.importes.find((p) => p.nom === NOM_RECUES)
+        if (pack) {
+          pack = { ...$state.snapshot(pack) as PackImporte, cartes: [...pack.cartes, carte] }
+          await base.packsImportes.put(pack)
+          this.importes = this.importes.map((p) => (p.cle === pack!.cle ? pack! : p))
+        } else {
+          pack = { nom: NOM_RECUES, cartes: [carte], date: Date.now() }
+          pack.cle = await base.packsImportes.add(pack)
+          this.importes = [...this.importes, pack]
+        }
+        return { type: 'perso', id: carte.id, titre: carte.title }
+      }
+    }
+  }
+
+  private async ajouterEvenement(id: string, numero: number, carte?: EvenementObtenu['carte']): Promise<ResultatQr> {
+    if (this.evenements.some((e) => e.id === id)) return { type: 'deja' }
+    const obtenu: EvenementObtenu = { id, numero, date: dateDuJour(), ...(carte ? { carte } : {}) }
+    this.evenements = [...this.evenements, obtenu]
+    await base.evenements.put(obtenu)
+    return { type: 'evenement', id }
+  }
+
+  /* ---------- Échanges entre camarades ---------- */
+
+  /** Le QR à montrer pour donner un exemplaire en double. Rien n'est retiré tant que le don n'est pas confirmé. */
+  qrDon(id: string): string {
+    if ((this.possessions[id] ?? 0) < 2) throw new Error('On ne peut donner que les cartes en double.')
+    return encoderQr({ t: 'C', i: id, x: aleatoire() })
+  }
+
+  async confirmerDon(id: string) {
+    const n = (this.possessions[id] ?? 0) - 1
+    if (n < 1) return
+    this.possessions = { ...this.possessions, [id]: n }
+    await base.possessions.put({ id, n, premiere: Date.now() })
+  }
+
+  /** Le QR d'une carte perso à partager. @throws Error si la carte est trop longue pour un QR */
+  qrPerso(c: Carte): string {
+    const { id: _id, img: _img, ...carte } = $state.snapshot(c) as Carte
+    const texte = encoderQr({ t: 'P', x: aleatoire(), carte })
+    if (texte.length > TAILLE_MAX_QR) throw new Error('Cette carte est trop longue pour tenir dans un QR. Raccourcis ses textes, ou partage-la en pack.')
+    return texte
+  }
+
+  /* ---------- Packs signés ---------- */
+
+  confiance(): Confiance {
+    const revoquees = [...REVOCATIONS_INTEGREES, ...this.packs.filter((p) => p.confiance === 'officiel').flatMap((p) => p.pack.revocations ?? [])]
+    return { racines: RACINES, revoquees, date: dateDuJour() }
+  }
+
+  /** Délégations des collectifs locaux auxquels l'utilisateur fait confiance (pour leurs QR de stand). */
+  delegationsDeConfiance(): DelegationSignee[] {
+    return this.packs.filter((p) => p.confiance === 'local' && p.accepte && p.delegation && !this.packsInvalides[p.id]).map((p) => $state.snapshot(p.delegation!) as DelegationSignee)
+  }
+
+  /** Revérifie les packs installés (révocations, expirations) et met à jour le catalogue. */
+  private majCatalogue() {
+    const c = this.confiance()
+    const invalides: Record<string, string> = {}
+    const actifs: Pack[] = []
+    for (const p of this.packs) {
+      const v = verifierPack($state.snapshot(p.pack) as PackSignable, c)
+      if (v.confiance === 'invalide' || v.confiance === 'non-signe') { invalides[p.id] = v.confiance === 'invalide' ? v.raison : 'Signature absente.'; continue }
+      if (p.confiance === 'local' && !p.accepte) continue
+      const pack = $state.snapshot(p.pack) as PackSignable
+      const series = Array.isArray(pack.series) && pack.series.length ? pack.series : [{ id: 'serie-' + p.id, nom: pack.nom, cartes: pack.cartes.map((x) => x.id) }]
+      actifs.push({ ...(pack as unknown as Pack), type: p.confiance, series, ...(p.collectif ? { collectif: p.collectif } : {}) })
+    }
+    this.packsInvalides = invalides
+    installerDansCatalogue(actifs)
+  }
+
+  private async installerPackSigne(pack: PackSignable): Promise<string> {
+    if (typeof pack.id !== 'string' || typeof pack.nom !== 'string' || !Array.isArray(pack.cartes)) throw new Error("Ce pack est mal formé.")
+    const v = verifierPack(pack, this.confiance())
+    if (v.confiance === 'invalide') throw new Error(v.raison)
+    if (v.confiance === 'non-signe') throw new Error('Ce pack n\'est pas signé.')
+    const prise = pack.cartes.find((c) => catalogue.origine[c.id] && catalogue.origine[c.id].packId !== pack.id)
+    if (prise) throw new Error(`Ce pack utilise un identifiant de carte déjà pris par un autre pack (« ${prise.id} »).`)
+    const ancien = this.packs.find((p) => p.id === pack.id)
+    const installe: PackInstalle = {
+      id: pack.id, pack, confiance: v.confiance, date: Date.now(),
+      accepte: v.confiance === 'officiel' || (ancien?.accepte ?? false),
+      ...(v.confiance === 'local' ? { collectif: v.collectif, delegation: v.delegation } : {}),
+    }
+    await base.packs.put(installe)
+    this.packs = [...this.packs.filter((p) => p.id !== pack.id), installe]
+    this.majCatalogue()
+    if (v.confiance === 'officiel') return `Pack officiel « ${pack.nom} » ${ancien ? 'mis à jour' : 'installé'} : ${pack.cartes.length} cartes. Elles tombent maintenant dans les boosters.`
+    return installe.accepte
+      ? `Pack « ${pack.nom} » du collectif « ${v.collectif.nom} » mis à jour.`
+      : `Pack du collectif « ${v.collectif.nom} » reçu. Va dans Plus, rubrique Packs, pour décider si tu lui fais confiance.`
+  }
+
+  async accepterPack(id: string, accepte: boolean) {
+    const p = this.packs.find((x) => x.id === id)
+    if (!p) return
+    const maj = { ...$state.snapshot(p) as PackInstalle, accepte }
+    await base.packs.put(maj)
+    this.packs = this.packs.map((x) => (x.id === id ? maj : x))
+    this.majCatalogue()
+  }
+
+  async retirerPack(id: string) {
+    await base.packs.delete(id)
+    this.packs = this.packs.filter((x) => x.id !== id)
+    this.majCatalogue()
   }
 
   /* ---------- Toutes les cartes visibles ---------- */
@@ -178,11 +339,15 @@ class Jeu {
   /** Retrouve une carte, quelle que soit son origine. Renvoie null si on ne la possède pas. */
   carte(id: string): CarteAffichee | null {
     const off = catalogue.parId[id]
-    if (off) return (this.possessions[id] ?? 0) > 0 ? { ...off, origine: 'officiel' } : null
+    if (off) {
+      if ((this.possessions[id] ?? 0) < 1) return null
+      const o = catalogue.origine[id]
+      return { ...off, origine: o?.type ?? 'officiel', ...(o?.collectif ? { collectif: o.collectif.nom } : {}) }
+    }
     const ev = this.evenements.find((e) => e.id === id)
-    if (ev && catalogue.evenements[id]) {
-      const c: CarteEvenement = catalogue.evenements[id]
-      return { ...c, origine: 'evenement', numero: ev.numero, tirage: c.tirage }
+    if (ev) {
+      const c = catalogue.evenements[id] ?? (ev.carte ? { id, fam: 'manif', rar: 'evenement' as const, ...ev.carte } : null)
+      if (c) return { ...c, origine: 'evenement', numero: ev.numero, tirage: c.tirage }
     }
     const perso = this.perso.find((c) => c.id === id)
     if (perso) return { ...perso, origine: 'perso' }
@@ -223,13 +388,20 @@ class Jeu {
     return exporterPack(nom, $state.snapshot(this.perso) as Carte[])
   }
 
-  /** @throws Error avec un message à montrer */
-  async importer(texte: string): Promise<number> {
+  /**
+   * Importe un pack. Signé : il est vérifié puis installé (officiel) ou mis en attente (local).
+   * Non signé : ses cartes vont dans l'album seulement.
+   * @returns le message à montrer. @throws Error avec un message à montrer
+   */
+  async importer(texte: string): Promise<string> {
+    let brut: unknown = null
+    try { brut = JSON.parse(texte) } catch { /* lirePack donnera le bon message */ }
+    if (brut && typeof brut === 'object' && (brut as PackSignable).signature) return this.installerPackSigne(brut as PackSignable)
     const lu = lirePack(texte, catalogue.familles, 'imp-' + Date.now().toString(36))
     const pack: PackImporte = { nom: lu.nom, cartes: lu.cartes, date: Date.now() }
     pack.cle = await base.packsImportes.add(pack)
     this.importes = [...this.importes, pack]
-    return lu.cartes.length
+    return `${lu.cartes.length} carte(s) importée(s), non signées. Elles sont dans l'album.`
   }
 
   /* ---------- Tout effacer ---------- */

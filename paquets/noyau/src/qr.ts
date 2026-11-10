@@ -9,7 +9,9 @@ import { verifier, verifierDelegation, type Confiance, type DelegationSignee, ty
 export const PREFIXE_QR = "MDL1";
 
 export interface QrStand { t: "S"; /** identifiant unique du QR */ i: string; m: Rarete; du: string; au: string; /** collectif local émetteur, absent si racine */ c?: string }
-export interface QrEvenement { t: "E"; e: string; n: number; du: string; au: string }
+/** La carte elle-même peut voyager dans le QR : on l'obtient même sans avoir mis ses packs à jour. */
+export interface CarteDansQr { title: string; dates?: string; orgas?: string; fait?: string; phrase?: string; pourquoi?: string; tirage: number }
+export interface QrEvenement { t: "E"; e: string; n: number; du: string; au: string; k?: CarteDansQr }
 export interface QrDon { t: "C"; i: string; /** identifiant du don, pour qu'il ne soit reçu qu'une fois */ x: string }
 export interface QrPerso { t: "P"; x: string; carte: Omit<Carte, "id"> }
 export type ContenuQr = QrStand | QrEvenement | QrDon | QrPerso;
@@ -74,7 +76,8 @@ export function verifierQr(lu: QrLu, c: Confiance, delegations: DelegationSignee
 
   // Signé par une clé racine ?
   if (c.racines.some((cle) => verifier(q, lu.signature!, cle))) return { ok: true, emetteur: nomRacine };
-  if (q.t === "E") return { ok: false, raison: "Seul le collectif peut créer des cartes d'événement : ce QR n'est pas valide." };
+  if (q.t === "E") return { ok: false, raison: "La signature de cette carte d'événement est fausse : ce QR n'est pas valide." };
+  if (!q.c) return { ok: false, raison: "La signature de ce QR est fausse : il a peut-être été modifié." };
 
   // Sinon, signé par un collectif local de confiance, autorisé pour cette rareté ?
   const d = delegations.find((x) => x.collectif === q.c);

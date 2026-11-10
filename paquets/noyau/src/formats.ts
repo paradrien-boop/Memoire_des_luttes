@@ -56,6 +56,8 @@ export interface Pack {
   collectif?: { id: string; nom: string };
   /** Clés révoquées, publiées dans un pack officiel. */
   revocations?: string[];
+  /** Nouvelles cartes d'événement (packs officiels seulement). */
+  evenements?: CarteEvenement[];
 }
 
 export interface CarteEvenement extends Carte {

@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
-    "build:artefact": "MDL_ARTEFACT=1 vite build"
+    "build:artefact": "MDL_ARTEFACT=1 vite build",
+    "build:test": "MDL_DEMO=1 vite build --outDir dist-test",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
