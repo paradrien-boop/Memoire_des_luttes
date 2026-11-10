@@ -3,6 +3,7 @@
   import BoutonConfirme from '../composants/BoutonConfirme.svelte'
   import GuideInstallation from '../composants/GuideInstallation.svelte'
   import Packs from '../composants/Packs.svelte'
+  import ReglageCode from '../composants/ReglageCode.svelte'
   import { jeu } from '../etat/jeu.svelte'
 </script>
 
@@ -42,6 +43,11 @@
       <li><b>Signature.</b> La personne qui garde la clé du collectif signe le pack sur un ordinateur jamais connecté à Internet.</li>
       <li><b>Diffusion.</b> Le pack signé circule de main en main ou en téléchargement. Chaque téléphone vérifie la signature tout seul.</li>
     </ol>
+  </section>
+
+  <section class="encart">
+    <h2>Mode discret</h2>
+    <ReglageCode />
   </section>
 
   <section class="encart">

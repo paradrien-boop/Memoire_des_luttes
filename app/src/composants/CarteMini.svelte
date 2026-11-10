@@ -7,8 +7,8 @@
   let { carte, nouvelle = false, nombre = 0, inerte = false }: { carte: Carte; nouvelle?: boolean; nombre?: number; inerte?: boolean } = $props()
 </script>
 
-<button class="mini r-{carte.rar}" aria-label={carte.title} tabindex={inerte ? -1 : 0} onclick={() => !inerte && ui.ouvrirCarte(carte.id)}>
-  <div class="visuel">{#if carte.img}<img src={carte.img} alt="" />{:else}<span>{initiales(carte.title)}</span>{/if}</div>
+<button class="mini r-{carte.rar}" tabindex={inerte ? -1 : 0} onclick={() => !inerte && ui.ouvrirCarte(carte.id)}>
+  <div class="visuel" aria-hidden="true">{#if carte.img}<img src={carte.img} alt="" />{:else}<span>{initiales(carte.title)}</span>{/if}</div>
   <div class="titre">{carte.title}</div>
   <div class="famille">{catalogue.familles[carte.fam]?.libelle ?? ''}</div>
   {#if nouvelle}<span class="nouvelle">NOUVELLE</span>{/if}

@@ -16,6 +16,8 @@
   import { quartier } from './etat/quartier.svelte'
   import Scanner from './composants/Scanner.svelte'
   import QrAffiche from './composants/QrAffiche.svelte'
+  import EcranVerrou from './composants/EcranVerrou.svelte'
+  import { verrou } from './etat/verrou.svelte'
   import { untrack } from 'svelte'
   import { ecranDepuisAdresse } from './navigation'
   import { jeu } from './etat/jeu.svelte'
@@ -25,7 +27,7 @@
   let erreur = $state('')
   let cleEditeur = $state(0) // change pour recharger l'éditeur avec une autre carte
 
-  Promise.all([jeu.charger(), quartier.charger()]).catch((e) => (erreur = String(e?.message ?? e)))
+  Promise.all([jeu.charger(), quartier.charger(), verrou.charger()]).catch((e) => (erreur = String(e?.message ?? e)))
   miseAJour.demarrer()
 
   $effect(() => {
@@ -81,7 +83,7 @@
 <main>
   {#if erreur}
     <div class="encart"><h2>L'app n'a pas pu démarrer</h2><p>La base de données du téléphone n'est pas accessible ({erreur}). Une navigation privée peut la bloquer.</p></div>
-  {:else if jeu.pret && quartier.pret}
+  {:else if jeu.pret && quartier.pret && !verrou.verrouille}
     {#if ecran === 'manif'}<Manif />
     {:else if ecran === 'album'}<Album />
     {:else if ecran === 'quartier'}<Quartier />
@@ -93,6 +95,7 @@
 <BarreOnglets actif={ecran} />
 <Annonce />
 <BandeauMiseAJour />
+{#if verrou.verrouille}<EcranVerrou />{/if}
 
 {#if jeu.pret && !jeu.accueilVu}
   <Fenetre titre="Bienvenue" fermer={() => jeu.fermerAccueil()}><Accueil /></Fenetre>

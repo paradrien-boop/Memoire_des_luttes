@@ -38,7 +38,12 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 ## Tests
 
 - [x] Tests de bout en bout dans le dépôt (`npm run test:e2e`) : parcours, compteur, éditeur, quiz, QR signés et falsifiés, scan d'une photo, dons, packs officiels et locaux, révocation, mode avion. Lancés à chaque envoi sur GitHub.
-- [ ] Tester sur de vrais téléphones Android et iPhone (après publication sur Codeberg)
+- [x] Contrôle d'accessibilité automatique (axe, WCAG AA) de chaque écran, en thème clair et sombre
+- [ ] Tester sur de vrais téléphones Android et iPhone (après publication sur Codeberg) : voir [tester-sur-telephone.md](tester-sur-telephone.md)
+
+## Mode discret
+
+- [x] Code d'ouverture facultatif : écran neutre, reverrouillage après une minute en arrière-plan, code jamais enregistré en clair
 
 ## En parallèle : quiz du jour et mascotte
 

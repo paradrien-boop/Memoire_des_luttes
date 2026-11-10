@@ -140,7 +140,7 @@ Tous commencent par `MDL1:` puis un type :
 - Aucun appel réseau pendant l'utilisation. Seules exceptions : la mise à jour de l'app et le bouton « Chercher de nouveaux packs ».
 - Une politique de sécurité du contenu (*CSP*) stricte, qui interdit tout chargement extérieur.
 - « Tout effacer » vide la base, le cache et les réglages en un geste.
-- À étudier : un **mode discret** (nom et icône neutres, code pour ouvrir l'app).
+- **Mode discret** (fait) : un code d'ouverture facultatif, écran neutre et gris, reverrouillage après une minute en arrière-plan. Le nom et l'icône de l'app installée ne peuvent pas changer depuis l'app.
 - L'appareil photo n'est utilisé que pendant un scan, et rien n'est enregistré.
 
 ## 8. Les étapes de construction
