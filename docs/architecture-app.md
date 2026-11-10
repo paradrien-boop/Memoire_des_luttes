@@ -162,5 +162,5 @@ Chaque étape donne une app qui fonctionne et qu'on peut tester.
 
 - ~~Où publier ?~~ Décidé : Codeberg Pages ([publication.md](publication.md)).
 - ~~Le nom ?~~ Décidé : Mémoire des luttes.
-- **La licence du code**, obligatoire pour publier sur Codeberg.
+- ~~La licence du code ?~~ Décidé : AGPL-3.0 ou ultérieure.
 - **Le mode discret** : est-il prioritaire ?

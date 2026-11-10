@@ -29,6 +29,7 @@ jobs:
           UTILISATEUR: ${{ vars.CODEBERG_UTILISATEUR }}
           DEPOT: ${{ vars.CODEBERG_DEPOT }}
         run: |
+          cp LICENSE LICENCES.md app/dist/
           cd app/dist
           git init -q -b pages
           git add -A

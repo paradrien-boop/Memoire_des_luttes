@@ -62,5 +62,7 @@ La première commande installe les outils, la seconde lance l'app en local et la
 
 ## Licences
 
+- **Code** : GNU AGPL v3 ou ultérieure ([LICENSE](LICENSE)).
 - **Contenu des cartes** : CC BY-SA 4.0. C'est obligatoire, car une partie des textes est adaptée de Wikipédia.
-- **Code** : licence libre à choisir (voir [les idées en attente](docs/idees.md)).
+
+Détails dans [LICENCES.md](LICENCES.md).

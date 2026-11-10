@@ -4,5 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "description": "Logique partagée par l'app, l'atelier et le site : formats, règles du jeu, plus tard signatures.",
-  "exports": { ".": "./src/index.ts" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "license": "AGPL-3.0-or-later"
 }

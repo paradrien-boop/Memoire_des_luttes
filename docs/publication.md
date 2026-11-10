@@ -34,6 +34,6 @@ L'app sera à l'adresse : `https://<compte>.codeberg.page/<depot>/`
 
 ## Points d'attention
 
-- **Licence obligatoire.** Codeberg n'accepte que des projets sous licence libre. Il faut choisir la licence du code avant la première publication (voir [idees.md](idees.md)). Le contenu des cartes est déjà en CC BY-SA 4.0.
+- **Licence obligatoire.** Codeberg n'accepte que des projets sous licence libre. C'est fait : le code est en AGPL-3.0, les cartes en CC BY-SA 4.0. Les fichiers `LICENSE` et `LICENCES.md` sont envoyés avec l'app.
 - **Pas d'en-têtes de sécurité.** Codeberg Pages ne permet pas de les configurer. La politique de sécurité de l'app est donc écrite dans `app/index.html`, ce qui suffit pour bloquer tout chargement extérieur.
 - **Anonymat.** Le compte Codeberg, l'adresse email et le jeton doivent tous être au nom du collectif. Les publications sont signées « Mémoire des luttes ».
