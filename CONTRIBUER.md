@@ -10,6 +10,10 @@ En attendant le site, tout passe par ce dépôt.
 
 Tu peux aussi faire la carte dans l'éditeur du prototype, exporter le pack et coller le texte dans l'*issue*.
 
+## Modifier directement les fichiers
+
+Si tu as accès au dépôt, modifie les fichiers dans `data/`, puis lance `node scripts/valider.mjs` et `node scripts/construire.mjs` avant d'envoyer.
+
 ## Corriger une carte existante
 
 Ouvre une *issue* avec le modèle **« Correction »**, en citant la source qui justifie la correction.

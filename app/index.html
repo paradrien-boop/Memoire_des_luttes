@@ -169,174 +169,23 @@ blockquote cite{display:block;font-style:normal;font-family:var(--f-ui);font-siz
 <div id="ov" class="overlay" hidden></div>
 <div id="toast" class="toast" hidden></div>
 
+<script src="donnees.js"></script>
 <script>
-/* ============ CONTENU : pack officiel de démarrage ============ */
-const SRC_WP = "D'après Wikipédia (CC BY-SA), texte réécrit";
-const SERIES = [
-  {id:"72j", nom:"Les 72 jours", desc:"Paris, du 18 mars au 28 mai 1871."},
-  {id:"comm", nom:"Communard·es", desc:"Celles et ceux qui ont fait la Commune."},
-  {id:"idees", nom:"Chants & idées", desc:"Ce que la Commune a laissé derrière elle."}
-];
-const OFFICIAL = [
- {id:"commune",series:"72j",fam:"evenement",rar:"legendaire",title:"La Commune de Paris",dates:"18 mars – 28 mai 1871",lieu:"Paris",
-  fait:"Après la défaite contre la Prusse et un siège qui a affamé la ville, le peuple de Paris refuse de rendre ses canons au gouvernement d'Adolphe Thiers. Le 26 mars, Paris élit son propre conseil : la Commune. Pendant 72 jours, la ville s'administre elle-même.",
-  pourquoi:"Pour la première fois, un pouvoir ouvrier gouverne une capitale. La Commune prouve que les gens ordinaires peuvent faire tourner une ville sans patrons ni notables. Elle montre aussi que les possédants sont prêts à noyer cette expérience dans le sang.",
-  phrase:"Le Paris ouvrier, avec sa Commune, sera célébré à jamais comme le glorieux fourrier d'une société nouvelle.",phraseSrc:"Karl Marx, La Guerre civile en France, 1871",
-  plus:"Lire : Jacques Rougerie, Paris libre 1871.",links:["18mars","semaine","louise","guerrecivile"],src:SRC_WP},
- {id:"18mars",series:"72j",fam:"evenement",rar:"rare",title:"Les canons de Montmartre",dates:"18 mars 1871",lieu:"Butte Montmartre",
-  fait:"À l'aube, l'armée vient saisir les canons de la Garde nationale, payés par souscription des Parisiens. Les femmes du quartier donnent l'alerte, la foule entoure les soldats, et ceux-ci refusent de tirer. Thiers et son gouvernement fuient à Versailles.",
-  pourquoi:"Quand la troupe fraternise avec le peuple, le pouvoir vacille. Le 18 mars montre que rien n'est joué tant que la rue tient.",
-  phrase:"Les soldats mettent la crosse en l'air.",phraseSrc:"Expression de la fraternisation",
-  plus:"Regarder : le Sacré-Cœur, construit ensuite sur la butte pour « expier » la Commune.",links:["commune","louise"],src:SRC_WP},
- {id:"semaine",series:"72j",fam:"evenement",rar:"rare",title:"La Semaine sanglante",dates:"21 – 28 mai 1871",
-  fait:"Les troupes versaillaises entrent dans Paris. Barricade après barricade, les fédérés sont écrasés. Exécutions sommaires et fusillades de masse : selon les historiens, le nombre de morts va de plusieurs milliers à environ 20 000. Viennent ensuite les procès, les déportations et l'exil.",
-  pourquoi:"C'est la répression la plus meurtrière de l'histoire de Paris. Elle rappelle ce que l'ordre établi est prêt à faire quand il se sent menacé.",
-  phrase:"Le sol est jonché de leurs cadavres ; ce spectacle affreux servira de leçon.",phraseSrc:"Adolphe Thiers, mai 1871",
-  plus:"Lire : Prosper-Olivier Lissagaray, Histoire de la Commune de 1871 (1876).",links:["mur","varlin","cerises"],src:SRC_WP},
- {id:"mur",series:"72j",fam:"lieu",rar:"base",title:"Le Mur des Fédérés",adresse:"Père-Lachaise, Paris 20e",dates:"28 mai 1871",
-  fait:"Au cimetière du Père-Lachaise, 147 combattants de la Commune sont fusillés contre ce mur puis jetés dans une fosse commune. C'est l'un des tout derniers épisodes de la Semaine sanglante.",
-  pourquoi:"Chaque année, le mouvement ouvrier y monte en cortège. Un lieu de mémoire qui reste un lieu de lutte.",
-  phrase:"Aux morts de la Commune, 21-28 mai 1871.",phraseSrc:"Plaque du mur",
-  plus:"Aller : cimetière du Père-Lachaise, Paris 20e.",links:["semaine","commune"],src:SRC_WP},
- {id:"separation",series:"72j",fam:"mesure",rar:"base",title:"Séparer l'Église et l'État",dates:"2 avril 1871",
-  fait:"Par décret, la Commune sépare l'Église de l'État, supprime le budget des cultes et déclare propriété nationale les biens des congrégations religieuses. Elle lance aussi une école laïque et gratuite.",
-  pourquoi:"La République mettra 34 ans à faire de même, avec la loi de 1905. Sur bien des sujets, la Commune avait un temps d'avance.",
-  phrase:"",phraseSrc:"",plus:"Comparer : la loi du 9 décembre 1905.",links:["commune"],src:SRC_WP},
- {id:"ateliers",series:"72j",fam:"mesure",rar:"rare",title:"Les ateliers aux travailleurs",dates:"16 avril 1871",
-  fait:"Un décret fait recenser les ateliers abandonnés par leurs patrons, partis à Versailles, pour les confier à des coopératives formées par les ouvriers qui y travaillaient.",
-  pourquoi:"C'est l'idée d'autogestion : celles et ceux qui produisent décident. Elle reviendra dans les usines occupées, de Lip en 1973 aux coopératives d'aujourd'hui.",
-  phrase:"C'est possible : on fabrique, on vend, on se paie.",phraseSrc:"Les grévistes de Lip, 1973",
-  plus:"Concept lié : autogestion.",links:["varlin","dmitrieff","anarchisme"],src:SRC_WP},
- {id:"boulangers",series:"72j",fam:"mesure",rar:"base",title:"Plus de nuits pour les boulangers",dates:"20 avril 1871",
-  fait:"La Commune interdit le travail de nuit dans les boulangeries, où les ouvriers enchaînaient des nuits épuisantes. Quelques jours plus tard, elle interdit aussi les amendes et retenues que les patrons infligeaient sur les salaires.",
-  pourquoi:"Des mesures concrètes pour la vie de tous les jours. La politique, c'est aussi les horaires de travail et la fiche de paie.",
-  phrase:"",phraseSrc:"",plus:"Chercher : les décrets sociaux de la Commune.",links:["ateliers"],src:SRC_WP},
-
- {id:"louise",series:"comm",fam:"personnalite",rar:"legendaire",title:"Louise Michel",dates:"1830 – 1905",role:"Institutrice, communarde",
-  fait:"Institutrice, poétesse, combattante. Pendant la Commune, elle soigne, enseigne et prend le fusil. Condamnée, elle est déportée en Nouvelle-Calédonie, où elle prend le parti des Kanak révoltés en 1878. Rentrée en 1880, elle parcourt la France pour défendre l'anarchisme.",
-  pourquoi:"Elle refuse de demander grâce et de se taire. Une figure qui relie la lutte des classes, celle des femmes et l'anticolonialisme.",
-  phrase:"Le pouvoir est maudit, c'est pour cela que je suis anarchiste.",phraseSrc:"Louise Michel",
-  plus:"Lire : Louise Michel, La Commune, histoire et souvenirs (1898).",links:["commune","18mars","anarchisme"],src:SRC_WP},
- {id:"varlin",series:"comm",fam:"personnalite",rar:"rare",title:"Eugène Varlin",dates:"1839 – 1871",role:"Ouvrier relieur",
-  fait:"Ouvrier relieur, organisateur de grèves et de coopératives, membre de l'Association internationale des travailleurs. Élu à la Commune, il s'occupe des finances puis du ravitaillement. Arrêté le 28 mai, il est battu par la foule puis fusillé à Montmartre.",
-  pourquoi:"Il incarne l'ouvrier qui s'organise lui-même : syndicat, coopérative, Internationale. Un pont entre la lutte au travail et la lutte pour le pouvoir.",
-  phrase:"",phraseSrc:"",plus:"Chercher : l'Association internationale des travailleurs (1864).",links:["ateliers","semaine"],src:SRC_WP},
- {id:"dmitrieff",series:"comm",fam:"personnalite",rar:"rare",title:"Élisabeth Dmitrieff",dates:"1851 – 1910",role:"Militante internationaliste",
-  fait:"Venue de Russie, en lien avec l'Internationale à Londres, elle cofonde à 20 ans l'Union des femmes pour la défense de Paris et les soins aux blessés. L'Union organise des ateliers coopératifs de femmes et mobilise pour les barricades.",
-  pourquoi:"La Commune n'a pas été faite que par des hommes. Les femmes y ont pris les armes et la parole, alors qu'elles n'avaient même pas le droit de vote.",
-  phrase:"",phraseSrc:"",plus:"Lire : Édith Thomas, Les Pétroleuses (1963).",links:["louise","ateliers"],src:SRC_WP},
- {id:"courbet",series:"comm",fam:"personnalite",rar:"base",title:"Gustave Courbet",dates:"1819 – 1877",role:"Peintre",
-  fait:"Peintre réaliste, il préside la Fédération des artistes de Paris pendant la Commune. Il avait réclamé le déboulonnage de la colonne Vendôme, symbole des guerres de Napoléon, abattue le 16 mai 1871. Condamné à payer sa reconstruction, il meurt ruiné en exil en Suisse.",
-  pourquoi:"L'art peut prendre parti. Courbet peignait les travailleurs et les gens ordinaires, et il a payé son engagement jusqu'au bout.",
-  phrase:"",phraseSrc:"",plus:"Voir : Un enterrement à Ornans, musée d'Orsay.",links:["commune"],src:SRC_WP},
- {id:"pottier",series:"comm",fam:"personnalite",rar:"base",title:"Eugène Pottier",dates:"1816 – 1887",role:"Poète, élu de la Commune",
-  fait:"Dessinateur sur étoffes et poète, élu à la Commune. Caché pendant la Semaine sanglante, il écrit en juin 1871 le poème L'Internationale. Il vit ensuite en exil aux États-Unis jusqu'à l'amnistie de 1880.",
-  pourquoi:"Un poète ouvrier qui transforme la défaite en espoir. Ses chansons ont survécu à tous ceux qui l'ont vaincu.",
-  phrase:"Tout ça n'empêche pas, Nicolas, qu'la Commune n'est pas morte.",phraseSrc:"Eugène Pottier, Elle n'est pas morte, 1886",
-  plus:"Écouter : Elle n'est pas morte.",links:["internationale"],src:SRC_WP},
-
- {id:"internationale",series:"idees",fam:"chant",rar:"rare",title:"L'Internationale",auteur:"Eugène Pottier / Pierre Degeyter",dates:"1871 / 1888",
-  fait:"Poème d'Eugène Pottier, écrit juste après l'écrasement de la Commune. En 1888, Pierre Degeyter, ouvrier lillois, le met en musique. Il devient l'hymne du mouvement ouvrier dans le monde entier.",
-  pourquoi:"Né d'une défaite, ce chant est repris depuis dans presque toutes les langues. La preuve qu'une lutte vaincue peut continuer à vivre.",
-  phrase:"Debout ! les damnés de la terre ! Debout ! les forçats de la faim !",phraseSrc:"Premier couplet",
-  plus:"Chanter : en fin de manif, évidemment.",links:["pottier"],src:SRC_WP},
- {id:"cerises",series:"idees",fam:"chant",rar:"base",title:"Le Temps des cerises",auteur:"Jean-Baptiste Clément / Antoine Renard",dates:"1866",
-  fait:"Chanson d'amour écrite par Jean-Baptiste Clément en 1866, avant la Commune. Clément, élu communard, la dédie plus tard à Louise, une ambulancière rencontrée sur une barricade pendant la Semaine sanglante.",
-  pourquoi:"Une chanson d'amour devenue chant de mémoire : la nostalgie de la Commune s'entend à chaque couplet.",
-  phrase:"J'aimerai toujours le temps des cerises, et le souvenir que je garde au cœur.",phraseSrc:"Jean-Baptiste Clément",
-  plus:"Écouter : la version de Cora Vaucaire, ou d'Yves Montand.",links:["semaine"],src:SRC_WP},
- {id:"guerrecivile",series:"idees",fam:"livre",rar:"rare",title:"La Guerre civile en France",auteur:"Karl Marx",dates:"1871",
-  fait:"Texte écrit par Marx pour l'Association internationale des travailleurs et publié juste après la Semaine sanglante. Il y analyse la Commune comme une forme nouvelle de gouvernement de la classe ouvrière.",
-  pourquoi:"La Commune devient un modèle pour tout le mouvement révolutionnaire. Ce texte est la porte d'entrée de ce débat, qui dure encore.",
-  phrase:"La classe ouvrière ne peut pas se contenter de prendre tel quel l'appareil d'État et de le faire fonctionner pour son propre compte.",phraseSrc:"Karl Marx",
-  plus:"Lire en entier : le texte est dans le domaine public.",links:["commune","anarchisme"],src:SRC_WP},
- {id:"anarchisme",series:"idees",fam:"courant",rar:"base",title:"L'anarchisme",dates:"XIXe siècle →",
-  fait:"Courant qui veut abolir l'État et toute domination, au profit de la libre association des individus et des communes. Proudhon, Bakounine, Kropotkine puis Louise Michel en sont des figures.",
-  pourquoi:"La Commune, fédération de quartiers et d'associations ouvrières, a nourri l'idée d'une société sans chefs.",
-  phrase:"La propriété, c'est le vol !",phraseSrc:"Pierre-Joseph Proudhon, 1840",
-  plus:"Lire : Pierre Kropotkine, La Conquête du pain (1892).",links:["louise","guerrecivile"],src:SRC_WP}
-];
-/* Chaque famille a ses propres champs.
-   kind : title (titre) · sub (ligne sous le titre) · text (rubrique) · why (regard militant) · quote / quoteSrc · more */
-const WHY = {k:"pourquoi",kind:"why",label:"Pourquoi ça compte encore",hint:"Ton regard militant.",max:400,area:true};
-const QSRC = {k:"phraseSrc",kind:"quoteSrc",label:"Qui l'a dite"};
-const FAMS = {
-  personnalite:{label:"Personnalité",fields:[
-    {k:"title",kind:"title",label:"Nom",req:true,ph:"Ex. : Ambroise Croizat"},
-    {k:"dates",kind:"sub",label:"Naissance – mort",ph:"1901 – 1951"},
-    {k:"role",kind:"sub",label:"Métier, rôle",ph:"Ouvrier métallurgiste, ministre"},
-    {k:"fait",kind:"text",label:"Son parcours",hint:"Les faits, sourcés. Environ 400 signes.",req:true,max:600,area:true},
-    WHY,{k:"phrase",kind:"quote",label:"Une phrase d'elle ou de lui"},QSRC,
-    {k:"plus",kind:"more",label:"À lire",hint:"Un livre, une biographie."}]},
-  evenement:{label:"Événement",fields:[
-    {k:"title",kind:"title",label:"Nom de l'événement",req:true,ph:"Ex. : La grève des Penn Sardin"},
-    {k:"dates",kind:"sub",label:"Date(s)",ph:"nov. 1924 – janv. 1925"},
-    {k:"lieu",kind:"sub",label:"Lieu",ph:"Douarnenez"},
-    {k:"fait",kind:"text",label:"Ce qui s'est passé",hint:"Les faits, sourcés.",req:true,max:600,area:true},
-    {k:"bilan",kind:"text",label:"Ce qui a été gagné ou perdu",max:300,area:true},
-    WHY,{k:"phrase",kind:"quote",label:"Un slogan, un témoignage"},QSRC,
-    {k:"plus",kind:"more",label:"Pour aller plus loin"}]},
-  lieu:{label:"Lieu",fields:[
-    {k:"title",kind:"title",label:"Nom du lieu",req:true,ph:"Ex. : La Bourse du travail"},
-    {k:"adresse",kind:"sub",label:"Adresse ou ville"},
-    {k:"dates",kind:"sub",label:"Époque"},
-    {k:"fait",kind:"text",label:"Ce qui s'y est passé",req:true,max:600,area:true},
-    WHY,{k:"phrase",kind:"quote",label:"Une inscription, une plaque"},QSRC,
-    {k:"plus",kind:"more",label:"Y aller"}]},
-  mesure:{label:"Mesure, loi",fields:[
-    {k:"title",kind:"title",label:"Nom de la mesure",req:true,ph:"Ex. : Les congés payés"},
-    {k:"dates",kind:"sub",label:"Date",ph:"20 juin 1936"},
-    {k:"qui",kind:"sub",label:"Obtenue par",ph:"La grève générale de mai-juin 1936"},
-    {k:"fait",kind:"text",label:"Ce qu'elle change",req:true,max:600,area:true},
-    {k:"etat",kind:"text",label:"Où en est-elle aujourd'hui ?",hint:"Toujours en vigueur, attaquée, supprimée ?",max:300,area:true},
-    WHY,{k:"phrase",kind:"quote",label:"Une phrase à retenir"},QSRC,
-    {k:"plus",kind:"more",label:"Pour aller plus loin"}]},
-  concept:{label:"Concept",fields:[
-    {k:"title",kind:"title",label:"Le mot",req:true,ph:"Ex. : Plus-value"},
-    {k:"dates",kind:"sub",label:"Origine (qui, quand)",ph:"Karl Marx, 1867"},
-    {k:"fait",kind:"text",label:"Définition",hint:"Simple, sans jargon.",req:true,max:500,area:true},
-    {k:"exemple",kind:"text",label:"Un exemple concret",max:300,area:true},
-    WHY,{k:"phrase",kind:"quote",label:"Une citation"},QSRC,
-    {k:"plus",kind:"more",label:"À lire"}]},
-  courant:{label:"Courant de pensée",fields:[
-    {k:"title",kind:"title",label:"Nom du courant",req:true,ph:"Ex. : Syndicalisme révolutionnaire"},
-    {k:"dates",kind:"sub",label:"Période"},
-    {k:"figures",kind:"text",label:"Figures principales",max:200},
-    {k:"fait",kind:"text",label:"Les idées clés",req:true,max:600,area:true},
-    WHY,{k:"phrase",kind:"quote",label:"Une citation"},QSRC,
-    {k:"plus",kind:"more",label:"Texte fondateur"}]},
-  livre:{label:"Livre",fields:[
-    {k:"title",kind:"title",label:"Titre",req:true,ph:"Ex. : La Conquête du pain"},
-    {k:"auteur",kind:"sub",label:"Autrice, auteur"},
-    {k:"dates",kind:"sub",label:"Année"},
-    {k:"fait",kind:"text",label:"De quoi ça parle",req:true,max:600,area:true},
-    {k:"phrase",kind:"quote",label:"Un extrait"},QSRC,
-    WHY,{k:"plus",kind:"more",label:"Où le trouver",hint:"Domaine public, bibliothèque, librairie…"}]},
-  chant:{label:"Chant",fields:[
-    {k:"title",kind:"title",label:"Titre",req:true,ph:"Ex. : Bella Ciao"},
-    {k:"auteur",kind:"sub",label:"Paroles et musique"},
-    {k:"dates",kind:"sub",label:"Année"},
-    {k:"fait",kind:"text",label:"Son histoire",req:true,max:600,area:true},
-    {k:"phrase",kind:"quote",label:"Le refrain ou un couplet",area:true},
-    WHY,{k:"plus",kind:"more",label:"Écouter"}]},
-  manif:{label:"Carte d'événement",official:true,fields:[
-    {k:"title",kind:"title",label:"Nom de la journée",req:true},
-    {k:"dates",kind:"sub",label:"Date"},
-    {k:"orgas",kind:"sub",label:"Appel de"},
-    {k:"fait",kind:"text",label:"Les revendications",req:true,area:true},
-    {k:"phrase",kind:"quote",label:"Le mot d'ordre"},
-    WHY]}
-};
+/* ============ CONTENU ============
+   Les cartes ne sont plus écrites ici : elles viennent de donnees.js,
+   généré à partir du dossier data/ par « node scripts/construire.mjs ». */
+const D = window.MDL_DONNEES || {familles:{},packs:[],evenements:[]};
+const FAMS = Object.fromEntries(Object.entries(D.familles).map(([k,v])=>[k,{label:v.libelle,official:!!v.reserveeAuCollectif,
+  fields:v.champs.map(c=>({k:c.cle,kind:c.role,label:c.libelle,req:!!c.obligatoire,hint:c.aide,max:c.max,area:!!c.long,ph:c.exemple}))}]));
 const FAM = Object.fromEntries(Object.entries(FAMS).map(([k,v])=>[k,v.label]));
 const RAR = {base:"Base",rare:"Rare ★",legendaire:"Légendaire ★★★",evenement:"Événement unique"};
+const OFF_PACKS = D.packs.filter(p=>p.type==="officiel");
+const OFF_CARDS = Object.fromEntries(OFF_PACKS.flatMap(p=>p.cartes).map(c=>[c.id,c]));
+const SERIES = OFF_PACKS.flatMap(p=>p.series.map(s=>({id:s.id,nom:s.nom,desc:s.description||"",cartes:s.cartes})));
+const OFFICIAL = SERIES.flatMap(s=>s.cartes.filter(id=>OFF_CARDS[id]).map(id=>({...OFF_CARDS[id],series:s.id})));
+const EVENTS = Object.fromEntries(D.evenements.map(e=>[e.id,e]));
 
-/* Cartes d'événement : créées par le collectif pour UNE date, scellées, tirage limité */
-const EVENTS = {
-  "ev-18mars2027":{id:"ev-18mars2027",fam:"manif",rar:"evenement",title:"Vive la Commune !",dates:"18 mars 2027 (exemple)",orgas:"Collectif Mémoire des luttes",
-    fait:"Rassemblement pour l'anniversaire de la Commune. Pour la défense des services publics, contre la réforme des retraites, pour la mémoire des luttes.",
-    phrase:"La Commune n'est pas morte !",pourquoi:"Tu y étais. Cette carte ne s'obtient qu'en étant sur place ce jour-là, en scannant le QR du stand.",
-    tirage:500,src:"Exemple de démonstration"}
-};
+/* Codes de démonstration. Dans la vraie version, ce sont des QR signés. */
 const STAND_CODES = {
   "COMMUNE-71":{label:"Stand « Vive la Commune »",min:"legendaire"},
   "MUR-28-MAI":{label:"Tract du Mur des Fédérés",min:"rare"},
@@ -715,6 +564,7 @@ function bindInfos(){
 const VIEWS = {manif:[vManif,bindManif],album:[vAlbum,()=>{}],editeur:[vEditeur,bindEditeur],infos:[vInfos,bindInfos]};
 function route(){ const h=location.hash.slice(1); return VIEWS[h]?h:"manif"; }
 function render(){
+  if(!window.MDL_DONNEES){ $("#app").innerHTML = `<div class="panel"><h2>Cartes introuvables</h2><p>Le fichier donnees.js manque à côté de index.html. Lance « node scripts/construire.mjs » depuis le dépôt.</p></div>`; return; }
   tick();
   const r = route();
   $("#app").innerHTML = VIEWS[r][0]();

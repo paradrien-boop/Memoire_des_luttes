@@ -1,7 +1,22 @@
 # Application
 
-`index.html` est le prototype : un seul fichier, à ouvrir dans un navigateur.
+Le prototype tient en deux fichiers :
 
-Pour l'instant, les cartes sont copiées dans le code du prototype. La source qui fait foi est `data/`. Prochaine étape : que l'application lise directement les packs de `data/`.
+| Fichier | Rôle |
+|---|---|
+| `index.html` | L'application : écrans, règles du jeu, éditeur |
+| `donnees.js` | Les cartes, **généré automatiquement** à partir de `data/`. Ne pas le modifier à la main. |
 
-Ce que fait le prototype : compteur de manif, boosters avec garantie de rareté, codes de stand (`COMMUNE-71`, `MUR-28-MAI`, `18-MARS-2027`), album par séries, éditeur avec rubriques par famille, cartes d'événement scellées, export et import de packs, bouton « Tout effacer ».
+Pour l'essayer, ouvre `index.html` dans un navigateur. Aucun serveur n'est nécessaire.
+
+Après une modification dans `data/`, régénère les données :
+
+```bash
+node scripts/construire.mjs
+```
+
+## Ce que fait le prototype
+
+Compteur de manif, boosters avec garantie de rareté, codes de stand (`COMMUNE-71`, `MUR-28-MAI`, `18-MARS-2027`), album par séries, éditeur avec rubriques par famille, cartes d'événement scellées, export et import de packs, bouton « Tout effacer ».
+
+Les codes de stand sont encore écrits dans `index.html` : ce sont des codes de démonstration. Dans la vraie version, ce seront des QR signés.

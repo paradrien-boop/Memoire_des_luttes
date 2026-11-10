@@ -10,7 +10,7 @@
 ## Étape 1 : un contenu solide
 
 - [ ] Relire les 16 cartes du pack de départ (faits, sources, dates)
-- [ ] Faire lire les données directement depuis `data/` par l'application, au lieu de les avoir dans son code
+- [x] L'application lit ses cartes depuis `data/` (via `app/donnees.js`, généré par `scripts/construire.mjs`)
 - [ ] Écrire un deuxième pack
 
 ## Étape 2 : les signatures

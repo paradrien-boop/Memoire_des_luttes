@@ -26,11 +26,19 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 
 Pour proposer une carte ou une correction : voir [CONTRIBUER.md](CONTRIBUER.md).
 
-## Vérifier les données
+## Modifier les cartes
+
+Les cartes se modifient **uniquement dans `data/`**. Ensuite :
 
 ```bash
 node scripts/valider.mjs
 ```
+
+```bash
+node scripts/construire.mjs
+```
+
+Le premier script vérifie les cartes. Le second régénère `app/donnees.js`, le fichier que l'application charge. À chaque envoi sur GitHub, les deux vérifications sont relancées automatiquement.
 
 ## Licences
 
