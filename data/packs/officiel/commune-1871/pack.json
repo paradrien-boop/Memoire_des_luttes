@@ -1,0 +1,49 @@
+{
+  "format": "memoire-des-luttes/pack",
+  "version": 1,
+  "id": "commune-1871",
+  "nom": "La Commune de Paris, 1871",
+  "editeur": "officiel",
+  "statut": "brouillon — textes à relire",
+  "licenceContenu": "CC BY-SA 4.0",
+  "series": [
+    {
+      "id": "72j",
+      "nom": "Les 72 jours",
+      "description": "Paris, du 18 mars au 28 mai 1871.",
+      "cartes": [
+        "commune",
+        "18mars",
+        "semaine",
+        "mur",
+        "separation",
+        "ateliers",
+        "boulangers"
+      ]
+    },
+    {
+      "id": "comm",
+      "nom": "Communard·es",
+      "description": "Celles et ceux qui ont fait la Commune.",
+      "cartes": [
+        "louise",
+        "varlin",
+        "dmitrieff",
+        "courbet",
+        "pottier"
+      ]
+    },
+    {
+      "id": "idees",
+      "nom": "Chants & idées",
+      "description": "Ce que la Commune a laissé derrière elle.",
+      "cartes": [
+        "internationale",
+        "cerises",
+        "guerrecivile",
+        "anarchisme"
+      ]
+    }
+  ],
+  "signature": null
+}

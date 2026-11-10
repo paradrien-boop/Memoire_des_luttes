@@ -1,0 +1,19 @@
+{
+  "id": "anarchisme",
+  "fam": "courant",
+  "rar": "base",
+  "title": "L'anarchisme",
+  "dates": "XIXe siècle →",
+  "fait": "Courant qui veut abolir l'État et toute domination, au profit de la libre association des individus et des communes. Proudhon, Bakounine, Kropotkine puis Louise Michel en sont des figures.",
+  "pourquoi": "La Commune, fédération de quartiers et d'associations ouvrières, a nourri l'idée d'une société sans chefs.",
+  "phrase": "La propriété, c'est le vol !",
+  "phraseSrc": "Pierre-Joseph Proudhon, 1840",
+  "plus": "Lire : Pierre Kropotkine, La Conquête du pain (1892).",
+  "links": [
+    "louise",
+    "guerrecivile"
+  ],
+  "src": "D'après Wikipédia (CC BY-SA), texte réécrit",
+  "serie": "idees",
+  "statut": "a-relire"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "semaine",
+  "fam": "evenement",
+  "rar": "rare",
+  "title": "La Semaine sanglante",
+  "dates": "21 – 28 mai 1871",
+  "fait": "Les troupes versaillaises entrent dans Paris. Barricade après barricade, les fédérés sont écrasés. Exécutions sommaires et fusillades de masse : selon les historiens, le nombre de morts va de plusieurs milliers à environ 20 000. Viennent ensuite les procès, les déportations et l'exil.",
+  "pourquoi": "C'est la répression la plus meurtrière de l'histoire de Paris. Elle rappelle ce que l'ordre établi est prêt à faire quand il se sent menacé.",
+  "phrase": "Le sol est jonché de leurs cadavres ; ce spectacle affreux servira de leçon.",
+  "phraseSrc": "Adolphe Thiers, mai 1871",
+  "plus": "Lire : Prosper-Olivier Lissagaray, Histoire de la Commune de 1871 (1876).",
+  "links": [
+    "mur",
+    "varlin",
+    "cerises"
+  ],
+  "src": "D'après Wikipédia (CC BY-SA), texte réécrit",
+  "serie": "72j",
+  "statut": "a-relire"
+}

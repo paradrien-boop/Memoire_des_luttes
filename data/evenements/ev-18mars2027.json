@@ -1,0 +1,15 @@
+{
+  "id": "ev-18mars2027",
+  "fam": "manif",
+  "rar": "evenement",
+  "title": "Vive la Commune !",
+  "dates": "18 mars 2027 (exemple)",
+  "orgas": "Collectif Mémoire des luttes",
+  "fait": "Rassemblement pour l'anniversaire de la Commune. Pour la défense des services publics, contre la réforme des retraites, pour la mémoire des luttes.",
+  "phrase": "La Commune n'est pas morte !",
+  "pourquoi": "Tu y étais. Cette carte ne s'obtient qu'en étant sur place ce jour-là, en scannant le QR du stand.",
+  "tirage": 500,
+  "src": "Exemple de démonstration",
+  "exemple": true,
+  "statut": "exemple"
+}

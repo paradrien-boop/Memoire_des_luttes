@@ -1,0 +1,20 @@
+{
+  "id": "mur",
+  "fam": "lieu",
+  "rar": "base",
+  "title": "Le Mur des Fédérés",
+  "adresse": "Père-Lachaise, Paris 20e",
+  "dates": "28 mai 1871",
+  "fait": "Au cimetière du Père-Lachaise, 147 combattants de la Commune sont fusillés contre ce mur puis jetés dans une fosse commune. C'est l'un des tout derniers épisodes de la Semaine sanglante.",
+  "pourquoi": "Chaque année, le mouvement ouvrier y monte en cortège. Un lieu de mémoire qui reste un lieu de lutte.",
+  "phrase": "Aux morts de la Commune, 21-28 mai 1871.",
+  "phraseSrc": "Plaque du mur",
+  "plus": "Aller : cimetière du Père-Lachaise, Paris 20e.",
+  "links": [
+    "semaine",
+    "commune"
+  ],
+  "src": "D'après Wikipédia (CC BY-SA), texte réécrit",
+  "serie": "72j",
+  "statut": "a-relire"
+}

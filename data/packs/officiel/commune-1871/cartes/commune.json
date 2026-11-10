@@ -1,0 +1,22 @@
+{
+  "id": "commune",
+  "fam": "evenement",
+  "rar": "legendaire",
+  "title": "La Commune de Paris",
+  "dates": "18 mars – 28 mai 1871",
+  "lieu": "Paris",
+  "fait": "Après la défaite contre la Prusse et un siège qui a affamé la ville, le peuple de Paris refuse de rendre ses canons au gouvernement d'Adolphe Thiers. Le 26 mars, Paris élit son propre conseil : la Commune. Pendant 72 jours, la ville s'administre elle-même.",
+  "pourquoi": "Pour la première fois, un pouvoir ouvrier gouverne une capitale. La Commune prouve que les gens ordinaires peuvent faire tourner une ville sans patrons ni notables. Elle montre aussi que les possédants sont prêts à noyer cette expérience dans le sang.",
+  "phrase": "Le Paris ouvrier, avec sa Commune, sera célébré à jamais comme le glorieux fourrier d'une société nouvelle.",
+  "phraseSrc": "Karl Marx, La Guerre civile en France, 1871",
+  "plus": "Lire : Jacques Rougerie, Paris libre 1871.",
+  "links": [
+    "18mars",
+    "semaine",
+    "louise",
+    "guerrecivile"
+  ],
+  "src": "D'après Wikipédia (CC BY-SA), texte réécrit",
+  "serie": "72j",
+  "statut": "a-relire"
+}

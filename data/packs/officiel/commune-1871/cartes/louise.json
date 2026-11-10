@@ -1,0 +1,21 @@
+{
+  "id": "louise",
+  "fam": "personnalite",
+  "rar": "legendaire",
+  "title": "Louise Michel",
+  "dates": "1830 – 1905",
+  "role": "Institutrice, communarde",
+  "fait": "Institutrice, poétesse, combattante. Pendant la Commune, elle soigne, enseigne et prend le fusil. Condamnée, elle est déportée en Nouvelle-Calédonie, où elle prend le parti des Kanak révoltés en 1878. Rentrée en 1880, elle parcourt la France pour défendre l'anarchisme.",
+  "pourquoi": "Elle refuse de demander grâce et de se taire. Une figure qui relie la lutte des classes, celle des femmes et l'anticolonialisme.",
+  "phrase": "Le pouvoir est maudit, c'est pour cela que je suis anarchiste.",
+  "phraseSrc": "Louise Michel",
+  "plus": "Lire : Louise Michel, La Commune, histoire et souvenirs (1898).",
+  "links": [
+    "commune",
+    "18mars",
+    "anarchisme"
+  ],
+  "src": "D'après Wikipédia (CC BY-SA), texte réécrit",
+  "serie": "comm",
+  "statut": "a-relire"
+}

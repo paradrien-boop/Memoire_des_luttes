@@ -1,0 +1,20 @@
+{
+  "id": "18mars",
+  "fam": "evenement",
+  "rar": "rare",
+  "title": "Les canons de Montmartre",
+  "dates": "18 mars 1871",
+  "lieu": "Butte Montmartre",
+  "fait": "À l'aube, l'armée vient saisir les canons de la Garde nationale, payés par souscription des Parisiens. Les femmes du quartier donnent l'alerte, la foule entoure les soldats, et ceux-ci refusent de tirer. Thiers et son gouvernement fuient à Versailles.",
+  "pourquoi": "Quand la troupe fraternise avec le peuple, le pouvoir vacille. Le 18 mars montre que rien n'est joué tant que la rue tient.",
+  "phrase": "Les soldats mettent la crosse en l'air.",
+  "phraseSrc": "Expression de la fraternisation",
+  "plus": "Regarder : le Sacré-Cœur, construit ensuite sur la butte pour « expier » la Commune.",
+  "links": [
+    "commune",
+    "louise"
+  ],
+  "src": "D'après Wikipédia (CC BY-SA), texte réécrit",
+  "serie": "72j",
+  "statut": "a-relire"
+}
