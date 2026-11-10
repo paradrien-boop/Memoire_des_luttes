@@ -7,3 +7,4 @@ export * from "./quiz";
 export * from "./mascotte";
 export * from "./signature";
 export * from "./qr";
+export * from "./graphe";

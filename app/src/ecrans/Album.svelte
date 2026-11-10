@@ -2,6 +2,8 @@
   import Entete from '../composants/Entete.svelte'
   import CarteMini from '../composants/CarteMini.svelte'
   import CarteCachee from '../composants/CarteCachee.svelte'
+  import CarteDesIdees from '../composants/CarteDesIdees.svelte'
+  import { ui } from '../etat/interface.svelte'
   import { jeu } from '../etat/jeu.svelte'
   import { catalogue } from '../donnees'
 
@@ -33,6 +35,7 @@
         <div>
           <h2>{serie.nom}</h2>
           <p class="discret">{serie.description}{#if trouvees === serie.cartes.length} · <b class="rouge-texte">Série complète !</b>{/if}</p>
+          {#if trouvees === serie.cartes.length}<button class="frise" onclick={() => (ui.frise = serie.id)}>Voir la frise chronologique</button>{/if}
         </div>
         <span class="compte">{trouvees}/{serie.cartes.length}</span>
       </div>
@@ -44,6 +47,8 @@
       </div>
     </section>
   {/each}
+
+  <CarteDesIdees />
 
   {#if jeu.perso.length}
     <section class="serie">
@@ -67,4 +72,5 @@
   .tete p { font-size: 13px; }
   .compte { font-family: var(--f-affiche); font-weight: 900; font-size: 22px; color: var(--rouge); font-variant-numeric: tabular-nums; }
   .rouge-texte { color: var(--rouge); }
+  .frise { margin-top: 6px; padding: 5px 10px; font-size: 11px; background: var(--rouge); border-color: var(--rouge); color: var(--sur-rouge); }
 </style>

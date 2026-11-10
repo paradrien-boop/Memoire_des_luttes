@@ -17,6 +17,7 @@
   import Scanner from './composants/Scanner.svelte'
   import QrAffiche from './composants/QrAffiche.svelte'
   import EcranVerrou from './composants/EcranVerrou.svelte'
+  import Frise from './composants/Frise.svelte'
   import { verrou } from './etat/verrou.svelte'
   import { untrack } from 'svelte'
   import { ecranDepuisAdresse } from './navigation'
@@ -103,6 +104,8 @@
 
 {#if ui.booster}
   <Fenetre titre="Ouverture du booster" fermer={() => ui.fermer()}><RevelationBooster resultat={ui.booster} /></Fenetre>
+{:else if ui.frise}
+  <Fenetre titre="Frise chronologique" fermer={() => ui.fermer()}><Frise serieId={ui.frise} /></Fenetre>
 {:else if ui.scanner}
   <Fenetre titre="Scanner un QR" fermer={() => ui.fermer()}><Scanner /></Fenetre>
 {:else if ui.qr}

@@ -7,6 +7,8 @@ class Interface {
   annonce = $state<{ texte: string; n: number } | null>(null)
   /** Carte perso à charger dans l'éditeur. */
   aModifier = $state<string | null>(null)
+  /** La frise chronologique d'une série complète est ouverte. */
+  frise = $state<string | null>(null)
   /** Le scanner de QR est ouvert. */
   scanner = $state(false)
   /** Un QR à montrer : don d'une carte en double (avec son identifiant), ou partage d'une carte perso. */
@@ -22,6 +24,7 @@ class Interface {
     this.booster = null
     this.scanner = false
     this.qr = null
+    this.frise = null
     this.carteOuverte = id
   }
 
@@ -30,6 +33,7 @@ class Interface {
     this.booster = null
     this.scanner = false
     this.qr = null
+    this.frise = null
   }
 }
 

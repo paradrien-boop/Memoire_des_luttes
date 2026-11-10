@@ -17,8 +17,8 @@ Ce fichier garde tout ce qui n'est pas encore décidé. Quand une question est t
 
 - Échange de cartes par Bluetooth, balises de stand, booster de cortège ([bluetooth.md](bluetooth.md)).
 - Quiz du jour sur les cartes possédées, mascotte (chat noir) et quartier qui se transforme : voir [quiz-et-mascotte.md](quiz-et-mascotte.md).
-- Frise chronologique débloquée en complétant une série.
-- Carte des idées : un graphe des cartes et de leurs liens, qui se dévoile au fil de la collection.
+- ~~Frise chronologique débloquée en complétant une série.~~ Fait (Album).
+- ~~Carte des idées : un graphe des cartes et de leurs liens, qui se dévoile au fil de la collection.~~ Fait (Album).
 - Packs suivants : 1er mai, Front populaire, Mai 68, luttes féministes, luttes anticoloniales, grèves de 1995.
 - Partenariats : éditeur d'un dictionnaire critique, Le Maitron.
 - Script de génération de brouillons depuis Wikidata.
