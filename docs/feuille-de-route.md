@@ -26,7 +26,7 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 
 - [x] Étape 0 : socle (workspaces, noyau avec règles du jeu et tests, app Vite + Svelte + TypeScript, vérifications automatiques, publication vers Codeberg Pages)
 - [x] Étape 1 : parité avec le prototype (base de données du téléphone, tous les écrans, compteur et import de packs testés dans le noyau)
-- [ ] Étape 2 : hors ligne et installation
+- [x] Étape 2 : hors ligne et installation (testé en mode avion dans un navigateur ; reste à tester sur de vrais téléphones Android et iPhone une fois publié)
 
 
 - [ ] Application installable sur l'écran d'accueil, qui fonctionne sans réseau

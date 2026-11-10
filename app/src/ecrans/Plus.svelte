@@ -1,6 +1,7 @@
 <script lang="ts">
   import Entete from '../composants/Entete.svelte'
   import BoutonConfirme from '../composants/BoutonConfirme.svelte'
+  import GuideInstallation from '../composants/GuideInstallation.svelte'
   import { jeu } from '../etat/jeu.svelte'
 </script>
 
@@ -10,6 +11,11 @@
   <section class="encart">
     <h2>Rien ne sort de ton téléphone</h2>
     <p>Pas de compte, pas de GPS, pas de réseau une fois l'app installée. Ta collection est stockée uniquement sur ce téléphone. Personne, y compris le collectif qui fait l'app, ne sait qui joue ni où.</p>
+  </section>
+
+  <section class="encart">
+    <h2>Installer l'app</h2>
+    <GuideInstallation />
   </section>
 
   <section class="encart">

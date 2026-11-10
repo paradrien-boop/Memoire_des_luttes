@@ -4,6 +4,9 @@
   import CarteGrande from './composants/Carte.svelte'
   import RevelationBooster from './composants/RevelationBooster.svelte'
   import Annonce from './composants/Annonce.svelte'
+  import Accueil from './composants/Accueil.svelte'
+  import BandeauMiseAJour from './composants/BandeauMiseAJour.svelte'
+  import { miseAJour } from './etat/mise-a-jour.svelte'
   import Manif from './ecrans/Manif.svelte'
   import Album from './ecrans/Album.svelte'
   import Editeur from './ecrans/Editeur.svelte'
@@ -18,6 +21,7 @@
   let cleEditeur = $state(0) // change pour recharger l'éditeur avec une autre carte
 
   jeu.charger().catch((e) => (erreur = String(e?.message ?? e)))
+  miseAJour.demarrer()
 
   $effect(() => {
     const suivre = () => { ecran = ecranDepuisAdresse(location.hash); ui.fermer(); scrollTo(0, 0) }
@@ -64,6 +68,11 @@
 </main>
 <BarreOnglets actif={ecran} />
 <Annonce />
+<BandeauMiseAJour />
+
+{#if jeu.pret && !jeu.accueilVu}
+  <Fenetre titre="Bienvenue" fermer={() => jeu.fermerAccueil()}><Accueil /></Fenetre>
+{/if}
 
 {#if ui.booster}
   <Fenetre titre="Ouverture du booster" fermer={() => ui.fermer()}><RevelationBooster resultat={ui.booster} /></Fenetre>

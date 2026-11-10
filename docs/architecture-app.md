@@ -151,7 +151,7 @@ Chaque étape donne une app qui fonctionne et qu'on peut tester.
 |---|---|---|
 | **0. Socle** ✅ | Workspaces, template Vite + Svelte + TypeScript, noyau vide, tests, vérification automatique sur GitHub | L'app vide se lance et les tests passent |
 | **1. Parité avec le prototype** ✅ | Tous les écrans du prototype, avec la base locale et les données de `data/` | On peut faire tout ce que permet le prototype |
-| **2. Hors ligne et installation** | Manifeste, *service worker*, écran d'accueil | L'app s'installe et marche en mode avion, sur Android et iPhone |
+| **2. Hors ligne et installation** ✅ | Manifeste, *service worker*, écran d'accueil | L'app s'installe et marche en mode avion, sur Android et iPhone |
 | **3. Signatures** | Signature et vérification dans le noyau, script `signer.mjs`, écran Packs | Un pack modifié d'une seule lettre est refusé |
 | **4. QR** | Scanner, codes de stand et cartes d'événement signés, planches de QR à imprimer | Un QR imprimé donne la bonne carte, une seule fois |
 | **5. Échange** | Échange de cartes entre deux téléphones par QR | Deux téléphones en mode avion échangent une carte |

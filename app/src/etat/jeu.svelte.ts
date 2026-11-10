@@ -41,6 +41,8 @@ class Jeu {
   importes = $state<PackImporte[]>([])
   evenements = $state<EvenementObtenu[]>([])
   brouillon = $state<Carte | null>(null)
+  /** L'écran d'accueil du premier lancement a été lu. */
+  accueilVu = $state(true)
 
   /** Nombre de cartes officielles différentes possédées. */
   nombreOfficielles = $derived(catalogue.officielles.filter((c) => (this.possessions[c.id] ?? 0) > 0).length)
@@ -56,6 +58,7 @@ class Jeu {
     this.ouverts = (r.ouverts as number) ?? 0
     this.vitesse = (r.vitesse as number) ?? 1
     this.brouillon = (r.brouillon as Carte) ?? null
+    this.accueilVu = r.accueilVu === true
     this.chrono = {
       session: (r.session as EtatChrono['session']) ?? null,
       journee: (r.journee as EtatChrono['journee']) ?? { date: '', gagnes: 0 },
@@ -75,6 +78,11 @@ class Jeu {
 
   private regler(valeurs: Record<string, unknown>) {
     return base.reglages.bulkPut(Object.entries(valeurs).map(([cle, valeur]) => ({ cle, valeur: $state.snapshot(valeur) })))
+  }
+
+  async fermerAccueil() {
+    this.accueilVu = true
+    await this.regler({ accueilVu: true })
   }
 
   /* ---------- Compteur de manif ---------- */

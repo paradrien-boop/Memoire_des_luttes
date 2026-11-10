@@ -21,6 +21,13 @@ npm run dev
 | `src/donnees.ts` | Le catalogue des cartes |
 | `vite.config.ts` | Configuration, dont le module `virtual:mdl-donnees` qui inclut `data/` dans l'app |
 
+## Hors ligne et mises à jour
+
+- `vite-plugin-pwa` produit le manifeste d'installation et le *service worker* (configuration dans `vite.config.ts`). Toute l'app, polices comprises, est gardée sur le téléphone.
+- Une nouvelle version n'est jamais appliquée de force : l'app affiche « Une nouvelle version de l'app est prête » et l'utilisateur choisit de redémarrer (`src/etat/mise-a-jour.svelte.ts`).
+- Au premier lancement, l'écran d'accueil explique l'app, guide l'installation selon le téléphone, et demande au navigateur de ne jamais effacer les données de l'app (`src/etat/installation.svelte.ts`).
+- Icônes : `public/icones/`.
+
 ## Règles
 
 - **Aucune ressource extérieure.** Polices, images et bibliothèques sont incluses dans l'app. La politique de sécurité dans `index.html` bloque tout le reste.

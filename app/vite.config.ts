@@ -1,4 +1,5 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { VitePWA } from 'vite-plugin-pwa'
 import { defineConfig, type Plugin } from 'vite'
 import { fileURLToPath } from 'node:url'
 import { join } from 'node:path'
@@ -33,6 +34,38 @@ function donnees(): Plugin {
 export default defineConfig({
   // Chemins relatifs : l'app fonctionne quel que soit le dossier où Codeberg Pages la sert.
   base: './',
-  plugins: [svelte(), donnees()],
+  plugins: [
+    svelte(),
+    donnees(),
+    // Rend l'app installable et utilisable sans réseau : tout est gardé sur le téléphone.
+    VitePWA({
+      registerType: 'prompt', // une nouvelle version ne s'installe que si l'utilisateur l'accepte
+      injectRegister: false, // l'enregistrement est fait dans src/etat/mise-a-jour.svelte.ts
+      includeAssets: ['favicon.svg', 'icones/apple-touch-icon.png'],
+      manifest: {
+        name: 'Mémoire des luttes',
+        short_name: 'Mémoire des luttes',
+        description: "Cartes à collectionner sur l'histoire des luttes. Sans compte, sans GPS, sans réseau.",
+        lang: 'fr',
+        start_url: './',
+        scope: './',
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#E9E6E1',
+        theme_color: '#1C1816',
+        icons: [
+          { src: 'icones/icone-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icones/icone-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icones/icone-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        // Tout ce qu'il faut pour fonctionner en mode avion (polices en woff2 seulement, le format que lisent tous les téléphones récents).
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        navigateFallback: 'index.html',
+        cleanupOutdatedCaches: true,
+      },
+    }),
+  ],
   server: { fs: { allow: ['..'] } },
 })
