@@ -19,3 +19,20 @@ img { max-width: 100%; }
 .discret { color: var(--discret); }
 .pile { display: flex; flex-direction: column; gap: 14px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Boutons et formulaires, communs à tous les écrans */
+button, .bouton {
+  font: inherit; font-weight: 700; cursor: pointer; border: 2px solid var(--encre); background: transparent; color: var(--encre);
+  padding: 10px 16px; border-radius: 2px; text-transform: uppercase; letter-spacing: .06em; font-size: 13px;
+}
+button.rouge { background: var(--rouge); border-color: var(--rouge); color: var(--sur-rouge); }
+button.encre { background: var(--encre); color: var(--papier); }
+button:disabled { opacity: .4; cursor: not-allowed; }
+input, select, textarea { font: inherit; color: var(--encre); background: var(--carte); border: 1.5px solid var(--trait); border-radius: 2px; padding: 9px 10px; width: 100%; }
+textarea { resize: vertical; min-height: 70px; font-family: var(--f-texte); font-size: 14px; }
+label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 700; }
+label small { font-weight: 400; color: var(--discret); }
+.ligne { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.encart { border: 2px solid var(--encre); padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--carte); }
+.note { font-size: 13px; color: var(--discret); border-left: 3px solid var(--trait); padding-left: 10px; }
+.grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 14px; }

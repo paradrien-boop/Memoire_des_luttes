@@ -12,8 +12,11 @@ npm run dev
 
 | Dossier | Contenu |
 |---|---|
-| `src/ecrans/` | Un fichier par écran |
-| `src/composants/` | Éléments réutilisés |
+| `src/ecrans/` | Un fichier par écran : Manif, Album, Éditeur, Plus |
+| `src/composants/` | Éléments réutilisés : carte, mini-carte, révélation du booster, fenêtre, annonce |
+| `src/etat/` | L'état du jeu (`jeu.svelte.ts`) et de l'interface (`interface.svelte.ts`) |
+| `src/stockage/` | La base de données du téléphone (IndexedDB via Dexie) |
+| `src/codes-demo.ts` | Codes de stand de démonstration, en attendant les QR signés |
 | `src/styles/` | Couleurs, polices et styles de base |
 | `src/donnees.ts` | Le catalogue des cartes |
 | `vite.config.ts` | Configuration, dont le module `virtual:mdl-donnees` qui inclut `data/` dans l'app |

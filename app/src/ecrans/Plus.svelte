@@ -1,9 +1,49 @@
 <script lang="ts">
   import Entete from '../composants/Entete.svelte'
+  import BoutonConfirme from '../composants/BoutonConfirme.svelte'
+  import { jeu } from '../etat/jeu.svelte'
 </script>
 
 <Entete surtitre="Réglages et informations" titre="Plus" />
+
 <div class="pile">
-  <p>Pas de compte, pas de GPS, pas de réseau pendant la manif. Tout reste sur ton téléphone.</p>
-  <p class="discret">Packs, réglages et « Tout effacer » arrivent à l'étape 1.</p>
+  <section class="encart">
+    <h2>Rien ne sort de ton téléphone</h2>
+    <p>Pas de compte, pas de GPS, pas de réseau une fois l'app installée. Ta collection est stockée uniquement sur ce téléphone. Personne, y compris le collectif qui fait l'app, ne sait qui joue ni où.</p>
+  </section>
+
+  <section class="encart">
+    <h2>D'où viennent les cartes</h2>
+    <div class="confiance">
+      <b class="or">✊ Officiel</b><span>Signé par la clé du collectif. Relu et sourcé. Seuls ces packs tombent dans les boosters.</span>
+      <b>✊ Local</b><span>Signé par un collectif local. Tu choisis de lui faire confiance.</span>
+      <b class="discret">Perso</b><span>Fait par n'importe qui, sans signature. Visible dans l'album, jamais dans les boosters.</span>
+      <b class="rouge-texte">🔒 Événement</b><span>Créée par le collectif pour une seule journée. Numérotée, tirage limité, scellée.</span>
+    </div>
+    <p class="note">Les signatures arrivent à l'étape 3. Pour l'instant, l'app fait confiance au pack de départ.</p>
+  </section>
+
+  <section class="encart">
+    <h2>Comment naît une carte officielle</h2>
+    <ol class="pile">
+      <li><b>Proposition.</b> N'importe qui écrit une carte dans l'éditeur et l'envoie au collectif, de façon anonyme.</li>
+      <li><b>Relecture.</b> Deux personnes vérifient chaque fait et chaque source.</li>
+      <li><b>Signature.</b> La personne qui garde la clé du collectif signe le pack sur un ordinateur jamais connecté à Internet.</li>
+      <li><b>Diffusion.</b> Le pack signé circule de main en main ou en téléchargement. Chaque téléphone vérifie la signature tout seul.</li>
+    </ol>
+  </section>
+
+  <section class="encart">
+    <h2>Tout effacer</h2>
+    <p>Supprime ta collection, tes cartes perso et ton historique de ce téléphone, d'un seul coup.</p>
+    <div class="ligne"><BoutonConfirme classe="rouge" libelle="Tout effacer" confirmation="Oui, tout effacer" action={() => jeu.toutEffacer()} /></div>
+  </section>
 </div>
+
+<style>
+  .confiance { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 14px; }
+  .confiance b { font-family: var(--f-affiche); font-size: 18px; text-transform: uppercase; }
+  .or { color: var(--or); }
+  .rouge-texte { color: var(--rouge); }
+  ol { margin: 0; padding-left: 20px; gap: 8px; }
+</style>

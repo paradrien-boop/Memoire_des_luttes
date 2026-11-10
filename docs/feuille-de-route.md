@@ -25,7 +25,7 @@
 Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 
 - [x] Étape 0 : socle (workspaces, noyau avec règles du jeu et tests, app Vite + Svelte + TypeScript, vérifications automatiques, publication vers Codeberg Pages)
-- [ ] Étape 1 : parité avec le prototype
+- [x] Étape 1 : parité avec le prototype (base de données du téléphone, tous les écrans, compteur et import de packs testés dans le noyau)
 - [ ] Étape 2 : hors ligne et installation
 
 
