@@ -3,7 +3,9 @@
   import { miseAJour } from '../etat/mise-a-jour.svelte'
 </script>
 
-{#if installation.installee}
+{#if import.meta.env.VITE_ARTEFACT}
+  <p>Ceci est une <b>version de démonstration</b> en ligne. L'installation sur l'écran d'accueil et le mode avion fonctionnent dans la version publiée sur Codeberg Pages.</p>
+{:else if installation.installee}
   <p><b>✓ L'app est installée.</b> Elle s'ouvre depuis l'écran d'accueil, comme une application.</p>
 {:else if installation.invite}
   <p>Installe l'app sur ton écran d'accueil : elle s'ouvrira comme une application et marchera sans réseau.</p>
@@ -21,9 +23,9 @@
   <p>Sur ordinateur, l'app fonctionne directement dans le navigateur. Pour l'avoir dans ta poche, ouvre cette adresse sur ton téléphone.</p>
 {/if}
 
-<p class="etat" class:pret={miseAJour.horsLignePret}>
+{#if !import.meta.env.VITE_ARTEFACT}<p class="etat" class:pret={miseAJour.horsLignePret}>
   {miseAJour.horsLignePret ? '✓ Prête à fonctionner sans réseau, même en mode avion.' : "Préparation du mode hors ligne… Garde le réseau quelques secondes."}
-</p>
+</p>{/if}
 
 <style>
   ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }

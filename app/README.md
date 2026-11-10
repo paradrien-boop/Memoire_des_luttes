@@ -28,6 +28,10 @@ npm run dev
 - Au premier lancement, l'écran d'accueil explique l'app, guide l'installation selon le téléphone, et demande au navigateur de ne jamais effacer les données de l'app (`src/etat/installation.svelte.ts`).
 - Icônes : `public/icones/`.
 
+## Page de démonstration
+
+`npm run build:artefact -w app` construit une variante de l'app en **un seul fichier HTML** (`app/dist-artefact/index.html`), sans mode hors ligne ni installation. Elle sert à montrer l'app comme page de démo en ligne. La vraie publication reste la version normale, sur Codeberg Pages.
+
 ## Règles
 
 - **Aucune ressource extérieure.** Polices, images et bibliothèques sont incluses dans l'app. La politique de sécurité dans `index.html` bloque tout le reste.
