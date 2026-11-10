@@ -21,8 +21,9 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 1. [Le concept](docs/concept.md)
 2. [Les familles de cartes](docs/cartes-et-familles.md)
 3. [Signatures, collectifs et confiance](docs/signatures-et-collectifs.md)
-4. [Feuille de route](docs/feuille-de-route.md)
-5. [Idées en attente](docs/idees.md)
+4. [Architecture de l'application](docs/architecture-app.md)
+5. [Feuille de route](docs/feuille-de-route.md)
+6. [Idées en attente](docs/idees.md)
 
 Pour proposer une carte ou une correction : voir [CONTRIBUER.md](CONTRIBUER.md).
 

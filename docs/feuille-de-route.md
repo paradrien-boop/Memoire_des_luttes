@@ -22,6 +22,9 @@
 
 ## Étape 3 : une vraie application hors ligne
 
+Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
+
+
 - [ ] Application installable sur l'écran d'accueil, qui fonctionne sans réseau
 - [ ] Scan des QR par l'appareil photo
 - [ ] Échange de cartes entre deux téléphones par QR
