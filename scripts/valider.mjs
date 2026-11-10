@@ -3,6 +3,7 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { verifierPack } from "../paquets/noyau/src/index.ts";
 
 const racine = join(dirname(fileURLToPath(import.meta.url)), "..");
 const familles = JSON.parse(readFileSync(join(racine, "data/familles/familles.json"), "utf8"));
@@ -11,6 +12,11 @@ const STATUTS = ["proposee", "a-relire", "validee", "signee"];
 let erreurs = 0;
 const err = (f, m) => { erreurs++; console.log(`✗ ${f} : ${m}`); };
 const vus = {}; // identifiant de carte -> pack, pour repérer les doublons entre packs
+
+// Clés du collectif : seulement des clés publiques (64 caractères hexadécimaux), jamais de clé secrète.
+const cles = JSON.parse(readFileSync(join(racine, "data/cles/racine.json"), "utf8"));
+if (!Array.isArray(cles.racines) || cles.racines.some((k) => !/^[0-9a-f]{64}$/.test(k))) err("data/cles/racine.json", "« racines » doit être une liste de clés publiques (64 caractères hexadécimaux)");
+if (JSON.stringify(cles).includes("secrete")) err("data/cles/racine.json", "ce fichier ne doit contenir aucune clé secrète");
 
 for (const type of ["officiel", "local"]) {
   const dossier = join(racine, "data/packs", type);
@@ -50,6 +56,13 @@ for (const type of ["officiel", "local"]) {
       }
     }
     for (const s of meta.series || []) for (const id of s.cartes) if (!cartes[id]) err(pack, `la série "${s.id}" cite une carte inconnue : ${id}`);
+    // Pack signé : la signature doit correspondre au contenu actuel (sinon il faut re-signer avec l'atelier).
+    if (meta.signature) {
+      const ordre = Object.keys(cartes).sort();
+      const r = verifierPack({ ...meta, cartes: ordre.map((id) => cartes[id]) }, { racines: cles.racines, revoquees: [], date: new Date().toISOString().slice(0, 10) });
+      if (r.confiance === "invalide") err(pack, `signature invalide : ${r.raison} Re-signe le pack avec « npm run atelier -- signer-pack ».`);
+      else console.log(`Pack ${pack} : signature ${r.confiance === "officiel" ? "officielle" : "locale"} valide.`);
+    }
     console.log(`Pack ${pack} : ${Object.keys(cartes).length} cartes vérifiées.`);
   }
 }

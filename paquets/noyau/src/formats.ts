@@ -51,7 +51,11 @@ export interface Pack {
   nom: string;
   series: Serie[];
   cartes: Carte[];
-  signature: string | null;
+  signature?: unknown;
+  /** Pour un pack local : le collectif qui l'a signé. */
+  collectif?: { id: string; nom: string };
+  /** Clés révoquées, publiées dans un pack officiel. */
+  revocations?: string[];
 }
 
 export interface CarteEvenement extends Carte {
@@ -64,4 +68,6 @@ export interface Donnees {
   familles: Record<string, Famille>;
   packs: Pack[];
   evenements: CarteEvenement[];
+  /** Clés publiques du collectif racine, intégrées à l'app (data/cles/racine.json). */
+  cles?: { nom: string; racines: string[] };
 }

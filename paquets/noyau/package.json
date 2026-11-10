@@ -7,5 +7,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "license": "AGPL-3.0-or-later"
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "@noble/curves": "^2.4.0",
+    "canonicalize": "^5.1.0"
+  }
 }

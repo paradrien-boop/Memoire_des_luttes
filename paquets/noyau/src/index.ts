@@ -5,3 +5,5 @@ export * from "./chrono";
 export * from "./packs";
 export * from "./quiz";
 export * from "./mascotte";
+export * from "./signature";
+export * from "./qr";

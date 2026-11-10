@@ -886,5 +886,9 @@ window.MDL_DONNEES = {
    "exemple": true,
    "statut": "exemple"
   }
- ]
+ ],
+ "cles": {
+  "nom": "Mémoire des luttes",
+  "racines": []
+ }
 };
