@@ -26,7 +26,8 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 4. [Architecture de l'application](docs/architecture-app.md)
 5. [Feuille de route](docs/feuille-de-route.md)
 6. [Publication sur Codeberg Pages](docs/publication.md)
-7. [Idées en attente](docs/idees.md)
+7. [Tester sur de vrais téléphones](docs/tester-sur-telephone.md)
+8. [Idées en attente](docs/idees.md)
 
 Pour proposer une carte ou une correction : voir [CONTRIBUER.md](CONTRIBUER.md).
 
