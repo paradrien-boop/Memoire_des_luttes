@@ -6,6 +6,7 @@
 - [x] Prototype web ([`prototype/index.html`](../prototype/index.html)) : compteur de manif, boosters, codes de stand, album par séries, éditeur avec rubriques par famille, cartes d'événement, export et import de packs
 - [x] Pack de départ « La Commune de Paris, 1871 » : 16 cartes, à relire
 - [x] Ce dépôt
+- [x] Dépôt public de publication : https://codeberg.org/hiddink/memoire_des_luttes (reste à ajouter le secret `CODEBERG_JETON` sur GitHub)
 
 ## Étape 1 : un contenu solide
 

@@ -4,6 +4,8 @@ Une application de cartes à collectionner pour les manifs. On gagne des booster
 
 L'application ne demande **ni compte, ni GPS, ni réseau** pendant la manif. Tout reste sur le téléphone.
 
+L'app publiée : https://hiddink.codeberg.page/memoire_des_luttes/app/ · le site : https://hiddink.codeberg.page/memoire_des_luttes/
+
 Ce dépôt est **le centre du projet** : les idées, la documentation, la base de cartes et le code. Le site et les mises à jour de l'application viendront chercher leurs données ici.
 
 ## Organisation du dépôt

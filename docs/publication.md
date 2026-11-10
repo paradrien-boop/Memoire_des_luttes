@@ -10,31 +10,26 @@ Ce dépôt GitHub reste privé. À chaque envoi sur `main`, une action GitHub la
 
 Ce qui devient public : le site, l'app, les cartes et les packs. Rien d'autre : ni la documentation, ni les discussions, ni l'historique de ce dépôt. La publication est annulée si la clé de démonstration s'y trouve, ou si un pack a une signature invalide.
 
-## À faire une seule fois
+## Adresses
 
-### 1. Sur Codeberg
+| Quoi | Adresse |
+|---|---|
+| Dépôt public (Codeberg) | https://codeberg.org/hiddink/memoire_des_luttes (branche `pages`, écrite par l'action GitHub) |
+| Site | https://hiddink.codeberg.page/memoire_des_luttes/ |
+| **App** (à mettre dans les QR des tracts) | https://hiddink.codeberg.page/memoire_des_luttes/app/ |
+| Packs | https://hiddink.codeberg.page/memoire_des_luttes/packs/ |
 
-1. **Créer un compte au nom du collectif**, pas à ton nom. Utilise une adresse email dédiée au projet.
-2. **Créer un dépôt public**, par exemple `memoire-des-luttes`. Il peut rester vide : l'action GitHub le remplira.
-3. **Créer un jeton d'accès** : *Settings → Applications → Generate new token*. Donne-lui seulement la permission **repository : read and write**. Copie le jeton, il ne s'affiche qu'une fois.
+Le compte et le dépôt sont écrits dans `.github/workflows/publier.yml` (ce ne sont pas des secrets). Des variables GitHub `CODEBERG_UTILISATEUR` et `CODEBERG_DEPOT` peuvent les remplacer.
 
-### 2. Sur GitHub, dans ce dépôt
+## Il reste une seule chose à faire : le jeton
 
-*Settings → Secrets and variables → Actions* :
+1. **Sur Codeberg**, connecté au compte `hiddink` : *Settings → Applications → Generate New Token*. Nom : par exemple « publication GitHub ». Permission : **repository : Read and write**, rien d'autre. Copier le jeton, il ne s'affiche qu'une fois.
+2. **Sur GitHub**, dans ce dépôt : *Settings → Secrets and variables → Actions → New repository secret*. Nom : `CODEBERG_JETON`, valeur : le jeton.
+3. Onglet *Actions* → *Publier sur Codeberg Pages* → *Run workflow*. Ensuite, chaque envoi sur `main` republie tout.
 
-| Où | Nom | Valeur |
-|---|---|---|
-| Onglet *Secrets* | `CODEBERG_JETON` | Le jeton créé sur Codeberg |
-| Onglet *Variables* | `CODEBERG_UTILISATEUR` | Le nom du compte Codeberg |
-| Onglet *Variables* | `CODEBERG_DEPOT` | `compte/depot`, par exemple `memoire-des-luttes/memoire-des-luttes` |
+Tant que le secret n'existe pas, l'action construit et vérifie tout, puis s'arrête avec le message « Publication non envoyée » : ce n'est pas une erreur.
 
-Le jeton ne doit **jamais** être écrit dans un fichier du dépôt : seulement dans les *Secrets* de GitHub.
-
-### 3. Lancer la première publication
-
-Onglet *Actions* → *Publier sur Codeberg Pages* → *Run workflow*. Ensuite, chaque envoi sur `main` republie l'app.
-
-Le site sera à l'adresse `https://<compte>.codeberg.page/<depot>/`, et l'app à `https://<compte>.codeberg.page/<depot>/app/`.
+Le jeton ne doit **jamais** être écrit dans un fichier du dépôt, ni collé dans une conversation : seulement dans les *Secrets* de GitHub.
 
 ## Points d'attention
 

@@ -1,5 +1,8 @@
 # Publie le site, l'app (sous /app/) et les packs (sous /packs/) sur Codeberg Pages, à chaque envoi sur main.
-# Ne fait rien tant que la variable CODEBERG_DEPOT n'est pas définie (voir docs/publication.md).
+# Destination : le dépôt public https://codeberg.org/hiddink/memoire_des_luttes (branche « pages »),
+# servi à l'adresse https://hiddink.codeberg.page/memoire_des_luttes/
+# Seul le jeton d'accès est secret : tant que le secret CODEBERG_JETON n'existe pas, tout est construit
+# et vérifié, mais rien n'est envoyé (voir docs/publication.md).
 name: Publier sur Codeberg Pages
 
 on:
@@ -11,8 +14,11 @@ concurrency: publication
 
 jobs:
   publier:
-    if: ${{ vars.CODEBERG_DEPOT != '' }}
     runs-on: ubuntu-latest
+    env:
+      # Les variables du dépôt GitHub, si elles existent, remplacent ces valeurs.
+      UTILISATEUR: ${{ vars.CODEBERG_UTILISATEUR || 'hiddink' }}
+      DEPOT: ${{ vars.CODEBERG_DEPOT || 'hiddink/memoire_des_luttes' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,11 +33,13 @@ jobs:
       - name: Envoyer la publication vers la branche « pages » de Codeberg
         env:
           JETON: ${{ secrets.CODEBERG_JETON }}
-          UTILISATEUR: ${{ vars.CODEBERG_UTILISATEUR }}
-          DEPOT: ${{ vars.CODEBERG_DEPOT }}
         run: |
+          if [ -z "$JETON" ]; then
+            echo "::notice title=Publication non envoyée::Le secret CODEBERG_JETON n'existe pas encore. Tout est construit et vérifié, mais rien n'est envoyé sur Codeberg. Voir docs/publication.md."
+            exit 0
+          fi
           cd publication
           git init -q -b pages
           git add -A
-          git -c user.name="Mémoire des luttes" -c user.email="publication@invalid" commit -q -m "Publication de l'app"
+          git -c user.name="Mémoire des luttes" -c user.email="publication@invalid" commit -q -m "Publication"
           git push --force -q "https://${UTILISATEUR}:${JETON}@codeberg.org/${DEPOT}.git" pages
