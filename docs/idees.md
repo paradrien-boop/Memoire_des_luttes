@@ -16,7 +16,7 @@ Ce fichier garde tout ce qui n'est pas encore décidé. Quand une question est t
 ## Idées à approfondir
 
 - Échange de cartes par Bluetooth, balises de stand, booster de cortège ([bluetooth.md](bluetooth.md)).
-- Quiz après la lecture d'une série.
+- Quiz du jour sur les cartes possédées, mascotte (chat noir) et quartier qui se transforme : voir [quiz-et-mascotte.md](quiz-et-mascotte.md).
 - Frise chronologique débloquée en complétant une série.
 - Carte des idées : un graphe des cartes et de leurs liens, qui se dévoile au fil de la collection.
 - Packs suivants : 1er mai, Front populaire, Mai 68, luttes féministes, luttes anticoloniales, grèves de 1995.
