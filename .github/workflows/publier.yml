@@ -42,4 +42,14 @@ jobs:
           git init -q -b pages
           git add -A
           git -c user.name="Mémoire des luttes" -c user.email="publication@invalid" commit -q -m "Publication"
-          git push --force -q "https://${UTILISATEUR}:${JETON}@codeberg.org/${DEPOT}.git" pages
+          # Codeberg est parfois surchargé (erreurs 502, 504) : on réessaie, en attendant de plus en plus.
+          for attente in 0 10 30 60 120; do
+            sleep $attente
+            if git push --force -q "https://${UTILISATEUR}:${JETON}@codeberg.org/${DEPOT}.git" pages; then
+              echo "::notice title=Publié::https://${UTILISATEUR}.codeberg.page/${DEPOT#*/}/"
+              exit 0
+            fi
+            echo "Envoi refusé ou Codeberg injoignable, nouvel essai…"
+          done
+          echo "::error::Codeberg n'a pas accepté l'envoi après 5 essais. Si l'erreur est 401 ou 403, vérifie le jeton ; sinon, relance plus tard."
+          exit 1
