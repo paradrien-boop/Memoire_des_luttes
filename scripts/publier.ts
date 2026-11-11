@@ -27,6 +27,8 @@ mkdirSync(join(sortie, "packs"), { recursive: true });
 cpSync(join(racine, "site/dist"), sortie, { recursive: true });
 cpSync(join(racine, "app/dist"), join(sortie, "app"), { recursive: true });
 for (const f of ["LICENSE", "LICENCES.md"]) cpSync(join(racine, f), join(sortie, f));
+// Pour GitHub Pages : servir les fichiers tels quels (sans traitement Jekyll).
+writeFileSync(join(sortie, ".nojekyll"), "");
 
 const packs = packsPublies(racine);
 for (const p of packs) {

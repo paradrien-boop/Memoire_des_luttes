@@ -6,7 +6,7 @@ Il faut au moins **un Android** (Chrome) et **un iPhone** (Safari), idéalement 
 
 ## Avant de commencer
 
-1. **Publier l'app sur Codeberg Pages** : voir [publication.md](publication.md).
+1. **Ouvrir l'app** sur le téléphone : https://paradrien-boop.github.io/memoire-des-luttes-publication/app/ (publication : voir [publication.md](publication.md)).
 2. **Créer la vraie clé du collectif**, sur un ordinateur jamais connecté à Internet, avec l'atelier :
 
    ```bash

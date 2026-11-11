@@ -4,7 +4,7 @@
 </script>
 
 {#if import.meta.env.VITE_ARTEFACT}
-  <p>Ceci est une <b>version de démonstration</b> en ligne. L'installation sur l'écran d'accueil et le mode avion fonctionnent dans la version publiée sur Codeberg Pages.</p>
+  <p>Ceci est une <b>version de démonstration</b> en ligne. L'installation sur l'écran d'accueil et le mode avion fonctionnent dans la version publiée.</p>
 {:else if installation.installee}
   <p><b>✓ L'app est installée.</b> Elle s'ouvre depuis l'écran d'accueil, comme une application.</p>
 {:else if installation.invite}

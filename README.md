@@ -4,7 +4,7 @@ Une application de cartes à collectionner pour les manifs. On gagne des booster
 
 L'application ne demande **ni compte, ni GPS, ni réseau** pendant la manif. Tout reste sur le téléphone.
 
-L'app publiée : https://hiddink.codeberg.page/memoire_des_luttes/app/ · le site : https://hiddink.codeberg.page/memoire_des_luttes/
+L'app publiée (phase de test) : https://paradrien-boop.github.io/memoire-des-luttes-publication/app/ · le site : https://paradrien-boop.github.io/memoire-des-luttes-publication/
 
 Ce dépôt est **le centre du projet** : les idées, la documentation, la base de cartes et le code. Le site et les mises à jour de l'application viendront chercher leurs données ici.
 
@@ -27,7 +27,7 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 3. [Signatures, collectifs et confiance](docs/signatures-et-collectifs.md)
 4. [Architecture de l'application](docs/architecture-app.md)
 5. [Feuille de route](docs/feuille-de-route.md)
-6. [Publication sur Codeberg Pages](docs/publication.md)
+6. [Publication](docs/publication.md)
 7. [Tester sur de vrais téléphones](docs/tester-sur-telephone.md)
 8. [Idées en attente](docs/idees.md)
 
@@ -61,7 +61,7 @@ npm run dev
 
 La première commande installe les outils, la seconde lance l'app en local et la recharge à chaque modification, y compris dans `data/`. Autres commandes : `npm test` (tests du noyau), `npm run check` (vérification des types), `npm run build` (construction de l'app).
 
-À chaque envoi sur GitHub, une action vérifie les cartes, lance les tests et construit l'app. L'app est publiée sur Codeberg Pages : voir [docs/publication.md](docs/publication.md).
+À chaque envoi sur GitHub, une action vérifie les cartes, lance les tests et construit l'app. L'app est publiée (GitHub Pages pour la phase de test) : voir [docs/publication.md](docs/publication.md).
 
 ## Licences
 

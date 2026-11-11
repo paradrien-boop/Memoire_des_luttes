@@ -1,38 +1,52 @@
-# Publier l'app sur Codeberg Pages
+# Publier l'app
 
-**Décision :** l'app est publiée sur **Codeberg Pages**, sous le nom **Mémoire des luttes**.
+**Pour la phase de test**, l'app est publiée avec **GitHub Pages**, depuis un dépôt public qui ne contient que la version publiée. Une migration vers Codeberg (ou une adresse au nom du collectif) est prévue plus tard : voir en bas.
 
-Ce dépôt GitHub reste privé. À chaque envoi sur `main`, une action GitHub lance `npm run publier`, qui construit **le site, l'app et les packs** dans `publication/`, puis envoie ce dossier vers un dépôt public sur Codeberg. Codeberg Pages le sert ensuite :
-
-- le site à la racine : `https://<compte>.codeberg.page/<depot>/` ;
-- l'app sous `/app/` : `https://<compte>.codeberg.page/<depot>/app/` (c'est l'adresse à mettre dans les QR des tracts) ;
-- les packs sous `/packs/`.
-
-Ce qui devient public : le site, l'app, les cartes et les packs. Rien d'autre : ni la documentation, ni les discussions, ni l'historique de ce dépôt. La publication est annulée si la clé de démonstration s'y trouve, ou si un pack a une signature invalide.
+Ce dépôt-ci reste privé. À chaque envoi sur `main`, l'action « Publier » lance `npm run publier`, qui construit **le site, l'app et les packs** dans `publication/`, puis envoie ce dossier sur la branche `main` du dépôt public.
 
 ## Adresses
 
 | Quoi | Adresse |
 |---|---|
-| Dépôt public (Codeberg) | https://codeberg.org/hiddink/memoire_des_luttes (branche `pages`, écrite par l'action GitHub) |
-| Site | https://hiddink.codeberg.page/memoire_des_luttes/ |
-| **App** (à mettre dans les QR des tracts) | https://hiddink.codeberg.page/memoire_des_luttes/app/ |
-| Packs | https://hiddink.codeberg.page/memoire_des_luttes/packs/ |
+| Dépôt public | https://github.com/paradrien-boop/memoire-des-luttes-publication |
+| Site | https://paradrien-boop.github.io/memoire-des-luttes-publication/ |
+| **App** (à ouvrir sur le téléphone) | https://paradrien-boop.github.io/memoire-des-luttes-publication/app/ |
+| Packs | https://paradrien-boop.github.io/memoire-des-luttes-publication/packs/ |
 
-Le compte et le dépôt sont écrits dans `.github/workflows/publier.yml` (ce ne sont pas des secrets). Des variables GitHub `CODEBERG_UTILISATEUR` et `CODEBERG_DEPOT` peuvent les remplacer.
+## À faire une seule fois
 
-## Il reste une seule chose à faire : le jeton
+### 1. Activer GitHub Pages sur le dépôt public
 
-1. **Sur Codeberg**, connecté au compte `hiddink` : *Settings → Applications → Generate New Token*. Nom : par exemple « publication GitHub ». Permission : **repository : Read and write**, rien d'autre. Copier le jeton, il ne s'affiche qu'une fois.
-2. **Sur GitHub**, dans ce dépôt : *Settings → Secrets and variables → Actions → New repository secret*. Nom : `CODEBERG_JETON`, valeur : le jeton.
-3. Onglet *Actions* → *Publier sur Codeberg Pages* → *Run workflow*. Ensuite, chaque envoi sur `main` republie tout.
+https://github.com/paradrien-boop/memoire-des-luttes-publication/settings/pages
 
-Tant que le secret n'existe pas, l'action construit et vérifie tout, puis s'arrête avec le message « Publication non envoyée » : ce n'est pas une erreur.
+*Build and deployment* → *Source* : **Deploy from a branch** → *Branch* : **main**, dossier **/ (root)** → **Save**. Le site est en ligne une à deux minutes plus tard.
 
-Le jeton ne doit **jamais** être écrit dans un fichier du dépôt, ni collé dans une conversation : seulement dans les *Secrets* de GitHub.
+### 2. Le jeton qui permet à l'action d'écrire dans le dépôt public
+
+Sans lui, la publication n'est pas mise à jour automatiquement (la première a été envoyée à la main).
+
+1. https://github.com/settings/personal-access-tokens/new (jeton « fine-grained »).
+   - *Token name* : « publication Mémoire des luttes » ; *Expiration* : à ton choix.
+   - *Repository access* : **Only select repositories** → `memoire-des-luttes-publication` seulement.
+   - *Permissions* → *Repository permissions* → **Contents : Read and write**. Rien d'autre.
+   - *Generate token*, puis copier le jeton (il ne s'affiche qu'une fois).
+2. https://github.com/paradrien-boop/Memoire_des_luttes/settings/secrets/actions → *New repository secret* → nom **`PUBLICATION_JETON`**, valeur : le jeton.
+
+Ensuite, chaque envoi sur `main` republie tout. Sans le secret, l'action construit et vérifie tout puis s'arrête avec « Publication non envoyée » : ce n'est pas une erreur.
+
+Le jeton ne doit **jamais** être écrit dans un fichier ni collé dans une conversation : seulement dans les *Secrets* de GitHub.
 
 ## Points d'attention
 
-- **Licence obligatoire.** Codeberg n'accepte que des projets sous licence libre. C'est fait : le code est en AGPL-3.0, les cartes en CC BY-SA 4.0. Les fichiers `LICENSE` et `LICENCES.md` sont envoyés avec l'app.
-- **Pas d'en-têtes de sécurité.** Codeberg Pages ne permet pas de les configurer. La politique de sécurité de l'app est donc écrite dans `app/index.html`, ce qui suffit pour bloquer tout chargement extérieur.
-- **Anonymat.** Le compte Codeberg, l'adresse email et le jeton doivent tous être au nom du collectif. Les publications sont signées « Mémoire des luttes ».
+- **Anonymat** : l'adresse contient le nom du compte GitHub (`paradrien-boop`). Acceptable pour des tests entre proches ; pour le lancement public, il faudra une adresse au nom du collectif.
+- **Migrer coûte cher une fois l'app adoptée** : une app installée est liée à son adresse. Si l'adresse change, il faut réinstaller, et la collection (rangée par adresse dans le téléphone) ne suit pas. Migrer **avant** d'avoir de vrais utilisateurs, ou ajouter d'abord une fonction « Exporter / importer ma collection ».
+- **Sécurité** : la publication est annulée si la clé de démonstration s'y trouve, ou si un pack a une signature invalide. Sans en-têtes HTTP configurables, la politique de sécurité de l'app est écrite dans `app/index.html`.
+- **Licences** : `LICENSE` et `LICENCES.md` sont publiés avec l'app.
+
+## Migrer plus tard (Codeberg ou autre)
+
+Un dépôt Codeberg existe déjà : https://codeberg.org/hiddink/memoire_des_luttes. L'envoi depuis GitHub y échouait en novembre 2026 (erreur 504 de Codeberg). Pour migrer :
+
+1. Dans `.github/workflows/publier.yml`, changer `DEPOT` et l'adresse git (`codeberg.org` au lieu de `github.com`), et le nom de la branche (`pages` pour Codeberg Pages).
+2. Mettre un jeton Codeberg (permission *repository : Read and write*) dans le secret correspondant.
+3. Prévenir les personnes qui ont installé l'app de la nouvelle adresse.

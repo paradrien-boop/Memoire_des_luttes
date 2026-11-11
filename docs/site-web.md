@@ -1,6 +1,6 @@
 # Le site web
 
-> **Statut : en place** (dossier [`site/`](../site/)), publié avec l'app sur Codeberg Pages. L'espace de débat reste à choisir (Decidim, Discourse…) : son adresse se met dans `data/site.json`, et le site y renvoie.
+> **Statut : en place** (dossier [`site/`](../site/)), publié avec l'app (GitHub Pages pour la phase de test). L'espace de débat reste à choisir (Decidim, Discourse…) : son adresse se met dans `data/site.json`, et le site y renvoie.
 
 L'application reste sans compte et hors ligne. Le site sert à celles et ceux qui **fabriquent** le contenu. Il lit ses données dans ce dépôt.
 
@@ -41,7 +41,7 @@ Le site et l'application liront les données publiées depuis ce dépôt :
 - `data/collectifs/` pour les clés et l'annuaire ;
 - `data/evenements/` pour les cartes d'événement.
 
-Le dépôt reste privé : seule la publication (site, app, packs) est envoyée sur Codeberg Pages, par `npm run publier` et l'action GitHub « Publier ».
+Le dépôt reste privé : seule la publication (site, app, packs) est envoyée sur le dépôt public de publication, par `npm run publier` et l'action GitHub « Publier ».
 
 | Adresse | Contenu |
 |---|---|

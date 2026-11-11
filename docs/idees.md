@@ -4,7 +4,7 @@ Ce fichier garde tout ce qui n'est pas encore décidé. Quand une question est t
 
 ## Questions à trancher
 
-- [x] **Publication.** Décidé : Codeberg Pages. Seule l'app construite y est envoyée, le dépôt reste privé. Voir [publication.md](publication.md).
+- [x] **Publication.** GitHub Pages (dépôt public séparé) pour la phase de test ; Codeberg ou une adresse au nom du collectif plus tard. Seule la version construite y est envoyée, le dépôt reste privé. Voir [publication.md](publication.md).
 - [x] **Nom** : Mémoire des luttes.
 - [ ] **Anonymat du dépôt.** Un dépôt sur un compte GitHub personnel est lié à une identité. Faut-il un compte ou une organisation dédiés au collectif, ou migrer vers Codeberg ?
 - [x] **Licence du code** : AGPL-3.0 ou ultérieure. Voir [LICENCES.md](../LICENCES.md).

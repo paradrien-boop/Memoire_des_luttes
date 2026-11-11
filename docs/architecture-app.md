@@ -160,7 +160,7 @@ Chaque étape donne une app qui fonctionne et qu'on peut tester.
 
 ## 9. Questions encore ouvertes pour l'app
 
-- ~~Où publier ?~~ Décidé : Codeberg Pages ([publication.md](publication.md)).
+- ~~Où publier ?~~ GitHub Pages pour la phase de test, migration prévue plus tard ([publication.md](publication.md)).
 - ~~Le nom ?~~ Décidé : Mémoire des luttes.
 - ~~La licence du code ?~~ Décidé : AGPL-3.0 ou ultérieure.
 - **Le mode discret** : est-il prioritaire ?
