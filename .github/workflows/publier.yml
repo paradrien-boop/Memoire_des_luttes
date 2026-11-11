@@ -30,6 +30,12 @@ jobs:
       - run: npm test
       - name: Construire le site, l'app et les packs (vérifie aussi l'absence de la clé de démonstration)
         run: npm run publier
+      - name: Diagnostic de l'accès à Codeberg (sans jeton)
+        continue-on-error: true
+        run: |
+          echo "Page d'accueil : $(curl -s -o /dev/null -w '%{http_code}' --max-time 30 https://codeberg.org/)"
+          echo "Dépôt (lecture git, public) : $(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "https://codeberg.org/${DEPOT}.git/info/refs?service=git-upload-pack")"
+          echo "Dépôt (page web) : $(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "https://codeberg.org/${DEPOT}")"
       - name: Envoyer la publication vers la branche « pages » de Codeberg
         env:
           JETON: ${{ secrets.CODEBERG_JETON }}
