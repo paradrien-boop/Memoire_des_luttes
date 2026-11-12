@@ -10,3 +10,6 @@ export const P = {
   oeil: '#E8B931',
   lumiere: '#F2C14E',
 }
+
+/** Teints de peau au choix pour le personnage. */
+export const TEINTS = ['#F3D0AE', '#D9A066', '#A86B3C', '#5E3A22']

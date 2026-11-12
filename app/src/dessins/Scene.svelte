@@ -2,10 +2,22 @@
   // Le quartier du chat. Chaque famille de cartes construit un élément, en 3 niveaux :
   // 1 esquissé, 2 construit, 3 animé. Au départ, la rue est grise et vide.
   import Chat from './Chat.svelte'
+  import Personnage from './Personnage.svelte'
   import { P } from './palette'
 
-  let { niveaux = {}, stade = 0, dort = false, accessoires = [], pancarte = false, description = '' }:
-    { niveaux?: Record<string, number>; stade?: number; dort?: boolean; accessoires?: string[]; pancarte?: boolean; description?: string } = $props()
+  let { niveaux = {}, stade = 0, dort = false, accessoires = [], pancarte = false, description = '', personnage = null, foule = 0, heure = new Date().getHours() }:
+    {
+      niveaux?: Record<string, number>; stade?: number; dort?: boolean; accessoires?: string[]; pancarte?: boolean; description?: string
+      /** Le personnage du joueur ou de la joueuse, à côté du chat. */
+      personnage?: { teint: number; coiffure: number; objets: Record<string, number> } | null
+      /** Nombre de passants (les jours de manif remplissent le quartier). */
+      foule?: number
+      /** Heure réelle : la nuit tombe dans le quartier. */
+      heure?: number
+    } = $props()
+  const nuit = $derived(heure >= 20 || heure < 7)
+  /** Passants : position de départ, durée de la traversée, sens, couleur du manteau. */
+  const PASSANTS = [[0, 26, 1, '#2F4A6B'], [140, 31, -1, '#5B3A4A'], [260, 23, 1, '#3E5A3A'], [80, 35, -1, '#6B4E2E'], [320, 28, 1, '#444'], [200, 33, -1, '#7A2A22']] as const
 
   const n = (fam: string) => niveaux[fam] ?? 0
   // Plus le quartier se construit, plus il y a de fenêtres allumées.
@@ -28,9 +40,25 @@
     <pattern id="trame-grise" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1" fill={P.grisFonce} opacity=".5" /></pattern>
   </defs>
 
-  <!-- ciel -->
-  <rect width="400" height="300" fill={P.papier} />
-  <rect width="400" height="60" fill="url(#trame)" />
+  <!-- ciel (la nuit tombe selon l'heure réelle) -->
+  <rect width="400" height="300" fill={nuit ? '#232A3B' : P.papier} />
+  {#if nuit}
+    {#each [[30, 14], [90, 30], [150, 10], [250, 22], [330, 12], [372, 34], [205, 6]] as [x, y], i (i)}
+      <circle cx={x} cy={y} r="1.6" fill="#F4EBD0" class="scintille" style="animation-delay:{i * 0.4}s" />
+    {/each}
+    <circle cx="350" cy="26" r="11" fill="#F4EBD0" /><circle cx="355" cy="22" r="10" fill="#232A3B" />
+  {:else}
+    <rect width="400" height="60" fill="url(#trame)" />
+    <!-- pigeons qui traversent le ciel -->
+    {#each [[0, 18, 0], [1, 26, 7]] as [i, y, retard] (i)}
+      <g class="pigeon" style="animation-delay:{retard}s">
+        <path d="M0,{y} q5,-6 10,0 q5,-6 10,0" fill="none" stroke={P.encre} stroke-width="2" stroke-linecap="round" />
+      </g>
+    {/each}
+  {/if}
+  <!-- fumée de cheminée -->
+  <rect x="236" y="-2" width="10" height="14" fill={P.encre} />
+  {#each [0, 1, 2] as i (i)}<circle cx="241" cy="-6" r="5" fill={nuit ? '#5A6072' : '#BDB5AB'} class="fumee" style="animation-delay:{i * 1.3}s" />{/each}
 
   <!-- immeubles -->
   <rect x="4" y="34" width="114" height="200" fill={P.gris} stroke={P.encre} stroke-width="2.5" />
@@ -41,7 +69,7 @@
 
   <!-- fenêtres, allumées selon la vie du quartier -->
   {#each fenetres as [x, y], i (i)}
-    <rect {x} {y} width="20" height="22" fill={ordre.indexOf(i) < vie ? P.lumiere : P.encre} stroke={P.encre} stroke-width="2" />
+    <rect {x} {y} width="20" height="22" fill={ordre.indexOf(i) < vie + (nuit ? 3 : 0) ? P.lumiere : P.encre} stroke={P.encre} stroke-width="2" />
   {/each}
 
   <!-- PERSONNALITÉ : fresque murale sur le mur de gauche -->
@@ -177,6 +205,24 @@
     </g>
   {/if}
 
+  <!-- passants sur le trottoir : un de plus à chaque jour de manif -->
+  {#each PASSANTS.slice(0, foule) as [depart, duree, sens, manteau], i (i)}
+    <g class="passant" style="--x:{depart}px; animation-duration:{duree}s; animation-delay:-{depart / 400 * duree}s; animation-direction:{sens > 0 ? 'normal' : 'reverse'}">
+      <g class="pas">
+        <circle cx="0" cy="-36" r="5" fill="#C9A27E" stroke={P.encre} />
+        <rect x="-5" y="-31" width="10" height="17" rx="3" fill={manteau} />
+        <rect x="-4" y="-14" width="3" height="12" fill={P.encre} /><rect x="1" y="-14" width="3" height="12" fill={P.encre} />
+      </g>
+    </g>
+  {/each}
+
+  <!-- le personnage, à côté du chat -->
+  {#if personnage}
+    <g transform="translate(140,288) scale(.62)">
+      <Personnage teint={personnage.teint} coiffure={personnage.coiffure} objets={personnage.objets} pose={pancarte ? 'victoire' : 'repos'} />
+    </g>
+  {/if}
+
   <!-- le chat -->
   <g transform="translate(200,284)">
     <ellipse cx="0" cy="0" rx="40" ry="5" fill={P.encre} opacity=".18" />
@@ -185,5 +231,21 @@
 </svg>
 
 <style>
+  /* La vie du quartier, en continu. Tout s'arrête si le téléphone demande moins d'animations. */
+  .pigeon { animation: vole 16s linear infinite; }
+  @keyframes vole { from { transform: translateX(-40px); } to { transform: translateX(440px); } }
+  .fumee { animation: fumee 4s ease-out infinite; transform-box: fill-box; transform-origin: center; opacity: 0; }
+  @keyframes fumee { 0% { transform: translate(0, 0) scale(.6); opacity: .8; } 100% { transform: translate(14px, -26px) scale(1.8); opacity: 0; } }
+  .scintille { animation: scintille 2.4s ease-in-out infinite alternate; }
+  @keyframes scintille { from { opacity: .35; } to { opacity: 1; } }
+  .passant { animation: marche linear infinite; }
+  @keyframes marche { from { transform: translate(-20px, 247px); } to { transform: translate(420px, 247px); } }
+  .pas { animation: balance .5s ease-in-out infinite alternate; }
+  @keyframes balance { from { transform: translateY(0); } to { transform: translateY(-1.5px); } }
+  @media (prefers-reduced-motion: reduce) {
+    .pigeon, .fumee, .scintille, .passant, .pas { animation: none; }
+    .fumee { opacity: .5; }
+    .passant { transform: translate(var(--x), 247px); }
+  }
   svg { display: block; width: 100%; height: auto; border: 2px solid #1C1816; background: #EDE8E0; }
 </style>

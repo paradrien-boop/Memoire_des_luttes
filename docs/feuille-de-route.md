@@ -52,6 +52,9 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 - [x] Quiz du jour, chat qui grandit, quartier qui se construit (voir [quiz-et-mascotte.md](quiz-et-mascotte.md))
 - [x] Vérifier les questions écrites dans `scripts/valider.mjs`
 - [ ] Écrire des questions dans les cartes
+- [x] Personnage à équiper (un objet par famille de cartes) et batailles contre des adversaires historiques (voir [personnage-et-batailles.md](personnage-et-batailles.md))
+- [x] Décor vivant : passants, pigeons, nuit selon l'heure réelle
+- [ ] Écrire les adversaires des prochains packs (`ennemis.json`)
 - [ ] Dessins définitifs
 
 ## Étape 4 : le site

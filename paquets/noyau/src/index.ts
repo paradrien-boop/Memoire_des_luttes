@@ -8,3 +8,5 @@ export * from "./mascotte";
 export * from "./signature";
 export * from "./qr";
 export * from "./graphe";
+export * from "./equipement";
+export * from "./bataille";

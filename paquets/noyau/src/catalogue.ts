@@ -1,5 +1,6 @@
 // Prépare les données pour le jeu : séries dans l'ordre, cartes des packs de confiance, événements.
 import type { Carte, CarteEvenement, Donnees, Pack, Serie } from "./formats";
+import type { Ennemi } from "./bataille";
 
 export interface Origine {
   type: "officiel" | "local";
@@ -16,6 +17,8 @@ export interface Catalogue {
   origine: Record<string, Origine>;
   evenements: Record<string, CarteEvenement>;
   packs: Pack[];
+  /** Les adversaires des batailles du quiz, de tous les packs de confiance. */
+  ennemis: Ennemi[];
 }
 
 /**
@@ -34,5 +37,6 @@ export function preparerCatalogue(d: Donnees, installes: Pack[] = []): Catalogue
   const series = packs.flatMap((p) => p.series);
   const officielles = series.flatMap((s) => s.cartes.filter((id) => parId[id]).map((id) => ({ ...parId[id], serie: s.id })));
   const evenements = Object.fromEntries([...d.evenements, ...packs.filter((p) => p.type === "officiel").flatMap((p) => p.evenements ?? [])].map((e) => [e.id, e]));
-  return { familles: d.familles, series, officielles, parId, origine, evenements, packs };
+  const ennemis = packs.flatMap((p) => p.ennemis ?? []);
+  return { familles: d.familles, series, officielles, parId, origine, evenements, packs, ennemis };
 }

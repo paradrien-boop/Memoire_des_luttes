@@ -57,6 +57,19 @@ for (const type of ["officiel", "local"]) {
       }
     }
     for (const s of meta.series || []) for (const id of s.cartes) if (!cartes[id]) err(pack, `la série "${s.id}" cite une carte inconnue : ${id}`);
+    // Adversaires des batailles du quiz (ennemis.json, facultatif)
+    if (existsSync(join(dp, "ennemis.json"))) {
+      const ennemis = JSON.parse(readFileSync(join(dp, "ennemis.json"), "utf8"));
+      const DESSINS = ["soldat", "proprietaire", "patron", "censeur", "mouchard", "general"];
+      if (!Array.isArray(ennemis)) err(`${pack}/ennemis.json`, "doit être une liste");
+      else for (const e of ennemis) {
+        const nom = `${pack}/ennemis.json ${e?.id ?? "?"}`;
+        for (const champ of ["id", "nom", "epoque", "description", "replique", "defaite"]) if (typeof e?.[champ] !== "string" || !e[champ].trim()) err(nom, `champ « ${champ} » manquant`);
+        if (!DESSINS.includes(e?.dessin)) err(nom, `dessin inconnu « ${e?.dessin} » (dessins : ${DESSINS.join(", ")})`);
+        if (!Array.isArray(e?.familles) || e.familles.some((f) => !familles[f])) err(nom, "« familles » doit lister des familles existantes");
+        if (e?.chef && !(meta.series || []).some((s) => s.id === e.chef.serie)) err(nom, `le chef renvoie à une série inconnue : ${e.chef.serie}`);
+      }
+    }
     // Pack signé : la signature doit correspondre au contenu actuel (sinon il faut re-signer avec l'atelier).
     if (meta.signature) {
       const ordre = Object.keys(cartes).sort();

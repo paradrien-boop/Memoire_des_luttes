@@ -18,7 +18,7 @@ test('mode avion : l\'app se recharge et garde la collection', async ({ page, co
   await page.goto('/#album')
   await expect(page.locator('.serie .grille button.mini').first()).toBeVisible()
   await page.goto('/#quartier')
-  await expect(page.locator('svg[role="img"]')).toBeVisible()
+  await expect(page.locator('svg[role="img"]').first()).toBeVisible()
   const autre = await context.newPage()
   await autre.goto('/#editeur')
   await expect(autre.locator('#e-title')).toBeVisible()

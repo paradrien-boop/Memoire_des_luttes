@@ -1,5 +1,7 @@
 # Quiz du jour et mascotte (conception)
 
+> Le quiz est devenu une suite de **batailles** contre des adversaires historiques, avec un personnage à équiper : voir [personnage-et-batailles.md](personnage-et-batailles.md).
+
 > Statut : **première version en place** (onglet Quartier). Les dessins sont une première version, à reprendre par un·e illustrateur·rice. Le nom du chat est choisi par chaque personne.
 
 ## En une phrase

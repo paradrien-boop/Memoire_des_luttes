@@ -58,6 +58,8 @@ export interface Pack {
   revocations?: string[];
   /** Nouvelles cartes d'événement (packs officiels seulement). */
   evenements?: CarteEvenement[];
+  /** Les adversaires des batailles du quiz. */
+  ennemis?: import("./bataille").Ennemi[];
 }
 
 export interface CarteEvenement extends Carte {

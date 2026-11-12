@@ -867,6 +867,85 @@ window.MDL_DONNEES = {
      "serie": "comm",
      "statut": "a-relire"
     }
+   ],
+   "ennemis": [
+    {
+     "id": "versaillais",
+     "nom": "Le Versaillais",
+     "epoque": "1871",
+     "description": "Soldat de l'armée du gouvernement réfugié à Versailles, envoyé reprendre Paris.",
+     "replique": "Rendez les canons de Montmartre !",
+     "defaite": "Crosse en l'air… je rentre chez moi !",
+     "dessin": "soldat",
+     "familles": [
+      "evenement",
+      "lieu"
+     ]
+    },
+    {
+     "id": "proprietaire",
+     "nom": "Le Propriétaire",
+     "epoque": "1871",
+     "description": "Il réclame les loyers du siège, que la Commune a remis aux locataires par décret le 29 mars 1871.",
+     "replique": "Trois termes de retard ? Dehors !",
+     "defaite": "Mes loyers… remis ?!",
+     "dessin": "proprietaire",
+     "familles": [
+      "mesure"
+     ]
+    },
+    {
+     "id": "patron",
+     "nom": "Le Patron d'atelier",
+     "epoque": "1871",
+     "description": "Parti à Versailles, il veut reprendre l'atelier que ses ouvriers font tourner en coopérative.",
+     "replique": "Sans moi, vous ne savez rien faire !",
+     "defaite": "Ils s'en sortent très bien sans moi…",
+     "dessin": "patron",
+     "familles": [
+      "concept",
+      "mesure"
+     ]
+    },
+    {
+     "id": "censeur",
+     "nom": "Le Censeur",
+     "epoque": "XIXe siècle",
+     "description": "Il interdit les journaux, les chansons et les livres qui dérangent l'ordre établi.",
+     "replique": "Cette chanson est interdite !",
+     "defaite": "On ne peut pas interdire ce que tout le monde chante…",
+     "dessin": "censeur",
+     "familles": [
+      "chant",
+      "livre",
+      "courant"
+     ]
+    },
+    {
+     "id": "mouchard",
+     "nom": "Le Mouchard",
+     "epoque": "1871",
+     "description": "Il dénonce les communards à la police versaillaise.",
+     "replique": "Je sais où tu te caches…",
+     "defaite": "Je n'ai rien vu, rien entendu !",
+     "dessin": "mouchard",
+     "familles": [
+      "personnalite"
+     ]
+    },
+    {
+     "id": "general-versaillais",
+     "nom": "Le Général versaillais",
+     "epoque": "1871",
+     "description": "Il commande la reprise de Paris pendant la Semaine sanglante. Il n'apparaît que lorsque la série « Les 72 jours » est complète.",
+     "replique": "Pas de quartier pour les fédérés !",
+     "defaite": "La Commune n'est pas morte ?!",
+     "dessin": "general",
+     "familles": [],
+     "chef": {
+      "serie": "72j"
+     }
+    }
    ]
   }
  ],

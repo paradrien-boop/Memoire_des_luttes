@@ -13,7 +13,10 @@ export function assembler(racine) {
     for (const pack of readdirSync(dossier).sort()) {
       const meta = lire("data/packs", type, pack, "pack.json");
       const cartes = jsons(join(dossier, pack, "cartes")).map(f => lire("data/packs", type, pack, "cartes", f));
-      donnees.packs.push({ type, ...meta, cartes });
+      // Les adversaires des batailles du quiz, s'il y en a (ennemis.json, à côté de pack.json).
+      const fichierEnnemis = join(dossier, pack, "ennemis.json");
+      const ennemis = existsSync(fichierEnnemis) ? lire("data/packs", type, pack, "ennemis.json") : undefined;
+      donnees.packs.push({ type, ...meta, cartes, ...(ennemis ? { ennemis } : {}) });
     }
   }
   for (const f of jsons(join(racine, "data/evenements"))) donnees.evenements.push(lire("data/evenements", f));

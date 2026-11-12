@@ -2,6 +2,8 @@
   import { CARTES_MIN_QUIZ, ELEMENTS, FRAGMENTS_PAR_BOOSTER, niveau, STADES, versStadeSuivant } from '@mdl/noyau'
   import Entete from '../composants/Entete.svelte'
   import Scene from '../dessins/Scene.svelte'
+  import Arene from '../composants/Arene.svelte'
+  import Equipement from '../composants/Equipement.svelte'
   import { quartier, type ResultatReponse } from '../etat/quartier.svelte'
   import { jeu } from '../etat/jeu.svelte'
   import { ui } from '../etat/interface.svelte'
@@ -14,10 +16,16 @@
   let nom = $state('')
   let renommer = $state(false)
   let resultat = $state<ResultatReponse | null>(null)
+  /** Réponses retirées par le porte-voix, réponses déjà tentées avant la seconde chance. */
+  let retirees = $state<number[]>([])
+  let secondeEssai = $state<number[]>([])
+  let choixEnAttente = $state<number | null>(null)
+  let indice = $state('')
 
   quartier.preparerJour()
 
-  const niveaux = $derived(Object.fromEntries(Object.keys(ELEMENTS).map((f) => [f, niveau(quartier.constructions[f] ?? 0)])))
+  // Le quartier avance avec les batailles gagnées ET avec les cartes possédées de chaque famille.
+  const niveaux = $derived(Object.fromEntries(Object.keys(ELEMENTS).map((f) => [f, niveau((quartier.constructions[f] ?? 0) + (quartier.cartesParFamille[f] ?? 0))])))
   const accessoires = $derived(jeu.seriesCompletes.map((s) => ACCESSOIRES[s]).filter(Boolean))
   const jourDeManif = $derived(jeu.chrono.jours.includes(dateDuJour()))
   const description = $derived.by(() => {
@@ -35,14 +43,48 @@
   const reponse = $derived(jour && index >= 0 ? jour.reponses[index] : null)
   const justes = $derived(jour ? jour.reponses.filter((r, i) => r === jour.questions[i].bonne).length : 0)
 
+  const ennemiActuel = $derived(jour && index >= 0 ? quartier.ennemi(index) : null)
+  const etatBataille = $derived<'attente' | 'victoire' | 'defaite' | 'seconde'>(
+    choixEnAttente !== null ? 'seconde' : reponse === null ? 'attente' : reponse === question?.bonne ? 'victoire' : 'defaite',
+  )
+
   async function choisir(i: number) {
     if (!question || reponse !== null) return
+    // Une erreur, et la banderole est là : on propose une seconde chance avant d'enregistrer la défaite.
+    if (i !== question.bonne && quartier.restants('evenement') > 0 && !secondeEssai.length) { choixEnAttente = i; return }
+    await enregistrer(i)
+  }
+
+  async function enregistrer(i: number) {
+    choixEnAttente = null
     affichee = index
     resultat = await quartier.repondre(index, i)
     if (resultat?.booster) ui.annoncer('5 fragments réunis : un booster de plus !')
   }
 
-  function suivante() { affichee = null; resultat = null }
+  async function brandir() {
+    if (choixEnAttente === null || !(await quartier.utiliserPouvoir('evenement'))) return
+    secondeEssai = [choixEnAttente]
+    choixEnAttente = null
+    ui.annoncer('La banderole se déploie : la bataille reprend !')
+  }
+
+  async function porteVoix() {
+    const r = await quartier.porteVoix(index, [...retirees, ...secondeEssai])
+    if (r === null) ui.annoncer('Il ne reste plus de mauvaise réponse à faire taire.')
+    else retirees = [...retirees, r]
+  }
+
+  async function livre() {
+    if (!question || !(await quartier.utiliserPouvoir('livre'))) return
+    const c = catalogue.parId[question.carteId]
+    const famille = catalogue.familles[c?.fam]?.libelle ?? ''
+    const serie = catalogue.series.find((s) => s.cartes.includes(question.carteId))?.nom
+    // Pour une question de date, on ne donne évidemment pas les dates.
+    indice = question.type === 'annee' ? `une carte de la famille « ${famille} »${serie ? `, série « ${serie} »` : ''}.` : `une carte de la famille « ${famille} »${c?.dates ? `, ${c.dates}` : ''}.`
+  }
+
+  function suivante() { affichee = null; resultat = null; retirees = []; secondeEssai = []; choixEnAttente = null; indice = '' }
 
   async function donnerNom(e: SubmitEvent) {
     e.preventDefault()
@@ -55,7 +97,9 @@
 <Entete surtitre="Ton quartier" titre={quartier.nomChat || 'Quartier'} marque={STADES[quartier.stade].nom.replace(' ', '\n')} />
 
 <div class="pile">
-  <Scene {niveaux} stade={quartier.stade} dort={quartier.dort} {accessoires} pancarte={jourDeManif} {description} />
+  <Scene {niveaux} stade={quartier.stade} dort={quartier.dort} {accessoires} pancarte={jourDeManif} {description}
+    personnage={{ teint: quartier.apparence.teint, coiffure: quartier.apparence.coiffure, objets: quartier.objets }}
+    foule={Math.min(6, jeu.chrono.jours.length)} />
 
   <div class="progression">
     <div>
@@ -86,43 +130,77 @@
 
   <section class="encart quiz">
     <div class="ligne entre">
-      <div><div class="surtitre">Quiz du jour{jourDeManif ? ' · jour de manif : points doublés' : ''}</div><h2>{!jour?.questions.length ? 'Quiz du jour' : index === -1 ? 'Quiz terminé' : `Question ${index + 1} sur ${jour.questions.length}`}</h2></div>
+      <div><div class="surtitre">Batailles du jour{jourDeManif ? ' · jour de manif : points doublés' : ''}</div><h2>{!jour?.questions.length ? 'Batailles du jour' : index === -1 ? 'Batailles terminées' : `Bataille ${index + 1} sur ${jour.questions.length}`}</h2></div>
     </div>
 
     {#if !jour}
       <p class="discret">Préparation…</p>
     {:else if !jour.questions.length}
-      <p>Le quiz commence quand tu as <b>{CARTES_MIN_QUIZ} cartes</b> dans ton album. Tu en as {jeu.nombreOfficielles}. Ouvre des boosters en manif !</p>
+      <p>Les batailles commencent quand tu as <b>{CARTES_MIN_QUIZ} cartes</b> dans ton album. Tu en as {jeu.nombreOfficielles}. Ouvre des boosters en manif !</p>
     {:else if index === -1}
       <p class="bilan">{justes}/{jour.questions.length}</p>
-      <p>{justes === jour.questions.length ? `Sans faute ! Tu gagnes un fragment de booster (${quartier.fragments}/${FRAGMENTS_PAR_BOOSTER}).` : 'Les cartes ratées reviendront bientôt pour que tu les retiennes.'}</p>
-      <p class="discret">Reviens demain pour de nouvelles questions.</p>
+      <p>{justes === jour.questions.length ? `Trois batailles gagnées, sans faute ! Tu gagnes un fragment de booster (${quartier.fragments}/${FRAGMENTS_PAR_BOOSTER}).` : 'Les cartes des batailles perdues reviendront bientôt, pour que tu prennes ta revanche.'}</p>
+      <p class="discret">De nouveaux adversaires t'attendent demain.</p>
     {:else if question}
+      <Arene ennemi={ennemiActuel} etat={etatBataille} />
+      {#if ennemiActuel && reponse === null && etatBataille === 'attente'}<p class="discret petit">{ennemiActuel.description}</p>{/if}
       <p class="enonce">{question.enonce}</p>
       {#if question.extrait}<blockquote>{question.extrait}</blockquote>{/if}
+      {#if indice}<p class="note">Indice du livre : {indice}</p>{/if}
+
+      {#if reponse === null && etatBataille !== 'seconde'}
+        <div class="pouvoirs">
+          {#if quartier.objets.chant}
+            <button disabled={!quartier.restants('chant')} onclick={porteVoix}>📣 Porte-voix ({quartier.restants('chant')})</button>
+          {/if}
+          {#if quartier.objets.livre}
+            <button disabled={!quartier.restants('livre') || !!indice} onclick={livre}>📖 Livre ({quartier.restants('livre')})</button>
+          {/if}
+        </div>
+      {/if}
+
       <div class="choix">
         {#each question.choix as c, i (i)}
-          <button
-            class="choix-bouton"
-            class:juste={reponse !== null && i === question.bonne}
-            class:faux={reponse === i && i !== question.bonne}
-            disabled={reponse !== null}
-            onclick={() => choisir(i)}
-          >{c}</button>
+          {#if !retirees.includes(i)}
+            <button
+              class="choix-bouton"
+              class:juste={reponse !== null && i === question.bonne}
+              class:faux={(reponse === i && i !== question.bonne) || secondeEssai.includes(i)}
+              disabled={reponse !== null || secondeEssai.includes(i) || etatBataille === 'seconde'}
+              onclick={() => choisir(i)}
+            >{c}</button>
+          {/if}
         {/each}
       </div>
+
+      {#if etatBataille === 'seconde'}
+        <div class="correction">
+          <b>Raté… mais ta banderole peut changer le cours de la bataille.</b>
+          <div class="ligne">
+            <button class="rouge" onclick={brandir}>Brandir la banderole ({quartier.restants('evenement')})</button>
+            <button onclick={() => enregistrer(choixEnAttente!)}>Accepter la défaite</button>
+          </div>
+        </div>
+      {/if}
+
       {#if reponse !== null}
         <div class="correction" class:ok={reponse === question.bonne}>
-          <b>{reponse === question.bonne ? `Juste ! +${resultat?.points ?? 10} points` : `Raté. La bonne réponse : ${question.choix[question.bonne]}`}</b>
+          <b>{reponse === question.bonne ? `Bataille gagnée ! +${resultat?.points ?? 10} points` : `Bataille perdue. La bonne réponse : ${question.choix[question.bonne]}`}</b>
           {#if reponse === question.bonne && resultat}<span> · {ELEMENTS[resultat.famille]} avance.</span>{/if}
           {#if question.explication}<p>{question.explication}</p>{/if}
         </div>
         <div class="ligne">
           <button onclick={() => ui.ouvrirCarte(question.carteId)}>Lire la carte</button>
-          <button class="encre" onclick={suivante}>{courante === -1 ? 'Voir le bilan' : 'Question suivante'}</button>
+          <button class="encre" onclick={suivante}>{courante === -1 ? 'Voir le bilan' : 'Bataille suivante'}</button>
         </div>
       {/if}
     {/if}
+  </section>
+
+  <section class="encart">
+    <div class="surtitre">{quartier.batailles} bataille{quartier.batailles > 1 ? 's' : ''} gagnée{quartier.batailles > 1 ? 's' : ''}</div>
+    <h2>Ton personnage</h2>
+    <Equipement />
   </section>
 
   {#if quartier.nomChat && !renommer}
@@ -131,7 +209,7 @@
 
   <section class="pile serree">
     <h2>Ce qui se construit</h2>
-    <p class="discret petit">Chaque bonne réponse fait avancer l'élément de la famille de la carte : esquissé, construit, puis animé.</p>
+    <p class="discret petit">Chaque bataille gagnée et chaque carte d'une famille font avancer son élément : esquissé, construit, puis animé. Les jours de manif, le quartier se remplit de monde.</p>
     <ul class="elements">
       {#each Object.entries(ELEMENTS) as [f, e] (f)}
         <li><span>{catalogue.familles[f]?.libelle ?? f}</span><span class="nom">{e}</span><span class="niveau">{['—', 'esquissé', 'construit', 'animé'][niveaux[f]]}</span></li>
@@ -158,6 +236,8 @@
   .choix-bouton { text-transform: none; letter-spacing: 0; font-size: 15px; text-align: left; padding: 12px 14px; background: var(--papier); }
   .choix-bouton:disabled { opacity: 1; cursor: default; }
   .choix-bouton.juste { background: var(--encre); color: var(--papier); }
+  .pouvoirs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pouvoirs button { padding: 6px 10px; font-size: 12px; text-transform: none; letter-spacing: 0; }
   .choix-bouton.faux { background: var(--rouge); border-color: var(--rouge); color: var(--sur-rouge); text-decoration: line-through; }
   .correction { border-left: 4px solid var(--rouge); padding-left: 10px; display: flex; flex-direction: column; gap: 4px; }
   .correction.ok { border-color: var(--encre); }
