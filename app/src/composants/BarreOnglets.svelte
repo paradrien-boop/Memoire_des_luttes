@@ -2,11 +2,11 @@
   import type { Ecran } from '../navigation'
   let { actif }: { actif: Ecran } = $props()
   const onglets: { id: Ecran; libelle: string; icone: string }[] = [
-    { id: 'manif', libelle: 'Manif', icone: '✊' },
+    { id: 'manif', libelle: 'Agir', icone: '✊' },
     { id: 'album', libelle: 'Album', icone: '▦' },
     { id: 'quartier', libelle: 'Quartier', icone: '⌂' },
     { id: 'editeur', libelle: 'Éditeur', icone: '✎' },
-    { id: 'plus', libelle: 'Plus', icone: '…' },
+    { id: 'plus', libelle: 'Profil', icone: '☻' },
   ]
 </script>
 

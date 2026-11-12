@@ -969,5 +969,185 @@ window.MDL_DONNEES = {
  "cles": {
   "nom": "Mémoire des luttes",
   "racines": []
+ },
+ "actions": {
+  "objectifs": {
+   "choix": [
+    1,
+    2,
+    3,
+    5,
+    7
+   ],
+   "defaut": 2,
+   "recompense": {
+    "boosters": 1
+   },
+   "manifCompte": true
+  },
+  "categories": [
+   {
+    "id": "rue",
+    "nom": "Dans la rue"
+   },
+   {
+    "id": "collectif",
+    "nom": "En collectif"
+   },
+   {
+    "id": "solidarite",
+    "nom": "Solidarité"
+   },
+   {
+    "id": "memoire",
+    "nom": "Mémoire et culture"
+   }
+  ],
+  "actions": [
+   {
+    "id": "tractage",
+    "categorie": "rue",
+    "nom": "Distribuer des tracts",
+    "description": "Sur un marché, à la sortie d'une gare ou d'une entreprise.",
+    "recompense": {
+     "fragments": 2
+    },
+    "plafond": {
+     "nombre": 1,
+     "par": "jour"
+    }
+   },
+   {
+    "id": "affichage",
+    "categorie": "rue",
+    "nom": "Coller des affiches",
+    "description": "Sur les panneaux d'affichage libre de ta commune.",
+    "conseil": "L'affichage hors des panneaux d'affichage libre est puni d'une amende. Renseigne-toi auprès de ta mairie sur leur emplacement.",
+    "recompense": {
+     "fragments": 1
+    },
+    "plafond": {
+     "nombre": 1,
+     "par": "jour"
+    }
+   },
+   {
+    "id": "piquet",
+    "categorie": "rue",
+    "nom": "Soutenir un piquet de grève",
+    "description": "Passer, apporter un café, rester un moment avec les grévistes.",
+    "recompense": {
+     "boosters": 1
+    },
+    "plafond": {
+     "nombre": 2,
+     "par": "semaine"
+    }
+   },
+   {
+    "id": "greve",
+    "categorie": "collectif",
+    "nom": "Faire grève",
+    "description": "Une journée de grève, dans ton entreprise, ton administration ou ton lycée.",
+    "recompense": {
+     "boosters": 1
+    },
+    "plafond": {
+     "nombre": 1,
+     "par": "jour"
+    }
+   },
+   {
+    "id": "assemblee",
+    "categorie": "collectif",
+    "nom": "Participer à une assemblée",
+    "description": "Assemblée générale, réunion de section, de collectif ou de quartier.",
+    "recompense": {
+     "fragments": 2
+    },
+    "plafond": {
+     "nombre": 2,
+     "par": "semaine"
+    }
+   },
+   {
+    "id": "adhesion",
+    "categorie": "collectif",
+    "nom": "Rejoindre une organisation",
+    "description": "Adhérer à un syndicat, une association ou un collectif.",
+    "recompense": {
+     "boosters": 2
+    },
+    "plafond": {
+     "nombre": 1,
+     "par": "toujours"
+    }
+   },
+   {
+    "id": "caisse",
+    "categorie": "solidarite",
+    "nom": "Donner à une caisse de grève",
+    "description": "Quel que soit le montant.",
+    "recompense": {
+     "boosters": 1
+    },
+    "plafond": {
+     "nombre": 1,
+     "par": "semaine"
+    }
+   },
+   {
+    "id": "entraide",
+    "categorie": "solidarite",
+    "nom": "Aider une action de solidarité",
+    "description": "Collecte, cantine populaire, maraude, aide aux devoirs, soutien juridique…",
+    "recompense": {
+     "fragments": 2
+    },
+    "plafond": {
+     "nombre": 2,
+     "par": "semaine"
+    }
+   },
+   {
+    "id": "lecture",
+    "categorie": "memoire",
+    "nom": "Lire un texte de lutte",
+    "description": "Un livre, un article, une brochure sur l'histoire ou les idées des luttes.",
+    "recompense": {
+     "fragments": 1
+    },
+    "plafond": {
+     "nombre": 2,
+     "par": "semaine"
+    }
+   },
+   {
+    "id": "transmettre",
+    "categorie": "memoire",
+    "nom": "Raconter une histoire de lutte",
+    "description": "À un·e proche, un·e collègue, un·e enfant : une carte, une date, une figure.",
+    "recompense": {
+     "fragments": 1
+    },
+    "plafond": {
+     "nombre": 1,
+     "par": "jour"
+    }
+   },
+   {
+    "id": "commemoration",
+    "categorie": "memoire",
+    "nom": "Aller à une commémoration",
+    "description": "Montée au Mur des Fédérés, hommage, visite d'un lieu de mémoire.",
+    "recompense": {
+     "boosters": 1
+    },
+    "plafond": {
+     "nombre": 1,
+     "par": "semaine"
+    }
+   }
+  ]
  }
 };

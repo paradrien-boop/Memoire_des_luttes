@@ -93,6 +93,19 @@ class Quartier {
     if (questions.length) await base.quiz.put($state.snapshot(this.jour) as QuizDuJour)
   }
 
+  /** Ajoute des fragments de booster (5 font un booster). @returns le nombre de boosters complétés */
+  async ajouterFragments(n: number): Promise<number> {
+    let boosters = 0
+    for (let i = 0; i < n; i++) {
+      const f = ajouterFragment(this.fragments)
+      this.fragments = f.fragments
+      boosters += f.boosters
+    }
+    await jeu.ajouterBoosters(boosters)
+    await this.regler({ fragments: this.fragments })
+    return boosters
+  }
+
   /** Donner une carte rapporte un fragment de booster, une fois par jour au plus. */
   async bonusDon(): Promise<{ fragment: boolean; booster: boolean }> {
     const date = dateDuJour()

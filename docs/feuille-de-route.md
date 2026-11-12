@@ -55,6 +55,8 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 - [x] Personnage à équiper (un objet par famille de cartes) et batailles contre des adversaires historiques (voir [personnage-et-batailles.md](personnage-et-batailles.md))
 - [x] Décor vivant : passants, pigeons, nuit selon l'heure réelle
 - [ ] Écrire les adversaires des prochains packs (`ennemis.json`)
+- [x] Actions militantes au choix (tracter, coller, grève, caisse de grève, transmettre…), réglées dans `data/actions.json`, avec objectif de la semaine (voir [actions-militantes.md](actions-militantes.md))
+- [x] Profil : personnage créé une fois et enregistré, choix des actions, réglages
 - [ ] Dessins définitifs
 
 ## Étape 4 : le site

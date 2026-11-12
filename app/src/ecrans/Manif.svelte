@@ -6,6 +6,7 @@
   import { catalogue } from '../donnees'
   import { dateDuJour, duree } from '../outils'
   import { utiliserQr } from '../etat/scan'
+  import MesActions from '../composants/MesActions.svelte'
 
   const session = $derived(jeu.chrono.session)
   const plafond = $derived(jeu.chrono.journee.date === dateDuJour() && jeu.chrono.journee.gagnes >= REGLES.boostersMaxParJour)
@@ -28,7 +29,7 @@
   }
 </script>
 
-<Entete surtitre="Pack de départ · Commune 1871" titre="Mémoire des luttes" marque={'Tout reste\nsur ton\ntéléphone'} />
+<Entete surtitre="Agir · en manif et au quotidien" titre="Mémoire des luttes" marque={'Tout reste\nsur ton\ntéléphone'} />
 
 <div class="pile">
   <section class="session" class:active={session}>
@@ -68,6 +69,8 @@
     <div><b>{jeu.chrono.jours.length}</b><span>Jours de manif</span></div>
     <div><b>{jeu.ouverts}</b><span>Boosters ouverts</span></div>
   </div>
+
+  <MesActions />
 
   <section class="encart">
     <div><div class="surtitre">Stand, tract, camarade</div><h2>Scanner un QR</h2></div>

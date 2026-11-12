@@ -80,6 +80,27 @@ for (const type of ["officiel", "local"]) {
     console.log(`Pack ${pack} : ${Object.keys(cartes).length} cartes vérifiées.`);
   }
 }
+// Actions militantes (data/actions.json)
+{
+  const c = JSON.parse(readFileSync(join(racine, "data/actions.json"), "utf8"));
+  const nom = "data/actions.json";
+  const categories = new Set((c.categories ?? []).map((x) => x.id));
+  const recompenseValide = (r) => r && typeof r === "object" && ["fragments", "boosters"].some((k) => Number.isInteger(r[k]) && r[k] > 0) && Object.values(r).every((v) => Number.isInteger(v) && v >= 0 && v <= 5);
+  if (!Array.isArray(c.objectifs?.choix) || !c.objectifs.choix.includes(c.objectifs.defaut)) err(nom, "objectifs.choix doit contenir objectifs.defaut");
+  if (!recompenseValide(c.objectifs?.recompense)) err(nom, "objectifs.recompense : des fragments ou des boosters (entiers de 1 à 5)");
+  const ids = new Set();
+  for (const a of c.actions ?? []) {
+    const ici = `${nom} ${a?.id ?? "?"}`;
+    if (!/^[a-z0-9-]+$/.test(a?.id ?? "")) err(ici, "identifiant invalide (minuscules, chiffres, tirets)");
+    if (ids.has(a.id)) err(ici, "identifiant en double");
+    ids.add(a.id);
+    if (!categories.has(a.categorie)) err(ici, `catégorie inconnue « ${a.categorie} »`);
+    for (const champ of ["nom", "description"]) if (typeof a[champ] !== "string" || !a[champ].trim()) err(ici, `champ « ${champ} » manquant`);
+    if (!recompenseValide(a.recompense)) err(ici, "recompense : des fragments ou des boosters (entiers de 1 à 5)");
+    if (!Number.isInteger(a.plafond?.nombre) || a.plafond.nombre < 1 || !["jour", "semaine", "toujours"].includes(a.plafond?.par)) err(ici, "plafond : { nombre: 1 ou plus, par: jour | semaine | toujours }");
+  }
+}
+
 // Fiches des collectifs : la délégation doit être signée par le collectif racine et correspondre à la fiche.
 const dossierCollectifs = join(racine, "data/collectifs");
 if (existsSync(dossierCollectifs)) for (const f of readdirSync(dossierCollectifs).filter((x) => x.endsWith(".json"))) {

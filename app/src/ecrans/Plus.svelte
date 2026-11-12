@@ -1,5 +1,7 @@
 <script lang="ts">
   import Entete from '../composants/Entete.svelte'
+  import CreationPersonnage from '../composants/CreationPersonnage.svelte'
+  import ChoixActions from '../composants/ChoixActions.svelte'
   import BoutonConfirme from '../composants/BoutonConfirme.svelte'
   import GuideInstallation from '../composants/GuideInstallation.svelte'
   import Packs from '../composants/Packs.svelte'
@@ -7,9 +9,20 @@
   import { jeu } from '../etat/jeu.svelte'
 </script>
 
-<Entete surtitre="Réglages et informations" titre="Plus" />
+<Entete surtitre="Ton personnage, tes actions, tes réglages" titre="Profil" />
 
 <div class="pile">
+  <section class="encart" id="personnage">
+    <h2>Mon personnage</h2>
+    <CreationPersonnage />
+  </section>
+
+  <section class="encart" id="actions">
+    <h2>Mes actions militantes</h2>
+    <ChoixActions />
+  </section>
+
+  <h2 class="reglages">Réglages</h2>
   <section class="encart">
     <h2>Rien ne sort de ton téléphone</h2>
     <p>Pas de compte, pas de GPS, pas de réseau une fois l'app installée. Ta collection est stockée uniquement sur ce téléphone. Personne, y compris le collectif qui fait l'app, ne sait qui joue ni où.</p>
@@ -58,6 +71,7 @@
 </div>
 
 <style>
+  .reglages { margin-top: 12px; border-bottom: 4px solid var(--encre); padding-bottom: 6px; }
   .confiance { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 14px; }
   .confiance b { font-family: var(--f-affiche); font-size: 18px; text-transform: uppercase; }
   .or { color: var(--or); }

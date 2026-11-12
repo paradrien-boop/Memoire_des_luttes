@@ -4,6 +4,7 @@
   import Scene from '../dessins/Scene.svelte'
   import Arene from '../composants/Arene.svelte'
   import Equipement from '../composants/Equipement.svelte'
+  import { profil } from '../etat/profil.svelte'
   import { quartier, type ResultatReponse } from '../etat/quartier.svelte'
   import { jeu } from '../etat/jeu.svelte'
   import { ui } from '../etat/interface.svelte'
@@ -115,6 +116,10 @@
     </div>
   </div>
 
+  {#if !profil.personnage}
+    <p class="note">Crée ton personnage dans ton <a href="#plus">profil</a> : tu le personnalises une fois, il est enregistré, et il porte ensuite les objets gagnés avec ta collection.</p>
+  {/if}
+
   {#if !quartier.nomChat || renommer}
     <form class="encart" onsubmit={donnerNom}>
       <h2>{renommer ? 'Renommer ton chat' : 'Ce chat est à toi'}</h2>
@@ -199,7 +204,7 @@
 
   <section class="encart">
     <div class="surtitre">{quartier.batailles} bataille{quartier.batailles > 1 ? 's' : ''} gagnée{quartier.batailles > 1 ? 's' : ''}</div>
-    <h2>Ton personnage</h2>
+    <h2>{profil.personnage?.nom ?? 'Ton personnage'}</h2>
     <Equipement />
   </section>
 

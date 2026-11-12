@@ -31,7 +31,8 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 7. [Tester sur de vrais téléphones](docs/tester-sur-telephone.md)
 8. [L'application Android](docs/android.md)
 9. [Le personnage et les batailles](docs/personnage-et-batailles.md)
-10. [Idées en attente](docs/idees.md)
+10. [Les actions militantes](docs/actions-militantes.md)
+11. [Idées en attente](docs/idees.md)
 
 Pour proposer une carte ou une correction : voir [CONTRIBUER.md](CONTRIBUER.md).
 

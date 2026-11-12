@@ -4,7 +4,7 @@ import { code, commencer, lireTable } from './aide'
 
 interface Quiz { date: string; questions: { bonne: number; choix: string[] }[] }
 
-test('batailles : adversaire, porte-voix, seconde chance avec la banderole, personnage équipé', async ({ page }) => {
+test('batailles : adversaire, porte-voix, seconde chance avec la banderole, objets gagnés', async ({ page }) => {
   const app = await commencer(page)
   // Deux chants (porte-voix niveau 1) et trois événements (banderole niveau 2).
   for (const id of ['internationale', 'cerises', 'commune', '18mars', 'semaine', 'louise']) {
@@ -34,16 +34,8 @@ test('batailles : adversaire, porte-voix, seconde chance avec la banderole, pers
   await expect(page.getByText(/^Bataille gagnée !/)).toBeVisible()
   await expect(page.getByText('POUF !')).toBeVisible()
 
-  // Le personnage : objets gagnés, apparence choisie et gardée
+  // Les objets gagnés s'affichent sur le personnage
   await expect(page.locator('.objets li.gagne')).toHaveCount(3) // porte-voix, banderole, foulard rouge
-  await page.getByRole('radio', { name: 'Teint 3' }).click()
-  await page.getByRole('radio', { name: 'Frisée' }).click()
-  await expect(page.getByRole('radio', { name: 'Frisée' })).toHaveAttribute('aria-checked', 'true')
-  await page.waitForTimeout(300) // laisser l'enregistrement se terminer avant de recharger
-  await page.reload()
-  await page.goto('/#quartier')
-  await expect(page.getByRole('radio', { name: 'Teint 3' })).toHaveAttribute('aria-checked', 'true')
-  await expect(page.getByRole('radio', { name: 'Frisée' })).toHaveAttribute('aria-checked', 'true')
   await expect(page.getByText('1 bataille gagnée')).toBeVisible()
   await app.verifierPropre()
 })

@@ -10,3 +10,4 @@ export * from "./qr";
 export * from "./graphe";
 export * from "./equipement";
 export * from "./bataille";
+export * from "./actions";

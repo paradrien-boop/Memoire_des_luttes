@@ -24,3 +24,6 @@ export const RACINES: string[] = [...(brut.cles?.racines ?? []), ...(demo ? [dem
 export const REVOCATIONS_INTEGREES: string[] = [...(brut.cles?.revocations ?? []), ...brut.packs.flatMap((p) => p.revocations ?? [])]
 
 export { demo as CLE_DEMO }
+
+/** Les actions militantes proposées et leurs récompenses (data/actions.json). */
+export const ACTIONS = brut.actions!

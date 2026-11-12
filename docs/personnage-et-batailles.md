@@ -8,7 +8,7 @@ Ton personnage vit dans le quartier, à côté du chat. Tu l'équipes avec les o
 
 ## Le personnage
 
-- Chaque personne choisit son **teint** (4) et sa **coiffure** (courte, longue, frisée). Il porte une veste de travail bleue.
+- Chaque personne le crée **une fois** dans **Profil** › Mon personnage : un **nom**, un **teint** (4) et une **coiffure** (courte, longue, frisée). Il est enregistré tel quel, et ne se modifie que depuis le profil. Il porte une veste de travail bleue.
 - Il apparaît dans le quartier, à côté du chat. Un jour de manif validé, il lève le bras.
 
 ## Les objets : un par famille de cartes

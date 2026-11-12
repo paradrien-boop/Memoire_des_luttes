@@ -22,5 +22,7 @@ export function assembler(racine) {
   for (const f of jsons(join(racine, "data/evenements"))) donnees.evenements.push(lire("data/evenements", f));
   // Seulement les clés publiques du collectif. La clé de démonstration n'est jamais incluse ici.
   donnees.cles = lire("data/cles/racine.json");
+  // Les actions militantes proposées et leurs récompenses (configuration du collectif).
+  donnees.actions = lire("data/actions.json");
   return donnees;
 }

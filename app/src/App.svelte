@@ -19,6 +19,7 @@
   import EcranVerrou from './composants/EcranVerrou.svelte'
   import Frise from './composants/Frise.svelte'
   import { verrou } from './etat/verrou.svelte'
+  import { profil } from './etat/profil.svelte'
   import { untrack } from 'svelte'
   import { ecranDepuisAdresse } from './navigation'
   import { jeu } from './etat/jeu.svelte'
@@ -28,7 +29,7 @@
   let erreur = $state('')
   let cleEditeur = $state(0) // change pour recharger l'éditeur avec une autre carte
 
-  Promise.all([jeu.charger(), quartier.charger(), verrou.charger()]).catch((e) => (erreur = String(e?.message ?? e)))
+  Promise.all([jeu.charger(), quartier.charger(), verrou.charger(), profil.charger()]).catch((e) => (erreur = String(e?.message ?? e)))
   miseAJour.demarrer()
 
   $effect(() => {
@@ -45,7 +46,10 @@
     const avancer = () => untrack(async () => {
       const r = await jeu.avancer()
       if (r.nouveauxBoosters) ui.annoncer(r.nouveauxBoosters > 1 ? `${r.nouveauxBoosters} nouveaux boosters !` : 'Nouveau booster gagné !')
-      if (r.jourValide) ui.annoncer(`Jour de manif validé : ${jeu.chrono.jours.length} au compteur`)
+      if (r.jourValide) {
+        const e = await profil.manifValidee()
+        ui.annoncer(`Jour de manif validé : ${jeu.chrono.jours.length} au compteur${e.objectifAtteint ? '. Objectif de la semaine atteint !' : ''}`)
+      }
     })
     avancer()
     const minuteur = setInterval(avancer, 1000)
@@ -84,7 +88,7 @@
 <main>
   {#if erreur}
     <div class="encart"><h2>L'app n'a pas pu démarrer</h2><p>La base de données du téléphone n'est pas accessible ({erreur}). Une navigation privée peut la bloquer.</p></div>
-  {:else if jeu.pret && quartier.pret && !verrou.verrouille}
+  {:else if jeu.pret && quartier.pret && profil.pret && !verrou.verrouille}
     {#if ecran === 'manif'}<Manif />
     {:else if ecran === 'album'}<Album />
     {:else if ecran === 'quartier'}<Quartier />
