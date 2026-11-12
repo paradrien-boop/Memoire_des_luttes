@@ -19,7 +19,7 @@
     <rect y="190" width="400" height="40" fill={P.pierre} />
     {#each [40, 120, 200, 280, 360] as x (x)}<rect x={x - 12} y="208" width="24" height="3" fill={P.papier} />{/each}
     <g transform="translate(110,206) scale(1.15)">
-      <Personnage teint={quartier.apparence.teint} coiffure={quartier.apparence.coiffure} objets={quartier.objets}
+      <Personnage teint={quartier.apparence.teint} coiffure={quartier.apparence.coiffure} equipe={quartier.equipe}
         pose={etat === 'victoire' ? 'victoire' : etat === 'defaite' ? 'sonne' : 'repos'} />
     </g>
     {#if ennemi}

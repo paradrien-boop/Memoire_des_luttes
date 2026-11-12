@@ -11,22 +11,23 @@ Ton personnage vit dans le quartier, à côté du chat. Tu l'équipes avec les o
 - Chaque personne le crée **une fois** dans **Profil** › Mon personnage : un **nom**, un **teint** (4) et une **coiffure** (courte, longue, frisée). Il est enregistré tel quel, et ne se modifie que depuis le profil. Il porte une veste de travail bleue.
 - Il apparaît dans le quartier, à côté du chat. Un jour de manif validé, il lève le bras.
 
-## Les objets : un par famille de cartes
+## L'équipement : 24 objets, 7 emplacements
 
-On gagne l'objet d'une famille **dès la première carte** de cette famille. Il s'améliore à **3** puis **6** cartes différentes, et son dessin change sur le personnage.
+Chaque famille de cartes débloque **trois objets**, à **1, 3 et 6** cartes différentes de la famille. Le personnage a **7 emplacements** ; dans **Profil › Son équipement**, on choisit quel objet débloqué mettre sur chacun (ou rien). Le choix est enregistré tout de suite. Un emplacement jamais choisi reçoit d'office le premier objet débloqué.
 
-| Famille | Objet | Pendant la bataille |
-|---|---|---|
-| Chant | le porte-voix | **Fait taire une mauvaise réponse** (elle disparaît) |
-| Événement | la banderole | **Seconde chance** : après une erreur, la bataille reprend |
-| Livre | le livre | **Indice** : la famille et les dates de la carte (jamais la réponse d'une question de date) |
-| Personnalité | le foulard rouge | des points en plus à chaque bataille gagnée |
-| Mesure, loi | la casquette d'ouvrier | des points en plus |
-| Concept | les lunettes | des points en plus |
-| Courant de pensée | le drapeau | des points en plus |
-| Lieu | la lanterne | des points en plus |
+| Emplacement | Objets possibles (famille, cartes nécessaires) |
+|---|---|
+| Tête | casquette d'ouvrier (mesure, 1) · béret (courant, 3) · bonnet phrygien (événement, 6) · fichu rouge (personnalité, 6) |
+| Visage | lunettes rondes (concept, 1) · binocles (livre, 6) |
+| Col | foulard rouge (personnalité, 1) · lavallière (concept, 3) · écharpe (lieu, 3) · cocarde (courant, 6) |
+| Haut | tablier de cantinière (personnalité, 3) · bleu de chauffe (mesure, 3) · marinière (lieu, 6) — sinon la veste de travail |
+| Main droite | **porte-voix ★** (chant, 1) · drapeau rouge (courant, 1) · lanterne (lieu, 1) · journal (livre, 3) |
+| Main gauche | **livre ★** (livre, 1) · pancarte (événement, 3) · tambour (chant, 6) · rose rouge (concept, 6) |
+| Dos | **banderole ★** (événement, 1) · accordéon (chant, 3) · sac de tracts (mesure, 6) |
 
-Un pouvoir s'utilise **une fois par jour et par niveau** de l'objet. Les objets sans pouvoir ajoutent 1 point par niveau à chaque bataille gagnée.
+**★ Les trois objets à pouvoir ne servent que s'ils sont portés** : le porte-voix fait taire une mauvaise réponse, la banderole donne une seconde chance, le livre donne un indice. Chacun sert, par jour, autant de fois que le niveau de sa famille (1 à 3). Tous les autres objets portés rapportent **1 point de plus** par bataille gagnée. Il faut donc choisir : un pouvoir, ou des points.
+
+La liste des objets est dans `paquets/noyau/src/equipement.ts`.
 
 ## Les adversaires
 

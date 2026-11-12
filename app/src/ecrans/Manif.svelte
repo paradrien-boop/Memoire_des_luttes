@@ -3,7 +3,7 @@
   import Entete from '../composants/Entete.svelte'
   import { jeu } from '../etat/jeu.svelte'
   import { ui } from '../etat/interface.svelte'
-  import { catalogue } from '../donnees'
+  import { catalogue, CARTES_MAX_PAR_JOUR } from '../donnees'
   import { dateDuJour, duree } from '../outils'
   import { utiliserQr } from '../etat/scan'
   import MesActions from '../composants/MesActions.svelte'
@@ -60,9 +60,23 @@
     <div class="pile serree large">
       <h2>{jeu.boosters === 0 ? 'Aucun booster' : jeu.boosters === 1 ? '1 booster à ouvrir' : `${jeu.boosters} boosters à ouvrir`}</h2>
       <p class="discret petit">{REGLES.cartesParBooster} cartes par booster. Si {REGLES.garantieApres} boosters de suite n'ont rien donné de rare, le suivant contient forcément une carte rare.</p>
-      <div><button class="rouge" disabled={jeu.boosters < 1} onclick={ouvrir}>Ouvrir un booster</button></div>
+      <p class="limite" class:atteinte={!jeu.peutOuvrir}>Aujourd'hui : <b>{jeu.cartesAujourdhui} / {CARTES_MAX_PAR_JOUR}</b> cartes{!jeu.peutOuvrir ? ". C'est le maximum : tes boosters t'attendent demain." : ''}</p>
+      <div><button class="rouge" disabled={jeu.boosters < 1 || !jeu.peutOuvrir} onclick={ouvrir}>Ouvrir un booster</button></div>
     </div>
   </section>
+
+  {#if jeu.boostersSpeciaux.length}
+    <section class="encart speciaux">
+      <h2>Boosters spéciaux gardés</h2>
+      <p class="petit">Gagnés à un stand quand la limite du jour était atteinte. Chacun garantit sa rareté.</p>
+      {#each jeu.boostersSpeciaux as b, i (i)}
+        <div class="ligne entre">
+          <span>{b.libelle} · <b>{b.minimum === 'legendaire' ? 'légendaire garantie' : b.minimum === 'rare' ? 'rare garantie' : 'booster spécial'}</b></span>
+          <button class="rouge" disabled={!jeu.peutOuvrir} onclick={async () => { const r = await jeu.ouvrirSpecial(i); if (r) ui.booster = r }}>Ouvrir</button>
+        </div>
+      {/each}
+    </section>
+  {/if}
 
   <div class="stats">
     <div><b>{jeu.nombreOfficielles}/{catalogue.officielles.length}</b><span>Cartes</span></div>
@@ -97,6 +111,10 @@
   .geant { font-family: var(--f-affiche); font-size: 30px; font-weight: 900; padding: 14px 18px; width: 100%; letter-spacing: .03em; }
   .case { flex-direction: row; align-items: center; gap: 8px; font-weight: 500; }
   .case input { width: auto; }
+  .limite { font-size: 13px; }
+  .limite.atteinte { color: var(--rouge); font-weight: 700; }
+  .entre { justify-content: space-between; }
+  .speciaux .ligne { font-size: 14px; }
   .booster { display: flex; gap: 16px; align-items: center; border: 3px dashed var(--rouge); padding: 16px; }
   .enveloppe { flex: none; width: 74px; aspect-ratio: 5 / 7; background: var(--rouge); color: var(--sur-rouge); display: grid; place-items: center; font-family: var(--f-affiche); font-weight: 900; font-size: 30px; transform: rotate(-4deg); box-shadow: 5px 5px 0 var(--encre); }
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); border: 2px solid var(--encre); }

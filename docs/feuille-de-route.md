@@ -57,6 +57,8 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 - [ ] Écrire les adversaires des prochains packs (`ennemis.json`)
 - [x] Actions militantes au choix (tracter, coller, grève, caisse de grève, transmettre…), réglées dans `data/actions.json`, avec objectif de la semaine (voir [actions-militantes.md](actions-militantes.md))
 - [x] Profil : personnage créé une fois et enregistré, choix des actions, réglages
+- [x] Équipement au choix : 24 objets sur 7 emplacements (tête, visage, col, haut, mains, dos)
+- [x] Au plus 9 cartes par jour (`data/regles.json`)
 - [ ] Dessins définitifs
 
 ## Étape 4 : le site

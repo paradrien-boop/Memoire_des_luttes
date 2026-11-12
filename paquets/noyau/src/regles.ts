@@ -11,6 +11,8 @@ export const REGLES = {
   /** Après ce nombre de boosters sans carte rare, le suivant en contient forcément une. */
   garantieApres: 3,
   cartesParBooster: 3,
+  /** Cartes gagnées au plus par jour, tous boosters confondus (réglable dans data/regles.json). */
+  cartesMaxParJour: 9,
   /** Probabilités par carte. */
   probabilites: { legendaire: 0.06, rare: 0.26 },
 } as const;
@@ -54,4 +56,9 @@ export function tirerBooster(cartes: Carte[], sansRare: number, hasard: Hasard, 
 /** Nombre total de boosters mérités pour une durée de manif (avant plafond du jour). */
 export function boostersPourDuree(ms: number): number {
   return Math.floor(ms / (REGLES.minutesParBooster * 60_000));
+}
+
+/** Peut-on encore ouvrir un booster aujourd'hui ? (dons de camarades et cartes d'événement ne comptent pas) */
+export function peutOuvrirBooster(cartesAujourdhui: number, maxParJour: number = REGLES.cartesMaxParJour): boolean {
+  return cartesAujourdhui + REGLES.cartesParBooster <= maxParJour;
 }

@@ -1,9 +1,9 @@
 // Le quiz du jour (chaque question est une bataille), le personnage et son équipement, le chat et son quartier.
 // Les règles sont dans le noyau (quiz.ts, mascotte.ts, equipement.ts, bataille.ts) ; ici on les applique et on enregistre.
 import {
-  ajouterFragment, apresReponse, bonusDePoints, dort, ennemiPour, equipement, hasardDepuis, joursEntre,
-  pointsDeBataille, pointsPourReponse, questionsDuJour, retirerUneMauvaise, stade, utilisationsParJour,
-  type Carte, type Ennemi, type Souvenir,
+  ajouterFragment, apresReponse, bonusDePoints, dort, ennemiPour, equipementValide, hasardDepuis, joursEntre, niveauObjet,
+  objetDuPouvoir, objetsDebloques, pointsDeBataille, pointsPourReponse, questionsDuJour, retirerUneMauvaise, stade, utilisationsParJour,
+  type Carte, type Emplacement, type Ennemi, type Equipe, type Pouvoir, type Souvenir,
 } from '@mdl/noyau'
 import { base, type QuizDuJour } from '../stockage/base'
 import { catalogue } from '../donnees'
@@ -37,7 +37,9 @@ class Quartier {
   jour = $state<QuizDuJour | null>(null)
   apparence = $state<Apparence>({ teint: 1, coiffure: 0 })
   batailles = $state(0)
-  /** Utilisations des pouvoirs aujourd'hui, par famille d'objet. */
+  /** L'équipement choisi, emplacement par emplacement (null : laissé vide exprès). */
+  equipeChoisi = $state<Equipe>({})
+  /** Utilisations des pouvoirs aujourd'hui, par pouvoir. */
   pouvoirs = $state<{ date: string; utilises: Record<string, number> }>({ date: '', utilises: {} })
   /** Graine propre à ce téléphone : deux personnes n'ont pas les mêmes questions le même jour. */
   private graine = ''
@@ -49,8 +51,12 @@ class Quartier {
     for (const c of catalogue.officielles) if ((jeu.possessions[c.id] ?? 0) > 0) n[c.fam] = (n[c.fam] ?? 0) + 1
     return n
   })
-  /** Niveau de chaque objet du personnage (0 = pas encore gagné). */
-  objets = $derived(equipement(this.cartesParFamille))
+  /** Niveau de chaque famille (0 à 3) : il règle les utilisations des pouvoirs. */
+  niveauxFamilles = $derived(Object.fromEntries(Object.entries(this.cartesParFamille).map(([f, n]) => [f, niveauObjet(n)])))
+  /** Les objets débloqués par la collection. */
+  debloques = $derived(objetsDebloques(this.cartesParFamille))
+  /** Ce que porte le personnage : les choix, complétés par les objets débloqués pour les emplacements jamais choisis. */
+  equipe = $derived(equipementValide(this.equipeChoisi, this.debloques))
   dort = $derived(dort(this.dernierQuiz, dateDuJour(), joursEntre))
 
   async charger() {
@@ -64,6 +70,7 @@ class Quartier {
     this.apparence = (r.apparence as Apparence) ?? { teint: 1, coiffure: 0 }
     this.batailles = (r.batailles as number) ?? 0
     this.pouvoirs = (r.pouvoirs as Quartier['pouvoirs']) ?? { date: '', utilises: {} }
+    this.equipeChoisi = (r.equipement as Equipe) ?? {}
     this.graine = (r.graine as string) ?? ''
     if (!this.graine) {
       this.graine = Array.from(crypto.getRandomValues(new Uint8Array(8)), (b) => b.toString(16).padStart(2, '0')).join('')
@@ -133,18 +140,26 @@ class Quartier {
     return ennemiPour({ ...carte, serie: catalogue.officielles.find((c) => c.id === carte.id)?.serie }, catalogue.ennemis, hasardDepuis(this.graine + this.jour!.date + i), jeu.seriesCompletes, derniere)
   }
 
-  /** Utilisations restantes aujourd'hui du pouvoir d'un objet. */
-  restants(famille: string): number {
-    const utilises = this.pouvoirs.date === dateDuJour() ? (this.pouvoirs.utilises[famille] ?? 0) : 0
-    return Math.max(0, utilisationsParJour(this.objets[famille] ?? 0) - utilises)
+  /** Met un objet (ou rien, avec null) sur un emplacement. */
+  async equiper(emplacement: Emplacement, id: string | null) {
+    this.equipeChoisi = { ...this.equipe, [emplacement]: id }
+    await this.regler({ equipement: this.equipeChoisi })
   }
 
-  /** Utilise un pouvoir (porte-voix, banderole, livre). @returns false s'il n'en reste plus */
-  async utiliserPouvoir(famille: string): Promise<boolean> {
-    if (this.restants(famille) < 1) return false
+  /** Utilisations restantes aujourd'hui d'un pouvoir : 0 si aucun objet porté ne le donne. */
+  restants(pouvoir: Pouvoir): number {
+    const objet = objetDuPouvoir(this.equipe, pouvoir)
+    if (!objet) return 0
+    const utilises = this.pouvoirs.date === dateDuJour() ? (this.pouvoirs.utilises[pouvoir] ?? 0) : 0
+    return Math.max(0, utilisationsParJour(this.niveauxFamilles[objet.famille] ?? 0) - utilises)
+  }
+
+  /** Utilise un pouvoir (retirer, seconde-chance, indice). @returns false s'il n'en reste plus */
+  async utiliserPouvoir(pouvoir: Pouvoir): Promise<boolean> {
+    if (this.restants(pouvoir) < 1) return false
     const date = dateDuJour()
     const utilises = this.pouvoirs.date === date ? { ...this.pouvoirs.utilises } : {}
-    utilises[famille] = (utilises[famille] ?? 0) + 1
+    utilises[pouvoir] = (utilises[pouvoir] ?? 0) + 1
     this.pouvoirs = { date, utilises }
     await this.regler({ pouvoirs: this.pouvoirs })
     return true
@@ -155,7 +170,7 @@ class Quartier {
     const q = this.jour?.questions[i]
     if (!q) return null
     const r = retirerUneMauvaise(q.choix, q.bonne, dejaRetirees, Math.random)
-    if (r === null || !(await this.utiliserPouvoir('chant'))) return null
+    if (r === null || !(await this.utiliserPouvoir('retirer'))) return null
     return r
   }
 
@@ -173,7 +188,7 @@ class Quartier {
     const famille = catalogue.parId[q.carteId]?.fam ?? 'evenement'
     const ennemi = this.ennemi(i)
     // Une bataille gagnée : points de base (doublés un jour de manif), bonus des objets, double contre un chef.
-    const points = juste ? pointsDeBataille(pointsPourReponse(true, jeu.chrono.jours.includes(date)), bonusDePoints(this.objets), !!ennemi?.chef) : 0
+    const points = juste ? pointsDeBataille(pointsPourReponse(true, jeu.chrono.jours.includes(date)), bonusDePoints(this.equipe), !!ennemi?.chef) : 0
     if (juste) this.batailles++
 
     jour.reponses[i] = choix

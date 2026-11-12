@@ -1149,5 +1149,8 @@ window.MDL_DONNEES = {
     }
    }
   ]
+ },
+ "regles": {
+  "cartesMaxParJour": 9
  }
 };

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boostersPourDuree, REGLES, tirerBooster, tirerRarete } from "./regles";
+import { boostersPourDuree, peutOuvrirBooster, REGLES, tirerBooster, tirerRarete } from "./regles";
 import type { Carte } from "./formats";
 
 const carte = (id: string, rar: Carte["rar"]): Carte => ({ id, fam: "evenement", rar, title: id });
@@ -34,6 +34,13 @@ describe("tirerBooster", () => {
 
   it("garantit une légendaire avec un code de stand légendaire", () => {
     expect(tirerBooster(cartes, 0, suite(0.9), "legendaire").cartes.at(-1)!.rar).toBe("legendaire");
+  });
+});
+
+describe("peutOuvrirBooster", () => {
+  it("au plus 9 cartes par jour : 3 boosters", () => {
+    expect([0, 3, 6, 7, 9].map((n) => peutOuvrirBooster(n))).toEqual([true, true, true, false, false]);
+    expect(peutOuvrirBooster(6, 12)).toBe(true);
   });
 });
 

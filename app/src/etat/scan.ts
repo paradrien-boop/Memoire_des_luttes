@@ -9,6 +9,10 @@ export async function utiliserQr(texte: string): Promise<boolean> {
     case 'refuse':
       ui.annoncer(r.raison)
       return false
+    case 'garde':
+      ui.scanner = false
+      ui.annoncer(`Limite de cartes du jour atteinte : ton booster spécial (${r.libelle}) est gardé. Ouvre-le demain, dans Agir.`)
+      return true
     case 'deja':
       ui.annoncer('Ce QR a déjà été utilisé sur ce téléphone.')
       return false

@@ -4,11 +4,15 @@
   import Scene from '../dessins/Scene.svelte'
   import Personnage from '../dessins/Personnage.svelte'
   import Ennemi from '../dessins/Ennemi.svelte'
-  import { ELEMENTS, OBJETS } from '@mdl/noyau'
+  import { ELEMENTS, EMPLACEMENTS, OBJETS, type Equipe } from '@mdl/noyau'
 
   const tout = (n: number) => Object.fromEntries(Object.keys(ELEMENTS).map((f) => [f, n]))
-  const objets = (n: number) => Object.fromEntries(Object.keys(OBJETS).map((f) => [f, n]))
-  const perso = (n: number) => ({ teint: n % 4, coiffure: n % 3, objets: objets(n) })
+  /** Un équipement complet, différent selon n (0 : rien). */
+  const equipe = (n: number): Equipe => n === 0 ? {} : Object.fromEntries(EMPLACEMENTS.map((e) => {
+    const possibles = OBJETS.filter((o) => o.emplacement === e.id)
+    return [e.id, possibles[(n - 1) % possibles.length].id]
+  }))
+  const perso = (n: number) => ({ teint: n % 4, coiffure: n % 3, equipe: equipe(n) })
 </script>
 
 <div class="pile">
@@ -23,12 +27,12 @@
   <Scene niveaux={tout(1)} stade={1} dort personnage={perso(0)} heure={12} />
 
   <h2>Le personnage : teints, coiffures, poses, objets</h2>
-  <svg viewBox="0 -160 640 170" class="planche">
+  <svg viewBox="0 -180 640 190" class="planche">
     {#each [0, 1, 2, 3] as t (t)}
-      <g transform="translate({50 + t * 80},0)"><Personnage teint={t} coiffure={t % 3} objets={objets(t)} /></g>
+      <g transform="translate({50 + t * 80},0)"><Personnage teint={t} coiffure={t % 3} equipe={equipe(t)} /></g>
     {/each}
-    <g transform="translate(400,0)"><Personnage teint={1} coiffure={0} objets={objets(3)} pose="victoire" /></g>
-    <g transform="translate(520,0)"><Personnage teint={2} coiffure={1} objets={objets(2)} pose="sonne" /></g>
+    <g transform="translate(400,0)"><Personnage teint={1} coiffure={0} equipe={equipe(1)} pose="victoire" /></g>
+    <g transform="translate(520,0)"><Personnage teint={2} coiffure={1} equipe={equipe(2)} pose="sonne" /></g>
   </svg>
 
   <h2>Les adversaires (menace)</h2>

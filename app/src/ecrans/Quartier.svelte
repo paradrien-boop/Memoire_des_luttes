@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CARTES_MIN_QUIZ, ELEMENTS, FRAGMENTS_PAR_BOOSTER, niveau, STADES, versStadeSuivant } from '@mdl/noyau'
+  import { CARTES_MIN_QUIZ, objetDuPouvoir, ELEMENTS, FRAGMENTS_PAR_BOOSTER, niveau, STADES, versStadeSuivant } from '@mdl/noyau'
   import Entete from '../composants/Entete.svelte'
   import Scene from '../dessins/Scene.svelte'
   import Arene from '../composants/Arene.svelte'
@@ -52,7 +52,7 @@
   async function choisir(i: number) {
     if (!question || reponse !== null) return
     // Une erreur, et la banderole est là : on propose une seconde chance avant d'enregistrer la défaite.
-    if (i !== question.bonne && quartier.restants('evenement') > 0 && !secondeEssai.length) { choixEnAttente = i; return }
+    if (i !== question.bonne && quartier.restants('seconde-chance') > 0 && !secondeEssai.length) { choixEnAttente = i; return }
     await enregistrer(i)
   }
 
@@ -64,7 +64,7 @@
   }
 
   async function brandir() {
-    if (choixEnAttente === null || !(await quartier.utiliserPouvoir('evenement'))) return
+    if (choixEnAttente === null || !(await quartier.utiliserPouvoir('seconde-chance'))) return
     secondeEssai = [choixEnAttente]
     choixEnAttente = null
     ui.annoncer('La banderole se déploie : la bataille reprend !')
@@ -77,7 +77,7 @@
   }
 
   async function livre() {
-    if (!question || !(await quartier.utiliserPouvoir('livre'))) return
+    if (!question || !(await quartier.utiliserPouvoir('indice'))) return
     const c = catalogue.parId[question.carteId]
     const famille = catalogue.familles[c?.fam]?.libelle ?? ''
     const serie = catalogue.series.find((s) => s.cartes.includes(question.carteId))?.nom
@@ -99,7 +99,7 @@
 
 <div class="pile">
   <Scene {niveaux} stade={quartier.stade} dort={quartier.dort} {accessoires} pancarte={jourDeManif} {description}
-    personnage={{ teint: quartier.apparence.teint, coiffure: quartier.apparence.coiffure, objets: quartier.objets }}
+    personnage={{ teint: quartier.apparence.teint, coiffure: quartier.apparence.coiffure, equipe: quartier.equipe }}
     foule={Math.min(6, jeu.chrono.jours.length)} />
 
   <div class="progression">
@@ -155,11 +155,11 @@
 
       {#if reponse === null && etatBataille !== 'seconde'}
         <div class="pouvoirs">
-          {#if quartier.objets.chant}
-            <button disabled={!quartier.restants('chant')} onclick={porteVoix}>📣 Porte-voix ({quartier.restants('chant')})</button>
+          {#if objetDuPouvoir(quartier.equipe, 'retirer')}
+            <button disabled={!quartier.restants('retirer')} onclick={porteVoix}>📣 Porte-voix ({quartier.restants('retirer')})</button>
           {/if}
-          {#if quartier.objets.livre}
-            <button disabled={!quartier.restants('livre') || !!indice} onclick={livre}>📖 Livre ({quartier.restants('livre')})</button>
+          {#if objetDuPouvoir(quartier.equipe, 'indice')}
+            <button disabled={!quartier.restants('indice') || !!indice} onclick={livre}>📖 Livre ({quartier.restants('indice')})</button>
           {/if}
         </div>
       {/if}
@@ -182,7 +182,7 @@
         <div class="correction">
           <b>Raté… mais ta banderole peut changer le cours de la bataille.</b>
           <div class="ligne">
-            <button class="rouge" onclick={brandir}>Brandir la banderole ({quartier.restants('evenement')})</button>
+            <button class="rouge" onclick={brandir}>Brandir la banderole ({quartier.restants('seconde-chance')})</button>
             <button onclick={() => enregistrer(choixEnAttente!)}>Accepter la défaite</button>
           </div>
         </div>

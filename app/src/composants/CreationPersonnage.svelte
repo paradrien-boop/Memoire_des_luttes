@@ -21,7 +21,7 @@
 
 <div class="perso">
   <svg viewBox="-60 -150 120 156" role="img" aria-label="Aperçu de ton personnage">
-    <Personnage teint={edition ? brouillon.teint : profil.personnage!.teint} coiffure={edition ? brouillon.coiffure : profil.personnage!.coiffure} objets={quartier.objets} />
+    <Personnage teint={edition ? brouillon.teint : profil.personnage!.teint} coiffure={edition ? brouillon.coiffure : profil.personnage!.coiffure} equipe={quartier.equipe} />
   </svg>
 
   {#if edition}

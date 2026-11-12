@@ -80,6 +80,12 @@ for (const type of ["officiel", "local"]) {
     console.log(`Pack ${pack} : ${Object.keys(cartes).length} cartes vérifiées.`);
   }
 }
+// Règles réglables (data/regles.json)
+{
+  const r = JSON.parse(readFileSync(join(racine, "data/regles.json"), "utf8"));
+  if (!Number.isInteger(r.cartesMaxParJour) || r.cartesMaxParJour < 3 || r.cartesMaxParJour % 3 !== 0) err("data/regles.json", "cartesMaxParJour doit être un multiple de 3 (3 cartes par booster), au moins 3");
+}
+
 // Actions militantes (data/actions.json)
 {
   const c = JSON.parse(readFileSync(join(racine, "data/actions.json"), "utf8"));

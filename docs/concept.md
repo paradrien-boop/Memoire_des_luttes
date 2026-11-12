@@ -25,6 +25,8 @@ Une application de cartes à collectionner qui fonctionne entièrement hors lign
 
 Un booster contient 3 cartes. Si 3 boosters de suite n'ont rien donné de rare, le suivant en contient forcément une.
 
+**On gagne au plus 9 cartes par jour** (3 boosters), quelle que soit leur origine : manif, actions, quiz, stands. Les boosters gagnés au-delà attendent le lendemain ; un booster spécial de stand est gardé avec sa rareté garantie. Les dons de camarades et les cartes d'événement ne comptent pas. Ce nombre se règle dans `data/regles.json` (un multiple de 3).
+
 ## Rareté
 
 | Rareté | Probabilité par carte |

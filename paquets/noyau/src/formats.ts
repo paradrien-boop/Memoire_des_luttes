@@ -76,4 +76,6 @@ export interface Donnees {
   cles?: { nom: string; racines: string[]; revocations?: string[] };
   /** Les actions militantes proposées (data/actions.json). */
   actions?: import("./actions").ConfigActions;
+  /** Règles réglables (data/regles.json). */
+  regles?: { cartesMaxParJour: number };
 }

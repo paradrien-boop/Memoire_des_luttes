@@ -24,5 +24,7 @@ export function assembler(racine) {
   donnees.cles = lire("data/cles/racine.json");
   // Les actions militantes proposées et leurs récompenses (configuration du collectif).
   donnees.actions = lire("data/actions.json");
+  // Règles du jeu réglables par le collectif.
+  donnees.regles = lire("data/regles.json");
   return donnees;
 }

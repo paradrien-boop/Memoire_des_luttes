@@ -25,5 +25,8 @@ export const REVOCATIONS_INTEGREES: string[] = [...(brut.cles?.revocations ?? []
 
 export { demo as CLE_DEMO }
 
+/** Cartes gagnées au plus par jour, tous boosters confondus (data/regles.json). */
+export const CARTES_MAX_PAR_JOUR: number = brut.regles?.cartesMaxParJour ?? 9
+
 /** Les actions militantes proposées et leurs récompenses (data/actions.json). */
 export const ACTIONS = brut.actions!

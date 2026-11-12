@@ -1,24 +1,44 @@
 import { describe, expect, it } from "vitest";
-import { avantNiveauSuivant, bonusDePoints, equipement, niveauObjet, OBJETS, utilisationsParJour } from "./equipement";
+import { avantNiveauSuivant, bonusDePoints, EMPLACEMENTS, equipementValide, niveauObjet, objetDuPouvoir, objetsDebloques, OBJETS } from "./equipement";
 import { ennemiPour, pointsDeBataille, retirerUneMauvaise, type Ennemi } from "./bataille";
 import { hasardDepuis } from "./quiz";
 import type { Carte } from "./formats";
 
 describe("équipement", () => {
-  it("chaque famille donne un objet", () => {
-    for (const f of ["personnalite", "evenement", "lieu", "mesure", "concept", "courant", "livre", "chant"]) expect(OBJETS[f]).toBeTruthy();
+  it("chaque famille débloque 3 objets, à 1, 3 et 6 cartes", () => {
+    for (const f of ["personnalite", "evenement", "lieu", "mesure", "concept", "courant", "livre", "chant"]) {
+      expect(OBJETS.filter((x) => x.famille === f).map((x) => x.palier).sort((a, b) => a - b), f).toEqual([1, 3, 6]);
+    }
   });
-  it("l'objet se gagne à la première carte de la famille, puis s'améliore à 3 et 6 cartes", () => {
+  it("chaque emplacement a au moins deux objets possibles", () => {
+    for (const e of EMPLACEMENTS) expect(OBJETS.filter((x) => x.emplacement === e.id).length, e.id).toBeGreaterThanOrEqual(2);
+  });
+  it("niveaux de famille", () => {
     expect([0, 1, 2, 3, 5, 6, 30].map(niveauObjet)).toEqual([0, 1, 1, 2, 2, 3, 3]);
     expect(avantNiveauSuivant(4)).toBe(2);
     expect(avantNiveauSuivant(6)).toBeNull();
   });
-  it("niveaux de tous les objets, pouvoirs et bonus", () => {
-    const n = equipement({ chant: 1, personnalite: 3, mesure: 6 });
-    expect(n.chant).toBe(1);
-    expect(n.livre).toBe(0);
-    expect(utilisationsParJour(n.chant)).toBe(1);
-    expect(bonusDePoints(n)).toBe(2 + 3); // foulard niveau 2, casquette niveau 3 ; le porte-voix a un pouvoir, pas de bonus
+  it("objets débloqués par la collection", () => {
+    const ids = objetsDebloques({ chant: 1, evenement: 3 }).map((x) => x.id);
+    expect(ids.sort()).toEqual(["banderole", "pancarte", "porte-voix"]);
+  });
+  it("équipement : remplit les emplacements jamais choisis, garde les choix, respecte un emplacement vidé exprès", () => {
+    const d = objetsDebloques({ chant: 1, evenement: 3, livre: 1 });
+    const e = equipementValide({}, d);
+    expect(e["main-droite"]).toBe("porte-voix");
+    expect(e["main-gauche"]).toBe("pancarte"); // le premier débloqué pour cet emplacement
+    expect(e.dos).toBe("banderole");
+    expect(e.tete).toBeUndefined();
+    const choisi = equipementValide({ "main-gauche": "livre", dos: null }, d);
+    expect(choisi["main-gauche"]).toBe("livre");
+    expect(choisi.dos).toBeNull();
+    // un objet qui n'est plus débloqué, ou mis au mauvais emplacement, est remplacé
+    expect(equipementValide({ tete: "bonnet-phrygien", col: "livre" }, d).tete).toBeUndefined();
+  });
+  it("les pouvoirs ne valent que pour les objets portés ; les autres rapportent des points", () => {
+    expect(objetDuPouvoir({ "main-droite": "porte-voix" }, "retirer")!.id).toBe("porte-voix");
+    expect(objetDuPouvoir({ "main-droite": "drapeau" }, "retirer")).toBeNull();
+    expect(bonusDePoints({ "main-droite": "porte-voix", tete: "casquette", col: "foulard-rouge" })).toBe(2);
   });
 });
 

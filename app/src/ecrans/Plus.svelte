@@ -2,6 +2,7 @@
   import Entete from '../composants/Entete.svelte'
   import CreationPersonnage from '../composants/CreationPersonnage.svelte'
   import ChoixActions from '../composants/ChoixActions.svelte'
+  import ChoixEquipement from '../composants/ChoixEquipement.svelte'
   import BoutonConfirme from '../composants/BoutonConfirme.svelte'
   import GuideInstallation from '../composants/GuideInstallation.svelte'
   import Packs from '../composants/Packs.svelte'
@@ -15,6 +16,11 @@
   <section class="encart" id="personnage">
     <h2>Mon personnage</h2>
     <CreationPersonnage />
+  </section>
+
+  <section class="encart" id="equipement">
+    <h2>Son équipement</h2>
+    <ChoixEquipement />
   </section>
 
   <section class="encart" id="actions">

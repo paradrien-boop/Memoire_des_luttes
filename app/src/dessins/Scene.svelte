@@ -9,7 +9,7 @@
     {
       niveaux?: Record<string, number>; stade?: number; dort?: boolean; accessoires?: string[]; pancarte?: boolean; description?: string
       /** Le personnage du joueur ou de la joueuse, à côté du chat. */
-      personnage?: { teint: number; coiffure: number; objets: Record<string, number> } | null
+      personnage?: { teint: number; coiffure: number; equipe: import('@mdl/noyau').Equipe } | null
       /** Nombre de passants (les jours de manif remplissent le quartier). */
       foule?: number
       /** Heure réelle : la nuit tombe dans le quartier. */
@@ -219,7 +219,7 @@
   <!-- le personnage, à côté du chat -->
   {#if personnage}
     <g transform="translate(140,288) scale(.62)">
-      <Personnage teint={personnage.teint} coiffure={personnage.coiffure} objets={personnage.objets} pose={pancarte ? 'victoire' : 'repos'} />
+      <Personnage teint={personnage.teint} coiffure={personnage.coiffure} equipe={personnage.equipe} pose={pancarte ? 'victoire' : 'repos'} />
     </g>
   {/if}
 

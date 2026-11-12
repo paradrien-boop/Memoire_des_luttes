@@ -1,11 +1,11 @@
 // L'état du jeu : chargé depuis la base du téléphone au démarrage, enregistré à chaque action.
 // Les règles elles-mêmes sont dans le noyau ; ici on ne fait que les appliquer et les enregistrer.
 import {
-  cleUnique, demarrer, encoderQr, exporterPack, lirePack, lireQr, tic, tirerBooster, TAILLE_MAX_QR, verifierPack, verifierQr,
+  cleUnique, demarrer, encoderQr, peutOuvrirBooster, exporterPack, lirePack, lireQr, tic, tirerBooster, TAILLE_MAX_QR, verifierPack, verifierQr,
   type Carte, type Confiance, type DelegationSignee, type EtatChrono, type Pack, type PackSignable, type Rarete,
 } from '@mdl/noyau'
 import { base, type EvenementObtenu, type PackImporte, type PackInstalle } from '../stockage/base'
-import { catalogue, installerDansCatalogue, NOM_COLLECTIF, RACINES, REVOCATIONS_INTEGREES } from '../donnees'
+import { catalogue, installerDansCatalogue, NOM_COLLECTIF, RACINES, REVOCATIONS_INTEGREES, CARTES_MAX_PAR_JOUR } from '../donnees'
 import { CODES_DEMO } from '../codes-demo'
 import { dateDuJour } from '../outils'
 
@@ -18,6 +18,8 @@ export type CarteAffichee = Carte & { origine: Origine; numero?: number; tirage?
 export type ResultatQr =
   | { type: 'refuse'; raison: string }
   | { type: 'deja' }
+  /** Limite de cartes du jour atteinte : le booster spécial du stand est gardé pour plus tard. */
+  | { type: 'garde'; libelle: string }
   | { type: 'booster'; resultat: ResultatBooster }
   | { type: 'evenement'; id: string }
   | { type: 'carte'; id: string; titre: string }
@@ -46,6 +48,10 @@ class Jeu {
   boosters = $state(0)
   sansRare = $state(0)
   ouverts = $state(0)
+  /** Cartes gagnées aujourd'hui en ouvrant des boosters (limite : CARTES_MAX_PAR_JOUR). */
+  cartesJour = $state<{ date: string; n: number }>({ date: '', n: 0 })
+  /** Boosters spéciaux (stands) gardés parce que la limite du jour était atteinte. */
+  boostersSpeciaux = $state<{ libelle: string; minimum: Rarete }[]>([])
   vitesse = $state(1)
   chrono = $state<EtatChrono>(CHRONO_VIDE)
   codes = $state<string[]>([])
@@ -76,6 +82,8 @@ class Jeu {
     this.ouverts = (r.ouverts as number) ?? 0
     this.vitesse = (r.vitesse as number) ?? 1
     this.brouillon = (r.brouillon as Carte) ?? null
+    this.cartesJour = (r.cartesJour as Jeu['cartesJour']) ?? { date: '', n: 0 }
+    this.boostersSpeciaux = (r.boostersSpeciaux as Jeu['boostersSpeciaux']) ?? []
     this.accueilVu = r.accueilVu === true
     this.chrono = {
       session: (r.session as EtatChrono['session']) ?? null,
@@ -149,8 +157,38 @@ class Jeu {
   /* ---------- Boosters ---------- */
 
   /** Ouvre un booster. Avec un minimum de rareté (code de stand), il ne coûte rien. */
+  /** Cartes déjà gagnées aujourd'hui en ouvrant des boosters. */
+  get cartesAujourdhui(): number {
+    return this.cartesJour.date === dateDuJour() ? this.cartesJour.n : 0
+  }
+
+  /** La limite du jour permet-elle d'ouvrir encore un booster ? */
+  get peutOuvrir(): boolean {
+    return peutOuvrirBooster(this.cartesAujourdhui, CARTES_MAX_PAR_JOUR)
+  }
+
+  /** Ouvre un booster spécial gardé (stand), si la limite du jour le permet. */
+  async ouvrirSpecial(i: number): Promise<ResultatBooster | null> {
+    const b = this.boostersSpeciaux[i]
+    if (!b || !this.peutOuvrir) return null
+    this.boostersSpeciaux = this.boostersSpeciaux.filter((_, k) => k !== i)
+    await this.regler({ boostersSpeciaux: this.boostersSpeciaux })
+    return this.ouvrirBooster(b.libelle, b.minimum)
+  }
+
+  /** Booster spécial de stand : ouvert tout de suite, ou gardé si la limite du jour est atteinte. */
+  private async boosterDeStand(libelle: string, minimum: Rarete): Promise<ResultatQr> {
+    if (!this.peutOuvrir) {
+      this.boostersSpeciaux = [...this.boostersSpeciaux, { libelle, minimum }]
+      await this.regler({ boostersSpeciaux: this.boostersSpeciaux })
+      return { type: 'garde', libelle }
+    }
+    return { type: 'booster', resultat: (await this.ouvrirBooster(libelle, minimum))! }
+  }
+
   async ouvrirBooster(libelle = 'Booster', minimum?: Rarete): Promise<ResultatBooster | null> {
     if (!minimum && this.boosters < 1) return null
+    if (!this.peutOuvrir) return null
     const { cartes, sansRare } = tirerBooster(catalogue.officielles, this.sansRare, Math.random, minimum)
     const dejaVues = new Set(Object.keys(this.possessions).filter((id) => this.possessions[id] > 0))
     const nouvelles = cartes.map((c) => {
@@ -165,9 +203,10 @@ class Jeu {
     if (!minimum) this.boosters--
     this.sansRare = sansRare
     this.ouverts++
+    this.cartesJour = { date: dateDuJour(), n: this.cartesAujourdhui + cartes.length }
     await base.transaction('rw', base.possessions, base.reglages, async () => {
       await base.possessions.bulkPut([...new Set(cartes.map((c) => c.id))].map((id) => ({ id, n: possessions[id], premiere: maintenant })))
-      await this.regler({ boosters: this.boosters, sansRare, ouverts: this.ouverts })
+      await this.regler({ boosters: this.boosters, sansRare, ouverts: this.ouverts, cartesJour: this.cartesJour })
     })
     return { libelle, cartes, nouvelles }
   }
@@ -191,7 +230,7 @@ class Jeu {
       if (this.codes.includes(code)) return { type: 'deja' }
       await this.marquerUtilise(code)
       if ('evenement' in def) return this.ajouterEvenement(def.evenement, 1 + Math.floor(Math.random() * catalogue.evenements[def.evenement].tirage))
-      return { type: 'booster', resultat: (await this.ouvrirBooster(def.libelle, def.minimum))! }
+      return this.boosterDeStand(def.libelle, def.minimum)
     }
 
     const q = lu.contenu
@@ -207,7 +246,7 @@ class Jeu {
     switch (q.t) {
       case 'S': {
         await this.marquerUtilise(cle)
-        return { type: 'booster', resultat: (await this.ouvrirBooster(`Stand · ${emetteur}`, q.m))! }
+        return this.boosterDeStand(`Stand · ${emetteur}`, q.m)
       }
       case 'E': {
         if (!catalogue.evenements[q.e] && !q.k) return { type: 'refuse', raison: "Ton app ne connaît pas encore cette carte d'événement. Mets à jour tes packs, puis rescanne." }
