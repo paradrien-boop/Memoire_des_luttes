@@ -29,7 +29,8 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 5. [Feuille de route](docs/feuille-de-route.md)
 6. [Publication](docs/publication.md)
 7. [Tester sur de vrais téléphones](docs/tester-sur-telephone.md)
-8. [Idées en attente](docs/idees.md)
+8. [L'application Android](docs/android.md)
+9. [Idées en attente](docs/idees.md)
 
 Pour proposer une carte ou une correction : voir [CONTRIBUER.md](CONTRIBUER.md).
 

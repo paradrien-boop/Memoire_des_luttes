@@ -41,3 +41,31 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Tests de bout en bout (parcours, quiz, QR, packs signés, mode avion)
         run: npm run test:e2e
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Numéro de version (nombre de modifications du dépôt, le même partout et toujours croissant)
+        run: echo "MDL_VERSION=$(git rev-list --count HEAD)" >> "$GITHUB_ENV"
+      - name: Construire l'application Android (APK)
+        run: |
+          npm run android -w app
+          cd app/android && ./gradlew assembleRelease --no-daemon -q
+      - name: Garder l'APK (onglet Actions, rubrique Artifacts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: memoire-des-luttes-android
+          path: app/android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 14

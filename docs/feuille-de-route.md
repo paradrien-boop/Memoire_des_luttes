@@ -62,6 +62,12 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 - [x] « Chercher de nouveaux packs » dans l'app, depuis le site
 - [ ] Choisir l'espace de débat (Decidim, Discourse…) et mettre son adresse dans `data/site.json`
 
+## Application Android
+
+- [x] APK construit par GitHub (Capacitor), téléchargeable depuis le site, mises à jour vérifiées sur demande (voir [android.md](android.md))
+- [ ] Tester l'APK sur de vrais téléphones Android
+- [ ] Avant la diffusion publique : une vraie clé de signature, hors du dépôt
+
 ## Plus tard
 
-- [ ] Application Android avec Bluetooth
+- [ ] Bluetooth dans l'application Android

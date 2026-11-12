@@ -2,7 +2,7 @@
 
 Tout ce qui pouvait être testé dans un navigateur l'est déjà, automatiquement, à chaque envoi sur GitHub (`npm run test:e2e`). Ce guide couvre ce que seul un vrai téléphone peut confirmer : l'installation, l'appareil photo, le mode avion réel, la batterie, deux téléphones face à face.
 
-Il faut au moins **un Android** (Chrome) et **un iPhone** (Safari), idéalement deux téléphones pour les échanges.
+Il faut au moins **un Android** (Chrome) et **un iPhone** (Safari), idéalement deux téléphones pour les échanges. Sur Android, on peut aussi tester **l'application Android** (APK) : voir [android.md](android.md).
 
 ## Avant de commencer
 

@@ -24,6 +24,12 @@ export type ResultatQr =
   | { type: 'perso'; id: string; titre: string }
 
 const NOM_RECUES = 'Cartes reçues'
+
+/**
+ * L'adresse du site qui publie les packs : à côté de l'app (« ../ ») quand elle est servie par le site,
+ * l'adresse du site (data/site.json) dans l'application Android.
+ */
+export const siteDesPacks = () => (import.meta.env.VITE_ANDROID ? import.meta.env.VITE_SITE : new URL('../', location.href).href)
 const aleatoire = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => b.toString(16).padStart(2, '0')).join('')
 
 export interface ResultatBooster {
@@ -328,7 +334,7 @@ class Jeu {
     type Entree = { id: string; nom: string; fichier: string; confiance: string; signature: string | null }
     let index: { packs: Entree[] }
     try {
-      const r = await fetch(new URL('../packs/index.json', location.href), { cache: 'no-store' })
+      const r = await fetch(new URL('packs/index.json', siteDesPacks()), { cache: 'no-store' })
       if (!r.ok) throw new Error()
       index = await r.json()
     } catch {
@@ -343,7 +349,7 @@ class Jeu {
     const messages: string[] = []
     for (const e of nouveaux) {
       try {
-        const r = await fetch(new URL('../' + e.fichier, location.href), { cache: 'no-store' })
+        const r = await fetch(new URL(e.fichier, siteDesPacks()), { cache: 'no-store' })
         if (!r.ok) throw new Error(`Le pack « ${e.nom} » est introuvable sur le site.`)
         messages.push(await this.importer(await r.text()))
       } catch (err) {

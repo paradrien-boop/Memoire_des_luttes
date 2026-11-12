@@ -39,5 +39,16 @@ for (const p of packs) {
 const index = { format: "memoire-des-luttes/index", version: 1, packs: packs.map(({ contenu, ...p }) => ({ ...p, signature: (contenu.signature as { valeur?: string } | null)?.valeur ?? null })) };
 writeFileSync(join(sortie, "packs/index.json"), JSON.stringify(index, null, 1) + "\n");
 
+// L'application Android, si elle a été construite (MDL_APK = chemin de l'APK, MDL_VERSION = son numéro).
+const apk = process.env.MDL_APK;
+if (apk) {
+  if (!existsSync(apk)) throw new Error(`APK introuvable : ${apk}`);
+  if (existsSync(join(racine, "app/dist-android")) && contient(join(racine, "app/dist-android"))) throw new Error("La clé de démonstration se trouve dans l'application Android : publication annulée.");
+  mkdirSync(join(sortie, "telecharger"), { recursive: true });
+  cpSync(apk, join(sortie, "telecharger/memoire-des-luttes.apk"));
+  writeFileSync(join(sortie, "telecharger/version.json"), JSON.stringify({ version: Number(process.env.MDL_VERSION ?? 0), fichier: "telecharger/memoire-des-luttes.apk" }) + "\n");
+  console.log(`Application Android (version ${process.env.MDL_VERSION ?? "?"}) ajoutée : telecharger/memoire-des-luttes.apk`);
+}
+
 if (contient(sortie)) throw new Error("La clé de démonstration se trouve dans la publication : publication annulée.");
 console.log(`Publication prête dans publication/ : site, app, ${packs.length} pack(s).`);

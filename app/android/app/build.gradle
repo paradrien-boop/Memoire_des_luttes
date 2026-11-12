@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace = "org.memoiredesluttes.app"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "org.memoiredesluttes.app"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        // Numéro de construction (GitHub) : chaque nouvel APK s'installe par-dessus le précédent.
+        versionCode((System.getenv("MDL_VERSION") ?: "1") as int)
+        versionName "1.${System.getenv("MDL_VERSION") ?: "0"}"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    // Signature : toujours la même clé, sinon Android refuse les mises à jour (et il faudrait désinstaller,
+    // donc perdre sa collection). Clé fournie par le secret ANDROID_CLE si elle existe ; sinon la clé de test
+    // du dépôt (cle-de-test.jks), suffisante pour la phase de test. Voir docs/android.md.
+    signingConfigs {
+        release {
+            def fichier = System.getenv("MDL_CLE_FICHIER")
+            storeFile fichier ? file(fichier) : rootProject.file("cle-de-test.jks")
+            storePassword System.getenv("MDL_CLE_MOT_DE_PASSE") ?: "memoire-des-luttes-test"
+            keyAlias System.getenv("MDL_CLE_ALIAS") ?: "test"
+            keyPassword System.getenv("MDL_CLE_MOT_DE_PASSE") ?: "memoire-des-luttes-test"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

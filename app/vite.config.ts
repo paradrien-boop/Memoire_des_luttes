@@ -12,9 +12,30 @@ const racine = fileURLToPath(new URL('..', import.meta.url))
 /**
  * Variante « démo en ligne » (MDL_ARTEFACT=1) : toute l'app dans un seul fichier HTML,
  * sans mode hors ligne (les service workers n'y sont pas permis), pour la montrer comme page de démonstration.
- * La vraie publication reste la version normale, sur Codeberg Pages.
+ * La vraie publication reste la version normale.
  */
 const artefact = process.env.MDL_ARTEFACT === '1'
+
+/**
+ * Variante « application Android » (MDL_ANDROID=1), emballée par Capacitor (dossier android/).
+ * Pas de service worker (l'app est déjà sur le téléphone) ; « Chercher de nouveaux packs »
+ * et les mises à jour de l'app interrogent le site publié, dont l'adresse est dans data/site.json.
+ */
+const android = process.env.MDL_ANDROID === '1'
+const adresseSite: string = JSON.parse(readFileSync(join(racine, 'data/site.json'), 'utf8')).adresse
+/** Numéro de version de l'app (le numéro de construction sur GitHub), comparé pour proposer les mises à jour. */
+const version = process.env.MDL_VERSION ?? 'dev'
+
+/** Dans l'application Android, la politique de sécurité autorise aussi le site (et rien d'autre). */
+function pageAndroid(): Plugin {
+  return {
+    name: 'mdl-page-android',
+    transformIndexHtml: (html) =>
+      html
+        .replace("connect-src 'self'", `connect-src 'self' ${new URL(adresseSite).origin}`)
+        .replace(/\s*<link rel="manifest"[^>]*>/, ''),
+  }
+}
 
 /**
  * Clé de démonstration (data/cles/demo.json) : sa partie secrète est publique.
@@ -77,16 +98,23 @@ export default defineConfig(({ command }) => {
   return {
   // Chemins relatifs : l'app fonctionne quel que soit le dossier où Codeberg Pages la sert.
   base: './',
-  define: { 'import.meta.env.VITE_ARTEFACT': JSON.stringify(artefact), 'import.meta.env.VITE_DEMO': JSON.stringify(modeDemo) },
+  define: {
+    'import.meta.env.VITE_ARTEFACT': JSON.stringify(artefact),
+    'import.meta.env.VITE_DEMO': JSON.stringify(modeDemo),
+    'import.meta.env.VITE_ANDROID': JSON.stringify(android),
+    'import.meta.env.VITE_SITE': JSON.stringify(adresseSite),
+    'import.meta.env.VITE_VERSION': JSON.stringify(version),
+  },
   build: artefact ? { outDir: 'dist-artefact' } : {},
   plugins: [
     svelte(),
     donnees(),
     demo(modeDemo),
     ...(artefact ? [viteSingleFile(), pageDeDemo()] : []),
+    ...(android ? [pageAndroid()] : []),
     // Rend l'app installable et utilisable sans réseau : tout est gardé sur le téléphone.
     VitePWA({
-      disable: artefact,
+      disable: artefact || android,
       registerType: 'prompt', // une nouvelle version ne s'installe que si l'utilisateur l'accepte
       injectRegister: false, // l'enregistrement est fait dans src/etat/mise-a-jour.svelte.ts
       includeAssets: ['favicon.svg', 'icones/apple-touch-icon.png'],

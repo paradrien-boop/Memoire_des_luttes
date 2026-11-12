@@ -6,6 +6,10 @@
   let qr = $state('')
   $effect(() => { QRCode.toDataURL(adresseApp, { margin: 1, width: 480, color: { dark: '#1C1816', light: '#FFFFFF' } }).then((u) => (qr = u)) })
   const officielles = site.cartes.length
+
+  // L'application Android est proposée seulement si elle a été publiée à côté du site.
+  let android = $state<{ version: number; fichier: string } | null>(null)
+  $effect(() => { fetch('./telecharger/version.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).then((v) => (android = v)).catch(() => {}) })
 </script>
 
 <section class="une">
@@ -47,6 +51,18 @@
     <div class="encart"><h3>iPhone</h3><ol><li>Ouvre <a href="./app/">l'app</a> dans Safari.</li><li>Touche Partager (le carré avec une flèche), puis « Sur l'écran d'accueil ».</li></ol></div>
   </div>
   <p class="discret">Ouvre l'app une fois avec du réseau : elle se prépare pour fonctionner ensuite sans réseau.</p>
+  {#if android}
+    <div class="encart" id="android">
+      <h3>Ou l'application Android à installer</h3>
+      <p>Une vraie application, installée à partir d'un fichier, sans passer par le navigateur ni par le Play Store.</p>
+      <ol>
+        <li><a class="bouton rouge" href={'./' + android.fichier} download>Télécharger l'application (version {android.version})</a></li>
+        <li>Ouvre le fichier téléchargé. Android demande d'autoriser l'installation depuis cette source : accepte pour ce fichier.</li>
+        <li>Pour une mise à jour, refais la même chose : la nouvelle version remplace l'ancienne et garde ta collection.</li>
+      </ol>
+      <p class="discret">L'application Android et l'app installée depuis le navigateur ont chacune leur propre collection.</p>
+    </div>
+  {/if}
 </section>
 
 <section class="pile">
