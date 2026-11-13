@@ -2,7 +2,7 @@
   // Les adversaires historiques, en caricatures d'époque (jamais des personnes réelles).
   // Origine : entre les pieds. Poses : menace (face au personnage, regard vers la gauche), fuite (il détale).
   import { P } from './palette'
-  import { CADRES, premier } from './fichiers'
+  import { CADRES, premier } from './fichiers.svelte'
 
   let { dessin = 'soldat', pose = 'menace' }: { dessin?: string; pose?: 'menace' | 'fuite' } = $props()
   const gris = '#7C746C'

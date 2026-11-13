@@ -2,12 +2,25 @@
 
 Tous les dessins de l'app (le personnage et ses objets, les adversaires, le chat, le quartier) existent d'abord **en code**. On peut les **remplacer un par un** en déposant ici un fichier **SVG**, ou **PNG à fond transparent**, avec le bon nom. L'app utilise le fichier s'il existe, et le dessin en code sinon : rien ne casse si un dessin manque.
 
+## Voir son dessin dans l'app : l'atelier de dessin
+
+Pas besoin d'installer quoi que ce soit : l'**atelier de dessin** est une page web (lien « Ouvrir l'atelier de dessin » dans la page **Participer** du site, ou `app/atelier.html` à l'adresse de l'app). On y dépose ses fichiers et on voit aussitôt **le rendu complet** : le quartier entier (niveaux, nuit, passants, chat), le personnage avec n'importe quels teint, coiffure, pose et objets, les batailles contre chaque adversaire, les stades du chat. **Rien n'est envoyé** : les fichiers restent sur l'ordinateur.
+
+- **Ouvrir mon dossier de travail** (Chrome ou Edge) : la page relit le dossier chaque seconde. On dessine, on enregistre, et la scène se met à jour toute seule.
+- Sinon : « Choisir des fichiers », ou glisser des fichiers ou un dossier dans la page.
+- Le nom du fichier suffit (`censeur.svg`, `bonnet-phrygien.png`) ; le dossier n'est utile que pour les noms en double (`livre` est un objet, `livre-3` un élément du quartier).
+- Case **Comparer** : revoir le dessin d'origine pour comparer.
+- Onglet **Dessins attendus** : la liste de tous les noms, et ceux déjà déposés.
+- Les mêmes règles que `npm run valider` s'appliquent : un fichier refusé est signalé avec la raison.
+
+Pour partager l'atelier en un seul fichier (à ouvrir sans connexion) : `npm run build:atelier -w app` produit `app/dist-atelier/atelier.html`.
+
 ## Comment faire
 
 1. **Partir d'un modèle** : `modeles/` contient chaque dessin actuel, déjà dans le bon cadre (ex. `modeles/ennemis/censeur.svg`). Ou partir d'un **gabarit** vide : `gabarits/` (personnage, ennemi, chat, quartier), avec ses repères.
 2. **Dessiner** dans son logiciel (Inkscape, Illustrator, Affinity, Procreate…), **sans changer la taille du document** : le cadre et le point (0,0) doivent rester les mêmes, sinon le dessin sera décalé dans l'app.
 3. **Enregistrer** sous le bon nom, au bon endroit (tableau plus bas), par exemple `data/dessins/ennemis/censeur.svg`. Supprimer d'abord le calque « Repères » d'un gabarit. Fond transparent.
-4. **Vérifier** : `npm run valider` contrôle les noms, formats et tailles. `npm run dev`, puis l'adresse `#dessins` : la planche montre tous les dessins et se met à jour dès qu'un fichier est déposé.
+4. **Vérifier** : l'atelier de dessin (ci-dessus) montre le rendu. `npm run valider` contrôle les noms, formats et tailles. `npm run dev`, puis l'adresse `#dessins` : la planche montre tous les dessins et se met à jour dès qu'un fichier est déposé.
 5. **Envoyer** sur `main` : le dessin arrive dans l'app à la publication suivante (et dans l'APK Android).
 
 ## Les noms

@@ -1,7 +1,7 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { VitePWA } from 'vite-plugin-pwa'
 import { viteSingleFile } from 'vite-plugin-singlefile'
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, type BuildOptions, type Plugin } from 'vite'
 import { fileURLToPath } from 'node:url'
 import { join } from 'node:path'
 import { readFileSync } from 'node:fs'
@@ -16,6 +16,8 @@ const racine = fileURLToPath(new URL('..', import.meta.url))
  * La vraie publication reste la version normale.
  */
 const artefact = process.env.MDL_ARTEFACT === '1'
+const atelierSeul = process.env.MDL_ATELIER === '1'
+const ici = fileURLToPath(new URL('.', import.meta.url))
 
 /**
  * Variante « application Android » (MDL_ANDROID=1), emballée par Capacitor (dossier android/).
@@ -134,17 +136,24 @@ export default defineConfig(({ command }) => {
     'import.meta.env.VITE_SITE': JSON.stringify(adresseSite),
     'import.meta.env.VITE_VERSION': JSON.stringify(version),
   },
-  build: artefact ? { outDir: 'dist-artefact' } : {},
+  // Deux pages : l'app (index.html) et l'atelier de dessin (atelier.html). MDL_ATELIER=1 : l'atelier seul, en un fichier.
+  build: (atelierSeul
+    ? { outDir: 'dist-atelier', rollupOptions: { input: { atelier: join(ici, 'atelier.html') } } }
+    : artefact
+      ? { outDir: 'dist-artefact' }
+      : android
+        ? {}
+        : { rollupOptions: { input: { app: join(ici, 'index.html'), atelier: join(ici, 'atelier.html') } } }) as BuildOptions,
   plugins: [
     svelte(),
     donnees(),
     demo(modeDemo),
     dessins(),
-    ...(artefact ? [viteSingleFile(), pageDeDemo()] : []),
+    ...(artefact || atelierSeul ? [viteSingleFile(), pageDeDemo()] : []),
     ...(android ? [pageAndroid()] : []),
     // Rend l'app installable et utilisable sans réseau : tout est gardé sur le téléphone.
     VitePWA({
-      disable: artefact || android,
+      disable: artefact || android || atelierSeul,
       registerType: 'prompt', // une nouvelle version ne s'installe que si l'utilisateur l'accepte
       injectRegister: false, // l'enregistrement est fait dans src/etat/mise-a-jour.svelte.ts
       includeAssets: ['favicon.svg', 'icones/apple-touch-icon.png'],

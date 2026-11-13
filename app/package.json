@@ -11,6 +11,7 @@
     "build:artefact": "MDL_ARTEFACT=1 vite build",
     "build:test": "MDL_DEMO=1 vite build --outDir dist-test",
     "test:e2e": "playwright test",
+    "build:atelier": "MDL_ATELIER=1 vite build",
     "build:android": "MDL_ANDROID=1 vite build --outDir dist-android",
     "android": "npm run build:android && cap sync android"
   },

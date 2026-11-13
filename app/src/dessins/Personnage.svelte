@@ -3,7 +3,7 @@
   // Origine du dessin : entre ses pieds, au sol. Poses : repos, victoire (bras droit levé), sonne (étoiles).
   import type { Equipe } from '@mdl/noyau'
   import { P, TEINTS } from './palette'
-  import { CADRES, premier } from './fichiers'
+  import { CADRES, premier } from './fichiers.svelte'
 
   let { teint = 1, coiffure = 0, equipe = {}, pose = 'repos', corps = true }:
     {

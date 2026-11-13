@@ -4,7 +4,7 @@
   import Chat from './Chat.svelte'
   import Personnage from './Personnage.svelte'
   import { P } from './palette'
-  import { CADRES, dessin } from './fichiers'
+  import { CADRES, dessin } from './fichiers.svelte'
 
   let { niveaux = {}, stade = 0, dort = false, accessoires = [], pancarte = false, description = '', personnage = null, foule = 0, heure = new Date().getHours() }:
     {

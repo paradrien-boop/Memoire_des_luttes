@@ -61,3 +61,16 @@ describe("dessins déposés", () => {
     expect(problemes).toHaveLength(3);
   });
 });
+
+import { nomDepuisFichier } from "./dessins-noms.mjs";
+describe("retrouver le nom d'un dessin depuis un fichier", () => {
+  it("par le chemin ou par le seul nom de fichier", () => {
+    expect(nomDepuisFichier("mon-travail/dessins/ennemis/censeur.svg")).toBe("ennemis/censeur");
+    expect(nomDepuisFichier("censeur.svg")).toBe("ennemis/censeur");
+    expect(nomDepuisFichier("bonnet-phrygien.PNG")).toBe("personnage/objets/bonnet-phrygien");
+    expect(nomDepuisFichier("livre.svg")).toBe("personnage/objets/livre");
+    expect(nomDepuisFichier("livre-3.svg")).toBe("quartier/livre-3");
+    expect(nomDepuisFichier("stade-2-endormi.svg")).toBe("chat/stade-2-endormi");
+    expect(nomDepuisFichier("croquis.svg")).toBeNull();
+  });
+});

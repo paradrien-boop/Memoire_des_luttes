@@ -5,7 +5,7 @@
   import Personnage from '../dessins/Personnage.svelte'
   import Ennemi from '../dessins/Ennemi.svelte'
   import Chat from '../dessins/Chat.svelte'
-  import { CADRES } from '../dessins/fichiers'
+  import { CADRES } from '../dessins/fichiers.svelte'
   import { ELEMENTS, OBJETS } from '@mdl/noyau'
 
   const vb = (c: { x: number; y: number; l: number; h: number }) => `${c.x} ${c.y} ${c.l} ${c.h}`

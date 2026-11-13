@@ -6,6 +6,7 @@ cles-secretes/
 dist/
 dist-artefact/
 dist-test/
+dist-atelier/
 test-results/
 playwright-report/
 publication/

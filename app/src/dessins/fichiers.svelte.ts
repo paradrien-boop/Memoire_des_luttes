@@ -1,6 +1,19 @@
 // Les dessins déposés dans data/dessins/ (voir data/dessins/README.md).
 // Chaque dessin de l'app utilise le fichier s'il existe, et son dessin écrit en code sinon.
-import fichiers from 'virtual:mdl-dessins'
+import fichiersDuDepot from 'virtual:mdl-dessins'
+
+export type FichierDessin = { type: 'svg' | 'png'; contenu: string }
+
+/**
+ * L'atelier de dessin (atelier.html) peut essayer des fichiers sans les mettre dans le dépôt :
+ * ils passent avant ceux du dépôt. « ignorer » montre les dessins sans eux, pour comparer.
+ */
+export const essais = $state<{ fichiers: Record<string, FichierDessin>; ignorer: boolean }>({ fichiers: {}, ignorer: false })
+
+function trouver(nom: string): FichierDessin | undefined {
+  if (essais.ignorer) return undefined
+  return essais.fichiers[nom] ?? fichiersDuDepot[nom]
+}
 
 /** Couleur repère de la peau dans les dessins du personnage : remplacée par le teint choisi. */
 export const PEAU_REPERE = '#ff00ff'
@@ -18,7 +31,7 @@ export const CADRES = {
  * @param peau pour le personnage : la couleur qui remplace la couleur repère de la peau
  */
 export function dessin(nom: string, peau?: string): string | null {
-  const f = fichiers[nom]
+  const f = trouver(nom)
   if (!f) return null
   if (f.type === 'png') return 'data:image/png;base64,' + f.contenu
   const texte = peau ? f.contenu.replace(/#ff00ff\b/gi, peau) : f.contenu
@@ -35,4 +48,4 @@ export function premier(noms: string[], peau?: string): string | null {
 }
 
 /** Combien de dessins ont été déposés (pour la planche). */
-export const NOMBRE_DE_DESSINS = Object.keys(fichiers).length
+export const NOMBRE_DE_DESSINS = Object.keys(fichiersDuDepot).length

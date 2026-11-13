@@ -21,6 +21,12 @@
   </section>
 
   <section class="encart">
+    <h2>Dessiner</h2>
+    <p>Le chat, le quartier, le personnage, ses objets et les adversaires peuvent être redessinés. L'<b>atelier de dessin</b> montre tout de suite tes fichiers dans les vraies scènes de l'app, sans rien envoyer : tes dessins restent sur ton ordinateur.</p>
+    <p><a class="bouton" href="./app/atelier.html">Ouvrir l'atelier de dessin</a></p>
+  </section>
+
+  <section class="encart">
     <h2>Débattre</h2>
     {#if site.config.lienDebat}
       <p>Les discussions sur les cartes, proposées ou publiées, ont lieu ici :</p>

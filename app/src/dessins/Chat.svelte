@@ -2,7 +2,7 @@
   // Le chat noir, en 5 stades. Origine du dessin : entre ses pattes, au sol.
   // 0 chaton des rues · 1 chat de gouttière · 2 chat de grève (hérissé) · 3 chat de barricade (écharpe) · 4 chat sauvage (dos rond)
   import { P } from './palette'
-  import { CADRES, premier } from './fichiers'
+  import { CADRES, premier } from './fichiers.svelte'
 
   let { stade = 0, dort = false, accessoires = [], pancarte = false }:
     { stade?: number; dort?: boolean; accessoires?: string[]; pancarte?: boolean } = $props()
