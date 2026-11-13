@@ -28,9 +28,11 @@ test('batailles : adversaire, porte-voix, seconde chance avec la banderole, obje
   // Une erreur : la banderole propose une seconde chance, puis on gagne
   const [q] = await lireTable<Quiz>(page, 'quiz')
   const bonne = q.questions[0].choix[q.questions[0].bonne]
-  await page.locator('.choix-bouton').filter({ hasNotText: bonne }).first().click()
+  // Texte exact : une réponse peut en contenir une autre (« 1871 » et « 18 mars 1871 »).
+  const exacte = new RegExp('^\\s*' + bonne.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$')
+  await page.locator('.choix-bouton').filter({ hasNotText: exacte }).first().click()
   await page.getByRole('button', { name: /Brandir la banderole \(2\)/ }).click()
-  await page.locator('.choix-bouton').filter({ hasText: bonne }).click()
+  await page.locator('.choix-bouton').filter({ hasText: exacte }).click()
   await expect(page.getByText(/^Bataille gagnée !/)).toBeVisible()
   await expect(page.getByText('POUF !')).toBeVisible()
 
