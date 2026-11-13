@@ -2,14 +2,21 @@
   // Les adversaires historiques, en caricatures d'époque (jamais des personnes réelles).
   // Origine : entre les pieds. Poses : menace (face au personnage, regard vers la gauche), fuite (il détale).
   import { P } from './palette'
+  import { CADRES, premier } from './fichiers'
 
   let { dessin = 'soldat', pose = 'menace' }: { dessin?: string; pose?: 'menace' | 'fuite' } = $props()
   const gris = '#7C746C'
   const peau = '#E2C4A6'
   const fuite = $derived(pose === 'fuite')
+  // Dessin déposé dans data/dessins/ennemis/ : il remplace le dessin en code.
+  const fichier = $derived(premier(fuite ? [`ennemis/${dessin}-fuite`, `ennemis/${dessin}`] : [`ennemis/${dessin}`]))
+  const C = CADRES.ennemis
 </script>
 
 <g class:fuite>
+  {#if fichier}
+    <image href={fichier} x={C.x} y={C.y} width={C.l} height={C.h} />
+  {:else}
   <!-- jambes -->
   {#if dessin === 'soldat' || dessin === 'general'}
     <!-- pantalon rouge garance de l'armée de 1871 -->
@@ -124,6 +131,7 @@
     <g class="pouf" fill={P.papier} stroke={P.encre} stroke-width="1.5">
       <circle cx="30" cy="-10" r="10" /><circle cx="44" cy="-14" r="13" /><circle cx="58" cy="-8" r="9" />
     </g>
+  {/if}
   {/if}
 </g>
 

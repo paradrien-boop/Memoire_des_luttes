@@ -13,6 +13,7 @@
   import Plus from './ecrans/Plus.svelte'
   import Quartier from './ecrans/Quartier.svelte'
   import Dessins from './ecrans/Dessins.svelte'
+  import ExportDessins from './ecrans/ExportDessins.svelte'
   import { quartier } from './etat/quartier.svelte'
   import Scanner from './composants/Scanner.svelte'
   import QrAffiche from './composants/QrAffiche.svelte'
@@ -93,6 +94,7 @@
     {:else if ecran === 'album'}<Album />
     {:else if ecran === 'quartier'}<Quartier />
     {:else if ecran === 'dessins'}<Dessins />
+    {:else if ecran === 'dessins-export'}<ExportDessins />
     {:else if ecran === 'editeur'}{#key cleEditeur}<Editeur />{/key}
     {:else}<Plus />{/if}
   {/if}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="-70 -130 140 140">
+<!-- Gabarit du chat : cadre 140 × 140, point (0,0) au sol, sous le chat.
+     Dessine sur un calque à toi, dans ce cadre, SANS changer la taille du document (viewBox).
+     Avant d'enregistrer : supprime le calque « Repères » (ou masque-le), et garde un fond transparent. -->
+<g id="reperes" inkscape:groupmode="layer" inkscape:label="Repères (à supprimer)" opacity=".8"><rect x="-70" y="-130" width="140" height="140" fill="none" stroke="#2B6CB0" stroke-width=".5" stroke-dasharray="2 2"/><line x1="-70" y1="0" x2="70" y2="0" stroke="#E0245E" stroke-width=".6"/><text x="-68" y="-2" font-family="sans-serif" font-size="4" fill="#E0245E" text-anchor="start">sol</text><circle cx="0" cy="0" r="1.5" fill="#E0245E"/><rect x="-40" y="-80" width="80" height="80" fill="none" stroke="#2B6CB0" stroke-width=".5" stroke-dasharray="1.5 1.5"/><text x="0" y="-84" font-family="sans-serif" font-size="3.8" fill="#2B6CB0" text-anchor="middle">le chat (stades 0 à 4 : du chaton au chat sauvage)</text><text x="0" y="-118" font-family="sans-serif" font-size="3.6" fill="#E0245E" text-anchor="middle">Laisser libre en haut à droite : la pancarte des jours de manif</text></g>
+</svg>

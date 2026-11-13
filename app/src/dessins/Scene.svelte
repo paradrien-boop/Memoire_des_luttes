@@ -4,6 +4,7 @@
   import Chat from './Chat.svelte'
   import Personnage from './Personnage.svelte'
   import { P } from './palette'
+  import { CADRES, dessin } from './fichiers'
 
   let { niveaux = {}, stade = 0, dort = false, accessoires = [], pancarte = false, description = '', personnage = null, foule = 0, heure = new Date().getHours() }:
     {
@@ -16,6 +17,10 @@
       heure?: number
     } = $props()
   const nuit = $derived(heure >= 20 || heure < 7)
+  // Dessins déposés dans data/dessins/quartier/ : le fond (immeubles, rue) et chaque élément, niveau par niveau.
+  const fond = $derived(dessin(nuit ? 'quartier/fond-nuit' : 'quartier/fond') ?? dessin('quartier/fond'))
+  const element = (famille: string) => (n(famille) ? dessin(`quartier/${famille}-${n(famille)}`) : null)
+  const Q = CADRES.quartier
   /** Passants : position de départ, durée de la traversée, sens, couleur du manteau. */
   const PASSANTS = [[0, 26, 1, '#2F4A6B'], [140, 31, -1, '#5B3A4A'], [260, 23, 1, '#3E5A3A'], [80, 35, -1, '#6B4E2E'], [320, 28, 1, '#444'], [200, 33, -1, '#7A2A22']] as const
 
@@ -41,7 +46,11 @@
   </defs>
 
   <!-- ciel (la nuit tombe selon l'heure réelle) -->
-  <rect width="400" height="300" fill={nuit ? '#232A3B' : P.papier} />
+  {#if fond}
+    <image href={fond} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
+    <rect width="400" height="300" fill={nuit ? '#232A3B' : P.papier} />
+  {/if}
   {#if nuit}
     {#each [[30, 14], [90, 30], [150, 10], [250, 22], [330, 12], [372, 34], [205, 6]] as [x, y], i (i)}
       <circle cx={x} cy={y} r="1.6" fill="#F4EBD0" class="scintille" style="animation-delay:{i * 0.4}s" />
@@ -60,6 +69,7 @@
   <rect x="236" y="-2" width="10" height="14" fill={P.encre} />
   {#each [0, 1, 2] as i (i)}<circle cx="241" cy="-6" r="5" fill={nuit ? '#5A6072' : '#BDB5AB'} class="fumee" style="animation-delay:{i * 1.3}s" />{/each}
 
+  {#if !fond}
   <!-- immeubles -->
   <rect x="4" y="34" width="114" height="200" fill={P.gris} stroke={P.encre} stroke-width="2.5" />
   <rect x="124" y="16" width="148" height="218" fill={P.pierre} stroke={P.encre} stroke-width="2.5" />
@@ -71,7 +81,11 @@
   {#each fenetres as [x, y], i (i)}
     <rect {x} {y} width="20" height="22" fill={ordre.indexOf(i) < vie + (nuit ? 3 : 0) ? P.lumiere : P.encre} stroke={P.encre} stroke-width="2" />
   {/each}
+  {/if}
 
+  {#if element('personnalite')}
+    <image href={element('personnalite')} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
   <!-- PERSONNALITÉ : fresque murale sur le mur de gauche -->
   {#if n('personnalite') === 1}
     <rect x="12" y="112" width="96" height="70" fill="none" stroke={P.encre} stroke-width="1.5" stroke-dasharray="4 4" />
@@ -87,7 +101,11 @@
       <text x="60" y="126" text-anchor="middle" font-family={F} font-weight="900" font-size="9" fill={P.papier}>NOS MÉMOIRES</text>
     {/if}
   {/if}
+  {/if}
 
+  {#if element('concept')}
+    <image href={element('concept')} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
   <!-- CONCEPT : atelier coopératif au rez-de-chaussée de gauche -->
   {#if n('concept') === 0}
     <rect x="18" y="194" width="84" height="40" fill={P.grisFonce} stroke={P.encre} stroke-width="2" />
@@ -106,7 +124,11 @@
       <text x="60" y="194" text-anchor="middle" font-family={F} font-weight="900" font-size="10" fill={P.lumiere}>COOPÉRATIVE</text>
     {/if}
   {/if}
+  {/if}
 
+  {#if element('mesure')}
+    <image href={element('mesure')} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
   <!-- MESURE : la Bourse du travail, au centre -->
   {#if n('mesure') === 1}
     <!-- échafaudage -->
@@ -121,7 +143,11 @@
   {#if n('mesure') >= 3}
     {#each [188, 208] as x (x)}<circle cx={x} cy="204" r="5" fill={P.encre} /><rect x={x - 5} y="209" width="10" height="25" rx="4" fill={P.encre} />{/each}
   {/if}
+  {/if}
 
+  {#if element('lieu')}
+    <image href={element('lieu')} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
   <!-- LIEU : plaque, puis monument fleuri -->
   {#if n('lieu') >= 1}
     <rect x="228" y="182" width="34" height="22" fill={n('lieu') >= 2 ? P.papier : P.gris} stroke={P.encre} stroke-width="2" />
@@ -132,7 +158,11 @@
       {#each [232, 240, 248, 256] as x, i (x)}<line x1={x} y1="234" x2={x} y2="222" stroke={P.encre} stroke-width="1.5" /><circle cx={x} cy={220 - (i % 2) * 3} r="3.5" fill={P.rouge} />{/each}
     {/if}
   {/if}
+  {/if}
 
+  {#if element('courant')}
+    <image href={element('courant')} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
   <!-- COURANT : mur d'affiches -->
   {#each [[134, 148, 'rouge'], [152, 140, 'papier'], [138, 170, 'papier'], [156, 162, 'rouge']] as [x, y, c], i (i)}
     {#if n('courant') >= [1, 2, 2, 3][i]}
@@ -140,7 +170,11 @@
       <line x1={(x as number) + 3} y1={(y as number) + 6} x2={(x as number) + 13} y2={(y as number) + 6} stroke={P.encre} stroke-width="2" />
     {/if}
   {/each}
+  {/if}
 
+  {#if element('livre')}
+    <image href={element('livre')} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
   <!-- LIVRE : bibliothèque populaire au rez-de-chaussée de droite -->
   {#if n('livre') === 0}
     <rect x="286" y="168" width="102" height="66" fill={P.grisFonce} stroke={P.encre} stroke-width="2" />
@@ -158,18 +192,24 @@
       <line x1="300" y1="190" x2="374" y2="190" stroke={P.encre} stroke-width="1.5" stroke-dasharray="4 4" />
     {/if}
   {/if}
+  {/if}
 
+  {#if !fond}
   <!-- trottoir et chaussée -->
   <rect x="0" y="234" width="400" height="14" fill={P.gris} stroke={P.encre} stroke-width="2" />
   <rect x="0" y="248" width="400" height="52" fill={P.pierre} />
   {#each [20, 80, 140, 200, 260, 320, 380] as x (x)}<rect x={x - 14} y="272" width="28" height="4" fill={P.papier} />{/each}
+  {/if}
 
-  {#if n('livre') >= 3}
+  {#if n('livre') >= 3 && !element('livre')}
     <!-- boîte de bouquiniste sur le trottoir -->
     <rect x="276" y="226" width="38" height="12" fill={P.rouge} stroke={P.encre} stroke-width="2" />
     <rect x="280" y="220" width="4" height="7" fill={P.encre} /><rect x="286" y="221" width="4" height="6" fill={P.papier} stroke={P.encre} /><rect x="292" y="219" width="4" height="8" fill={P.encre} />
   {/if}
 
+  {#if element('evenement')}
+    <image href={element('evenement')} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
   <!-- ÉVÉNEMENT : corde, puis banderole, puis barricade -->
   {#if n('evenement') >= 1}
     <path d="M118,92 Q198,{n('evenement') >= 2 ? 104 : 112} 278,92" fill="none" stroke={P.encre} stroke-width="1.5" />
@@ -187,7 +227,11 @@
     <rect x="108" y="206" width="3" height="70" fill={P.encre} />
     <path d="M111,208 L144,214 L138,224 L144,234 L111,230 Z" fill={P.rouge} stroke={P.encre} stroke-width="1.5" />
   {/if}
+  {/if}
 
+  {#if element('chant')}
+    <image href={element('chant')} x={Q.x} y={Q.y} width={Q.l} height={Q.h} />
+  {:else}
   <!-- CHANT : réverbère, puis kiosque à musique, puis chorale -->
   {#if n('chant') >= 1}
     <rect x="391" y="190" width="4" height="96" fill={P.encre} />
@@ -203,6 +247,7 @@
         <g fill={P.encre}><ellipse cx="-30" cy="-82" rx="4" ry="3" /><rect x="-27" y="-96" width="1.6" height="14" /><ellipse cx="26" cy="-88" rx="4" ry="3" /><rect x="29" y="-102" width="1.6" height="14" /></g>
       {/if}
     </g>
+  {/if}
   {/if}
 
   <!-- passants sur le trottoir : un de plus à chaque jour de manif -->

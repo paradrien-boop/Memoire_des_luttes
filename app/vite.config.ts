@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { join } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { assembler } from '../scripts/assembler.mjs'
+import { lireDessins } from '../scripts/dessins.mjs'
 
 const racine = fileURLToPath(new URL('..', import.meta.url))
 
@@ -53,6 +54,34 @@ function demo(actif: boolean): Plugin {
       if (!actif) return 'export default null'
       const cle = JSON.parse(readFileSync(join(racine, 'data/cles/demo.json'), 'utf8'))
       return 'export default ' + JSON.stringify({ publique: cle.publique, secrete: cle.secrete })
+    },
+  }
+}
+
+/**
+ * « virtual:mdl-dessins » : les dessins déposés dans data/dessins/ (voir data/dessins/README.md),
+ * inclus dans l'app au moment de la construction. Un dessin absent garde le dessin écrit en code.
+ */
+function dessins(): Plugin {
+  const id = 'virtual:mdl-dessins'
+  const resolu = '\0' + id
+  return {
+    name: 'mdl-dessins',
+    resolveId: (s) => (s === id ? resolu : undefined),
+    load: (m) => (m === resolu ? 'export default ' + JSON.stringify(lireDessins(racine).dessins) : undefined),
+    configureServer(server) {
+      // En développement, la planche #dessins se met à jour dès qu'un fichier est déposé ou modifié.
+      const dossier = join(racine, 'data/dessins')
+      server.watcher.add(dossier)
+      const recharger = (f: string) => {
+        if (!f.startsWith(dossier)) return
+        const mod = server.moduleGraph.getModuleById(resolu)
+        if (mod) server.moduleGraph.invalidateModule(mod)
+        server.ws.send({ type: 'full-reload' })
+      }
+      server.watcher.on('add', recharger)
+      server.watcher.on('change', recharger)
+      server.watcher.on('unlink', recharger)
     },
   }
 }
@@ -110,6 +139,7 @@ export default defineConfig(({ command }) => {
     svelte(),
     donnees(),
     demo(modeDemo),
+    dessins(),
     ...(artefact ? [viteSingleFile(), pageDeDemo()] : []),
     ...(android ? [pageAndroid()] : []),
     // Rend l'app installable et utilisable sans réseau : tout est gardé sur le téléphone.

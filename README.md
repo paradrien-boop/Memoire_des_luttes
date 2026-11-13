@@ -13,7 +13,7 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 | Dossier | Contenu |
 |---|---|
 | [`docs/`](docs/) | Le concept, les choix techniques et les décisions prises |
-| [`data/`](data/) | La base de données : familles de cartes, packs, cartes d'événement, collectifs |
+| [`data/`](data/) | La base de données : familles de cartes, packs, cartes d'événement, collectifs, actions, règles, et les [dessins](data/dessins/README.md) |
 | [`paquets/noyau/`](paquets/noyau/) | La logique partagée : formats, règles du jeu, plus tard signatures |
 | [`app/`](app/) | L'application (Vite, Svelte, TypeScript) |
 | [`prototype/`](prototype/) | Le premier prototype, gardé comme référence |

@@ -1,3 +1,9 @@
+declare module 'virtual:mdl-dessins' {
+  /** Les dessins déposés dans data/dessins/, par nom (sans extension). */
+  const dessins: Record<string, { type: 'svg' | 'png'; contenu: string }>
+  export default dessins
+}
+
 declare module 'virtual:mdl-demo' {
   /** Clé de démonstration : seulement en développement, page de démo et tests. null dans l'app publiée. */
   const cle: { publique: string; secrete: string } | null

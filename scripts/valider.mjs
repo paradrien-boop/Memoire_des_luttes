@@ -107,6 +107,15 @@ for (const type of ["officiel", "local"]) {
   }
 }
 
+// Dessins déposés dans data/dessins/ (noms, formats, tailles, sécurité)
+{
+  const { lireDessins } = await import("./dessins.mjs");
+  const { dessins, problemes } = lireDessins(racine);
+  for (const p of problemes) err("data/dessins", p);
+  const n = Object.keys(dessins).length;
+  if (n) console.log(`Dessins déposés : ${n} (ils remplacent les dessins en code).`);
+}
+
 // Fiches des collectifs : la délégation doit être signée par le collectif racine et correspondre à la fiche.
 const dossierCollectifs = join(racine, "data/collectifs");
 if (existsSync(dossierCollectifs)) for (const f of readdirSync(dossierCollectifs).filter((x) => x.endsWith(".json"))) {

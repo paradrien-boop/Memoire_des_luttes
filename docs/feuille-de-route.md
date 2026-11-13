@@ -59,6 +59,7 @@ Détail des choix et des étapes : [architecture-app.md](architecture-app.md).
 - [x] Profil : personnage créé une fois et enregistré, choix des actions, réglages
 - [x] Équipement au choix : 24 objets sur 7 emplacements (tête, visage, col, haut, mains, dos)
 - [x] Au plus 9 cartes par jour (`data/regles.json`)
+- [x] Dossier de dessins : remplacer chaque dessin par un fichier SVG ou PNG, avec gabarits et modèles (voir [data/dessins/README.md](../data/dessins/README.md))
 - [ ] Dessins définitifs
 
 ## Étape 4 : le site

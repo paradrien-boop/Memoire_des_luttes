@@ -77,3 +77,4 @@ Dessins disponibles : `soldat`, `proprietaire`, `patron`, `censeur`, `mouchard`,
 | Dessins | `app/src/dessins/Personnage.svelte`, `Ennemi.svelte`, `Scene.svelte` |
 | Arène et panneau du personnage | `app/src/composants/Arene.svelte`, `Equipement.svelte` |
 | Planche de tous les dessins | adresse `#dessins` en développement |
+| **Remplacer un dessin** | déposer un fichier dans `data/dessins/` : voir [data/dessins/README.md](../data/dessins/README.md) |
