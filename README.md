@@ -33,6 +33,7 @@ Ce dépôt est **le centre du projet** : les idées, la documentation, la base d
 4. [Architecture de l'application](docs/architecture-app.md)
 5. [Feuille de route](docs/feuille-de-route.md)
 6. [Publication](docs/publication.md)
+7. [Game design : toutes les fonctionnalités et leurs réglages](docs/game-design.md)
 7. [Tester sur de vrais téléphones](docs/tester-sur-telephone.md)
 8. [L'application Android](docs/android.md)
 9. [Le personnage et les batailles](docs/personnage-et-batailles.md)
