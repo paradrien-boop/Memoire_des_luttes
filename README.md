@@ -4,7 +4,12 @@ Une application de cartes à collectionner pour les manifs. On gagne des booster
 
 L'application ne demande **ni compte, ni GPS, ni réseau** pendant la manif. Tout reste sur le téléphone.
 
-L'app publiée (phase de test) : https://paradrien-boop.github.io/memoire-des-luttes-publication/app/ · le site : https://paradrien-boop.github.io/memoire-des-luttes-publication/
+**Dernière version publiée (phase de test)** :
+- l'app : https://paradrien-boop.github.io/memoire-des-luttes-publication/app/
+- l'atelier de dessin : https://paradrien-boop.github.io/memoire-des-luttes-publication/app/atelier.html
+- le site : https://paradrien-boop.github.io/memoire-des-luttes-publication/
+
+Si l'app semble ancienne sur un téléphone où elle est installée, elle propose « Mettre à jour » à l'ouverture suivante.
 
 Ce dépôt est **le centre du projet** : les idées, la documentation, la base de cartes et le code. Le site et les mises à jour de l'application viendront chercher leurs données ici.
 
